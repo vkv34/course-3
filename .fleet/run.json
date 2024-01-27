@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "docker-compose.yaml.web: Compose Deployment",
+            "type": "docker-compose-up",
+            "workingDir": "C:\\Users\\dima-\\Diplom\\Online_Education",
+            "files": ["docker-compose.yaml"],
+            "services": ["web"]
+        },
+        {
+            "name": "composeApp [Js]",
+            "type": "gradle",
+            "workingDir": "C:\\Users\\dima-\\Diplom\\Online_Education",
+            "tasks": ["jsBrowserDevelopmentRun"],
+            "args": ["-p","C:\\Users\\dima-\\Diplom\\Online_Education\\composeApp", "--info"],
+            "initScripts": {
+                "flmapper": "ext.mapPath = { path -> null }"
+            }
+        }
+    ]
+}

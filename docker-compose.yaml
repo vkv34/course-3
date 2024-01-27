@@ -1,0 +1,9 @@
+services:
+    web:
+        image: nginx
+        volumes:
+            - type: bind
+              source: composeApp/build/dist/js/productionExecutable
+              target: /usr/share/nginx/html/
+        ports:
+            - 8888:80
