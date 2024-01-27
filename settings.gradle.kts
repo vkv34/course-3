@@ -9,6 +9,9 @@ pluginManagement {
         mavenCentral()
     }
 }
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.5.0"
+}
 
 dependencyResolutionManagement {
     repositories {
@@ -21,3 +24,8 @@ dependencyResolutionManagement {
 include(":composeApp")
 include(":server")
 include(":shared")
+include(":domain")
+include(":di")
+include(":lib")
+include(":SharedCompose")
+include(":CourseFeature")

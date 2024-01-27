@@ -1,0 +1,23 @@
+openapi: "3.0.3"
+info:
+  title: "OnlineEducation API"
+  description: "OnlineEducation API"
+  version: "1.0.0"
+servers:
+- url: "https://OnlineEducation"
+paths:
+  /:
+    get:
+      description: ""
+      responses:
+        "502":
+          description: "Bad Gateway"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "asdasd"
+    post:
+      description: ""

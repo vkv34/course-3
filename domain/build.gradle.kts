@@ -3,11 +3,12 @@ import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 kotlin {
     @OptIn(ExperimentalWasmDsl::class)
-    js {
+    js(IR) {
         browser()
     }
 
@@ -27,13 +28,14 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-        // put your Multiplatform dependencies here
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.serialization.json)
         }
     }
 }
 
 android {
-    namespace = "ru.online.education.shared"
+    namespace = "ru.online.education.domain"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()

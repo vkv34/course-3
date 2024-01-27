@@ -1,0 +1,16 @@
+GET {{hostName}}/course/my/0
+Authorization:Bearer {{auth_token}}
+
+###
+
+POST {{hostName}}/course/new
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": "name",
+  "creatorId": 1,
+  "shortDescription": "Short description",
+  "longDescription": "Long description",
+  "courseCategoryId": 5
+}

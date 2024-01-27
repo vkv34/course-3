@@ -1,0 +1,19 @@
+POST {{hostName}}/account/signIn
+Content-Type: application/json
+
+{
+  "email": "email",
+  "password": "password"
+}
+
+> {% client.global.set("auth_token", response.body.data.token); %}
+
+
+###
+
+GET {{hostName}}/account/current
+Authorization: Bearer {{auth_token}}
+
+###
+
+

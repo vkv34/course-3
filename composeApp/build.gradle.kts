@@ -13,7 +13,7 @@ plugins {
 
 kotlin {
     @OptIn(ExperimentalWasmDsl::class)
-    js {
+    js(IR) {
         moduleName = "composeApp"
         browser {
             commonWebpackConfig {
