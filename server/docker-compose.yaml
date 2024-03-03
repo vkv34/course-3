@@ -1,6 +1,7 @@
 services: 
     mysql:
         image: mysql
+        restart: always
         container_name: mysql_local
 #        restart: always
         environment:
@@ -11,3 +12,7 @@ services:
             - /var/lib/mysql/
             - /docker-entrypoint-initdb.d
             - /etc/mysql/conf.d
+    server:
+        build: .
+        ports:
+            - "8080:8888"

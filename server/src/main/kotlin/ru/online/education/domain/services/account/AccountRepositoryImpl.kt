@@ -2,7 +2,7 @@ package ru.online.education.domain.services.account
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import model.LoginResponse
+import model.AuthResponse
 import model.SessionState
 import model.User
 import model.UserSession
@@ -24,7 +24,7 @@ class AccountRepositoryImpl(
         login: CharSequence,
         password: CharSequence,
         hostName: String
-    ): ApiResult<LoginResponse>{
+    ): ApiResult<AuthResponse>{
         val user = userRepository.findUserByEmail(User(email = login.toString(), password = password.toString()))
         return if (user?.password == password)
             authWithSession(user, hostName)
@@ -32,7 +32,11 @@ class AccountRepositoryImpl(
             ApiResult.Error("Пользователь с такими данными не найден")
     }
 
-    override suspend fun getTestAdminAccount(): ApiResult<LoginResponse> =
+    override suspend fun logOut() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getTestAdminAccount(): ApiResult<AuthResponse> =
         authByUser(userRepository.getUserById(1))
 
     private suspend fun authWithSession(user: User?, hostName: String) = try{
@@ -51,7 +55,7 @@ class AccountRepositoryImpl(
                 .withClaim("sessionId", id)
                 .sign(Algorithm.HMAC256(secret))
             ApiResult.Success(
-                LoginResponse(
+                AuthResponse(
                     token = token
                 ),
                 message = "Успешная авторизация"
@@ -72,7 +76,7 @@ class AccountRepositoryImpl(
                 .withClaim("userId", user.id)
                 .sign(Algorithm.HMAC256(secret))
             ApiResult.Success(
-                LoginResponse(
+                AuthResponse(
                     token = token
                 ),
                 message = "Успешная авторизация"

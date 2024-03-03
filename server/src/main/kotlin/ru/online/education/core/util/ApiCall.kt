@@ -21,6 +21,20 @@ inline fun <reified T> apiCall(
         ApiResult.Error(errorMessage, e)
     }
 
+inline fun <reified T> apiCall(
+    successMessage: String = "",
+    errorMessage: String = "",
+    apiResultCall: () -> ApiResult<T>
+): ApiResult<T> =
+    try {
+        val result = apiResultCall()
+        if (result is ApiResult.Success)
+            ApiResult.Success(result.data, successMessage)
+        result
+    } catch (e: Exception) {
+        ApiResult.Error(errorMessage, e)
+    }
+
 suspend inline fun <reified T> PipelineContext<Unit, ApplicationCall>.validateInput(data: T)
         where T : Validator, T : BaseModel {
     if (!data.isValid) {
@@ -33,34 +47,45 @@ suspend inline fun <reified T> PipelineContext<Unit, ApplicationCall>.validateIn
 }
 
 suspend inline fun <reified T, reified K> PipelineContext<Unit, ApplicationCall>.createAndRespond(
-    service: BaseService<T, K>,
-    copyScope: T.(K) -> T
+    service: BaseService<T, K>
 )
         where T : BaseModel, T : Validator {
     val input = call.receive<T>()
     validateInput(input)
     val result = service.create(input)
-    when (result) {
-        is ApiResult.Success -> {
-            call.respond(
-                status = HttpStatusCode.Created, message = ApiResult.Success(
-                    input.copyScope(result.data),
-                    result.message
-                ) as ApiResult<T>
-            )
-            finish()
-        }
-
-        is ApiResult.Error -> {
-            call.respond(status = HttpStatusCode.BadRequest, message = result as ApiResult<K>)
-            finish()
-        }
-    }
-/*
-    call.respond(status = result.toStatusCode(), message = result)
-    finish()
-*/
+//    when (val result = service.create(input)) {
+//        is ApiResult.Success -> {
+//            call.respond(
+//                status = HttpStatusCode.Created, message = ApiResult.Success(
+//                    result.data,
+//                    result.message
+//                ) as ApiResult<T>
+//            )
+//            finish()
+//        }
+//
+//        is ApiResult.Error -> {
+//            call.respond(status = HttpStatusCode.BadRequest, message = result as ApiResult<T>)
+//            finish()
+//        }
+//
+//        is ApiResult.Empty -> TODO()
+//        is ApiResult.Loading -> TODO()
+//    }
+    respond(result)
+    /*
+        call.respond(status = result.toStatusCode(), message = result)
+        finish()
+    */
 }
+
+suspend inline fun <reified T> PipelineContext<Unit, ApplicationCall>.respond(
+    apiResult: ApiResult<T>
+) {
+    call.respond(status = apiResult.toStatusCode(), apiResult)
+    finish()
+}
+
 
 suspend inline fun <reified T> PipelineContext<Unit, ApplicationCall>.getAndRespond(getScope: () -> ApiResult<T>) {
     val result = getScope()
@@ -74,6 +99,9 @@ suspend inline fun <reified T> PipelineContext<Unit, ApplicationCall>.getAndResp
             call.respond(status = HttpStatusCode.BadRequest, message = result as ApiResult<T>)
             finish()
         }
+
+        is ApiResult.Empty -> TODO()
+        is ApiResult.Loading -> TODO()
     }
 }
 
@@ -99,6 +127,8 @@ suspend inline fun <reified T, reified K> PipelineContext<Unit, ApplicationCall>
 inline fun <reified T> ApiResult<T>.toStatusCode() = when (this) {
     is ApiResult.Success -> HttpStatusCode.OK
     is ApiResult.Error -> HttpStatusCode.BadRequest
+    is ApiResult.Empty -> HttpStatusCode.NoContent
+    is ApiResult.Loading -> TODO()
 }
 
 

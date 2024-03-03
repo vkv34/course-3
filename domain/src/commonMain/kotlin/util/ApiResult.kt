@@ -23,7 +23,18 @@ sealed class ApiResult<T>(
         override val message: String,
         @Serializable(with = ThrowableSerializer::class) val throwable: Throwable? = null
     ) :
-        ApiResult<T>()
+        ApiResult<T>() {
+        companion object {
+            inline fun <reified T> notImplemented() = Error<T>("Not implemented", NotImplementedError())
+        }
+    }
+
+
+    @Serializable
+    class Empty<T>(override val message: String) : ApiResult<T>()
+
+    @Serializable
+    class Loading<T>(override val message: String) : ApiResult<T>()
 
 }
 

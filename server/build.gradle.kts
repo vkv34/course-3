@@ -11,6 +11,13 @@ application {
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=${extra["development"] ?: "false"}")
 }
 
+ktor {
+    fatJar {
+        archiveFileName.set("server.jar")
+
+    }
+}
+
 //sourceSets{
 //    val a = project(":di").extensions.getByType(SourceSetContainer::class).getByName("ktorMain")
 //
@@ -49,6 +56,7 @@ dependencies {
     implementation(libs.ktor.server.auth.jwt)
     implementation(libs.ktor.server.netty)
     testImplementation(libs.ktor.server.tests)
+    implementation(libs.ktor.server.cors)
 
 
 
@@ -57,3 +65,22 @@ dependencies {
 
     testImplementation(libs.kotlin.test.junit)
 }
+
+
+
+//tasks{
+//    open class CopyToServerTask @Inject constructor(): DefaultTask() {
+//        val serverJarPath: String = project(":server").tasks.getByName<Jar>("buildFatJar").archiveFile.get().asFile.absolutePath
+//
+//        @TaskAction
+//        fun copyToServer(){
+//            val cmd = "scp $serverJarPath root@45.146.164.243:/home/server/"
+//            project.exec() {
+//                commandLine = cmd.split(" ")
+//            }
+//        }
+//    }
+//    create<CopyToServerTask>("copyToServer"){
+//        dependsOn(":server:buildFatJar")
+//    }
+//}

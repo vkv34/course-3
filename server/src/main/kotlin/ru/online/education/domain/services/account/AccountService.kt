@@ -1,6 +1,6 @@
 package ru.online.education.domain.services.account
 
-import model.LoginResponse
+import model.AuthResponse
 import repository.AccountRepository
 import util.ApiResult
 
@@ -9,7 +9,7 @@ class AccountService(
 
 ) {
 
-    suspend fun loginByEmailAndPassword(login: CharSequence, password: CharSequence, hostName: String): ApiResult<LoginResponse> =
+    suspend fun loginByEmailAndPassword(login: CharSequence, password: CharSequence, hostName: String): ApiResult<AuthResponse> =
         accountRepository.loginByEmailAndPassword(login, password, hostName)
 
     suspend fun getTestAdminAccount() {

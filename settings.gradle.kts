@@ -21,11 +21,15 @@ dependencyResolutionManagement {
     }
 }
 
-include(":composeApp")
+//include(":composeApp")
 include(":server")
 include(":shared")
 include(":domain")
-include(":di")
-include(":lib")
-include(":SharedCompose")
-include(":CourseFeature")
+include(":App:ComposeApp")
+include(":App")
+include(":App:Feature")
+include(":App:Feature:Core")
+include(":App:Feature:Account")
+include(":App:Feature:Course")
+//include(":App:Util")
+

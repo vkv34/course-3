@@ -14,10 +14,9 @@ fun Routing.courseCategoryRoute() {
         jwtAuthenticate {
             role<BaseModel>(listOf(UserRole.Admin, UserRole.Teacher, UserRole.Moderator))
             post("new") {
-                createAndRespond(courseCategoryService) {
-                    copy(id = it ?: 0)
-                }
+                createAndRespond(courseCategoryService)
             }
         }
     }
+
 }

@@ -1,13 +1,15 @@
 package repository
 
-import model.LoginResponse
+import model.AuthResponse
 import util.ApiResult
 
 interface AccountRepository {
     /**
      *
      */
-    suspend fun loginByEmailAndPassword(login: CharSequence, password: CharSequence, hostName: String): ApiResult<LoginResponse>
+    suspend fun loginByEmailAndPassword(login: CharSequence, password: CharSequence, hostName: String): ApiResult<AuthResponse>
 
-    suspend fun getTestAdminAccount(): ApiResult<LoginResponse>
+    suspend fun logOut()
+
+    suspend fun getTestAdminAccount(): ApiResult<AuthResponse>
 }

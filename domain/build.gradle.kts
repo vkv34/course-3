@@ -8,7 +8,7 @@ plugins {
 
 kotlin {
     @OptIn(ExperimentalWasmDsl::class)
-    js(IR) {
+    js() {
         browser()
     }
 

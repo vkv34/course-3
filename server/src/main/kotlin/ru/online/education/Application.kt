@@ -3,6 +3,8 @@ package ru.online.education
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -26,13 +28,12 @@ import ru.online.education.domain.services.course.courseRoute
 import ru.online.education.domain.services.courseCategory.courseCategoryRoute
 import ru.online.education.domain.services.telemetry.installTelemetry
 import ru.online.education.domain.services.userService.UserService
+import io.ktor.server.plugins.cors.routing.*
 
 fun main(args: Array<String>) = io.ktor.server.netty.EngineMain.main(args)
 
-/*{
-    embeddedServer(Netty, port = SERVER_PORT, host = "0.0.0.0", module = Application::module)
-        .start(wait = true)
-}*/
+//    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
+//        .start(wait = true)
 
 fun Application.module() {
 
@@ -57,11 +58,11 @@ fun Application.module() {
             isLenient = true
             serializersModule = SerializersModule {
                 polymorphic(Any::class) {
-                    subclass(LoginResponse::class, LoginResponse.serializer())
-                    subclass(Course::class, Course.serializer())
+                    subclass(AuthResponse::class, AuthResponse.serializer())
+                    subclass(CourseDto::class, CourseDto.serializer())
                     subclass(CourseCategoryDto::class, CourseCategoryDto.serializer())
 
-                    subclass(ListResponse.serializer(Course.serializer()))
+                    subclass(ListResponse.serializer(CourseDto.serializer()))
                 }
 //                polymorphic(Any::class) {
 //                    subclass(List::class, ListSerializer(PolymorphicSerializer(Any::class).nullable))
@@ -73,6 +74,11 @@ fun Application.module() {
                 }
             }
         })
+    }
+
+    install(CORS) {
+        allowHost("localhost:8080")
+        allowHeader(HttpHeaders.ContentType)
     }
 
     installJWTAuth()

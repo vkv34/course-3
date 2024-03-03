@@ -1,5 +1,6 @@
 POST {{hostName}}/account/signIn
 Content-Type: application/json
+Content-Encoding: UTF-8
 
 {
   "email": "email",

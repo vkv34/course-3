@@ -1,6 +1,6 @@
 package ru.online.education.domain.services.course
 
-import model.Course
+import model.CourseDto
 import model.ListResponse
 import repository.CourseRepository
 import ru.online.education.core.util.apiCall
@@ -9,20 +9,14 @@ import util.ApiResult
 
 class CourseService(
     val courseRepository: CourseRepository
-) : BaseService<Course, Int> {
+) : BaseService<CourseDto, Int> {
 //    suspend fun getAllCourses(page: Int): ApiResult<List<Course>> = try {
 //        ApiResult.Success(courseRepository.getAll(page))
 //    } catch (e: Exception) {
 //        ApiResult.Error(e.localizedMessage)
 //    }
 
-    suspend fun addCourse(course: Course) = apiCall(
-        successMessage = "Курс успешно добавлен",
-        errorMessage = "Ошибка при добавленнии курса"
-    ) {
-        val id = courseRepository.add(course) ?: error("Курс не добавлен")
-        getCourseById(id)
-    }
+    suspend fun addCourse(course: CourseDto) = courseRepository.add(course)
 
     suspend fun getCourseById(id: Int) = apiCall(
         errorMessage = "Курс не найден"
@@ -30,31 +24,31 @@ class CourseService(
         courseRepository.getById(id)
     }
 
-    override suspend fun create(data: Course): ApiResult<Int> = apiCall(
+    override suspend fun create(data: CourseDto): ApiResult<CourseDto> = apiCall(
         successMessage = "Курс успешно добавлен",
         errorMessage = "Ошибка при добавленнии курса"
     ) {
-        courseRepository.add(data) ?: error("Курс не добавлен")
+        courseRepository.add(data)
     }
 
-    override suspend fun update(data: Course): ApiResult<Int> {
+    override suspend fun update(data: CourseDto): ApiResult<Int> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getAll(page: Int): ApiResult<ListResponse<Course>> = apiCall(
+    override suspend fun getAll(page: Int): ApiResult<ListResponse<CourseDto>> = apiCall(
         errorMessage = "Ошибка при загрузке курсов",
         successMessage = "Курсы загружены"
     ) {
-        ListResponse(
-            courseRepository.getAll(page)
-        )
+        courseRepository.getAll(page)
     }
 
-    override suspend fun getById(id: Int): ApiResult<Course> {
+    override suspend fun getById(id: Int): ApiResult<CourseDto> {
         TODO("Not yet implemented")
     }
 
     override suspend fun deleteById(id: Int): ApiResult<Int> {
         TODO("Not yet implemented")
     }
+
+    suspend fun getAllByUserId(userId: Int, page: Int) = courseRepository.filterByUser(page = page, userId = userId)
 }

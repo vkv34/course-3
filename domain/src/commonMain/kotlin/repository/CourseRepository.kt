@@ -1,10 +1,12 @@
 package repository
 
-import model.Course
+import model.CourseDto
+import model.ListResponse
 import repository.defaults.Repository
+import util.ApiResult
 
-interface CourseRepository: Repository<Course, Int> {
-    suspend fun findByName(name : String): Course
+interface CourseRepository: Repository<CourseDto, Int> {
+    suspend fun findByName(name : String): CourseDto
 
-    suspend fun filterByUser(userId: Int, page: Int): List<Course>
+    suspend fun filterByUser(page: Int, userId: Int = 0): ApiResult<ListResponse<CourseDto>>
 }

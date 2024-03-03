@@ -4,7 +4,7 @@ import model.ListResponse
 import util.ApiResult
 
 interface BaseService<T, K> {
-    suspend fun create(data: T): ApiResult<K>
+    suspend fun create(data: T): ApiResult<T>
 
     suspend fun update(data: T): ApiResult<K>
 

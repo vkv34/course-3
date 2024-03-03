@@ -16,6 +16,7 @@ import repository.UserRepository
 import repository.UserSessionRepository
 import ru.online.education.core.util.role
 import ru.online.education.domain.services.account.AccountService
+import util.ApiResult
 
 
 fun Routing.installAccountRoute() {
@@ -42,8 +43,12 @@ fun Routing.installAccountRoute() {
                 val userSessionRepository by application.inject<UserSessionRepository>()
                 val sessionId = call.principal<JWTPrincipal>()?.get("sessionId") ?: "asd"
                 val userId = userSessionRepository.getById(sessionId)
-                val user = userRepository.getUserById(userId?.userId ?: 0)
-                call.respondText(user?.email ?: "no user found")
+                if (userId is ApiResult.Success){
+                    val user = userRepository.getUserById(userId.data.userId)
+                    call.respondText(user?.email ?: "no user found")
+                    finish()
+                }
+
             }
         }
 

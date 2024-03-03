@@ -10,12 +10,8 @@ import util.ApiResult
 class CourseCategoryService(
     val courseCategoryRepository: CourseCategoryRepository
 ) : BaseService<CourseCategoryDto, Int?> {
-    override suspend fun create(data: CourseCategoryDto) = apiCall(
-        successMessage = "Course category added",
-        errorMessage = "Course category not added",
-    ) {
+    override suspend fun create(data: CourseCategoryDto) =
         courseCategoryRepository.add(data)
-    }
 
     override suspend fun update(data: CourseCategoryDto): ApiResult<Int?> {
         TODO("Not yet implemented")
@@ -32,6 +28,4 @@ class CourseCategoryService(
     override suspend fun deleteById(id: Int): ApiResult<Int?> {
         TODO("Not yet implemented")
     }
-
-
 }

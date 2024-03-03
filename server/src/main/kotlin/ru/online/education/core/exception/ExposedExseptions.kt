@@ -1,4 +1,6 @@
 package ru.online.education.core.exception
 
-class InsertErrorException(message: String) : Exception(message)
+open class ExposedException(message: String) : Exception(message)
+class InsertErrorException(message: String) : ExposedException(message)
+class SelectExeption(message: String) : ExposedException(message)
 

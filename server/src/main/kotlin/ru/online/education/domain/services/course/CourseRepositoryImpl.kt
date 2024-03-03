@@ -1,59 +1,87 @@
 package ru.online.education.domain.services.course
 
-import model.Course
+import model.CourseDto
 import model.Image
+import model.ListResponse
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import repository.CourseRepository
+import ru.online.education.core.exception.SelectExeption
+import ru.online.education.core.util.apiCall
 import ru.online.education.data.table.CourseCategoryTable
 import ru.online.education.data.table.CourseTable
 import ru.online.education.data.table.UsersTable
 import ru.online.education.di.dbQuery
+import util.ApiResult
 
 class CourseRepositoryImpl : CourseRepository {
-    override suspend fun findByName(name: String): Course {
+    override suspend fun findByName(name: String): CourseDto {
         TODO("Not yet implemented")
     }
 
-    override suspend fun filterByUser(userId: Int, page: Int): List<Course> = dbQuery {
-        CourseTable.selectAll()
-            .where { CourseTable.createdBy eq userId }
-            .limit(pageSize, (page * pageSize).toLong())
-            .map(::resultRowToCourse)
-    }
+    override suspend fun filterByUser(userId: Int, page: Int): ApiResult<ListResponse<CourseDto>> = apiCall (
+        call = {
+            ListResponse(
+                dbQuery {
+                    CourseTable.selectAll()
+                        .where { CourseTable.createdBy eq userId }
+                        .limit(pageSize, (page * pageSize).toLong())
+                        .map(::resultRowToCourse)
+                }
+            )
+        }
+    )
 
-    override suspend fun getAll(page: Int): List<Course> = dbQuery {
-        CourseTable.selectAll()
-            .limit(pageSize, (page * pageSize).toLong())
-            .map(::resultRowToCourse)
-    }
+    override suspend fun getAll(page: Int): ApiResult<ListResponse<CourseDto>> =
+        apiCall(
+            successMessage = "Курс найден",
+            errorMessage = "Курс не найден",
+            call = {
+                ListResponse(
+                    dbQuery {
+                        CourseTable.selectAll()
+                            .limit(pageSize, (page * pageSize).toLong())
+                            .map(::resultRowToCourse)
+                    }
+                )
+            }
+        )
 
-    override suspend fun getById(id: Int): Course? = dbQuery {
-        CourseTable.selectAll()
-            .where { CourseTable.id eq id }
-            .singleOrNull()
-            ?.toCourse()
-    }
+    override suspend fun getById(id: Int): ApiResult<CourseDto> =
+        apiCall(
+            successMessage = "Курс найден",
+            errorMessage = "Курс не найден",
+            call = {
+                dbQuery {
+                    CourseTable.selectAll()
+                        .where { CourseTable.id eq id }
+                        .singleOrNull()
+                        ?.toCourse()
+                } ?: throw SelectExeption("Курс с id = $id не найден")
+            }
+        )
 
-    override suspend fun deleteById(id: Int) {
-        TODO("Not yet implemented")
-    }
 
-    override suspend fun update(data: Course): Course? {
-        TODO("Not yet implemented")
-    }
+    override suspend fun deleteById(id: Int): ApiResult<Unit> = ApiResult.Error.notImplemented()
 
-    override suspend fun add(data: Course): Int? = dbQuery {
-        CourseTable.insertAndGetId {
-            courseToInsertStatement(it, data)
-        }.value
+    override suspend fun update(data: CourseDto): ApiResult<CourseDto?> = ApiResult.Error.notImplemented()
+
+    override suspend fun add(data: CourseDto): ApiResult<CourseDto> = apiCall(
+        successMessage = ""
+    ) {
+        val id = dbQuery {
+            CourseTable.insertAndGetId {
+                courseToInsertStatement(it, data)
+            }.value
+        }
+        getById(id)
     }
 
     private fun resultRowToCourse(row: ResultRow) = row.toCourse()
-    private fun ResultRow.toCourse() = Course(
+    private fun ResultRow.toCourse() = CourseDto(
         id = this[CourseTable.id].value,
         name = this[CourseTable.name],
         creatorId = this[CourseTable.createdBy]?.value,
@@ -65,7 +93,7 @@ class CourseRepositoryImpl : CourseRepository {
         courseCategoryId = this[CourseTable.courseCategory].value
     )
 
-    private fun <T : Any> courseToInsertStatement(statement: InsertStatement<T>, course: Course) {
+    private fun <T : Any> courseToInsertStatement(statement: InsertStatement<T>, course: CourseDto) {
         with(course) {
             statement[CourseTable.name] = name
             if (creatorId != null)
