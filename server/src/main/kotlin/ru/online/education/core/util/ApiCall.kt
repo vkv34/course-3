@@ -22,17 +22,12 @@ inline fun <reified T> apiCall(
     }
 
 inline fun <reified T> apiCall(
-    successMessage: String = "",
-    errorMessage: String = "",
     apiResultCall: () -> ApiResult<T>
 ): ApiResult<T> =
     try {
-        val result = apiResultCall()
-        if (result is ApiResult.Success)
-            ApiResult.Success(result.data, successMessage)
-        result
+        apiResultCall()
     } catch (e: Exception) {
-        ApiResult.Error(errorMessage, e)
+        ApiResult.Error(e.localizedMessage ?: "", e)
     }
 
 suspend inline fun <reified T> PipelineContext<Unit, ApplicationCall>.validateInput(data: T)

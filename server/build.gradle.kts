@@ -45,6 +45,11 @@ dependencies {
 
 
     implementation(libs.logback)
+    implementation(libs.logback.db)
+    implementation(libs.com.mchange.c3p0)
+
+
+    implementation(libs.org.eclipse.angus.mail)
 
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.content.negotination)

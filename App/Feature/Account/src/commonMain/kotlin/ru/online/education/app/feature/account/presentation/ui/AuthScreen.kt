@@ -30,10 +30,10 @@ fun AuthScreen(
         TextField(authState.email, onValueChange = authScreenState::setEmail)
         TextField(authState.password, onValueChange = authScreenState::setPassword)
         Button(onClick = authScreenState::auth) {
-            Text(stringResource(Res.string.login))
+            Text(/*stringResource(Res.string.login)*/"Войти")
         }
         TextButton(onClick = authScreenState::auth) {
-            Text(stringResource(Res.string.register))
+            Text(/*stringResource(Res.string.register)*/"Зарегестрироваться")
         }
 
 //        Text(token)

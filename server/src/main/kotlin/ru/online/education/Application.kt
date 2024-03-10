@@ -77,8 +77,14 @@ fun Application.module() {
     }
 
     install(CORS) {
-        allowHost("localhost:8080")
+//        allowHost("localhost:8080")
+        anyHost()
         allowHeader(HttpHeaders.ContentType)
+        allowHeader(HttpHeaders.Authorization)
+        allowMethod(HttpMethod.Get)
+        allowMethod(HttpMethod.Post)
+        allowMethod(HttpMethod.Delete)
+        allowMethod(HttpMethod.Put)
     }
 
     installJWTAuth()
@@ -94,6 +100,11 @@ fun Application.module() {
         courseRoute()
 
         courseCategoryRoute()
+
+        get("/error") {
+            logError(call, Exception("Test Error"))
+            call.respond("error")
+        }
 
         get("/") {
             call.response.header(HttpHeaders.Connection, "keep-alive")

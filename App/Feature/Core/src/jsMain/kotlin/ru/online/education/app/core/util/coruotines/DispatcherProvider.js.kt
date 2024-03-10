@@ -1,10 +1,11 @@
 package ru.online.education.app.core.util.coruotines
 
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 actual object DispatcherProvider {
     actual val IO: CoroutineDispatcher
-        get() = TODO("Not yet implemented")
+        get() = Dispatchers.Default
     actual val Default: CoroutineDispatcher
         get() = TODO("Not yet implemented")
     actual val Main: CoroutineDispatcher

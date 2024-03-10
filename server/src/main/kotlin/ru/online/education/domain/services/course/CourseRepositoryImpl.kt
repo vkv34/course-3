@@ -4,15 +4,14 @@ import model.CourseDto
 import model.Image
 import model.ListResponse
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.insertAndGetId
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import repository.CourseRepository
 import ru.online.education.core.exception.SelectExeption
 import ru.online.education.core.util.apiCall
 import ru.online.education.data.table.CourseCategoryTable
 import ru.online.education.data.table.CourseTable
+import ru.online.education.data.table.UserOnCourse
 import ru.online.education.data.table.UsersTable
 import ru.online.education.di.dbQuery
 import util.ApiResult
@@ -22,12 +21,17 @@ class CourseRepositoryImpl : CourseRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun filterByUser(userId: Int, page: Int): ApiResult<ListResponse<CourseDto>> = apiCall (
+    override suspend fun filterByUser(page: Int, userId: Int): ApiResult<ListResponse<CourseDto>> = apiCall(
         call = {
+            val otherCoursesIds = UserOnCourse.select(UserOnCourse.course)
+                .where { UserOnCourse.role eq 0 }
+                .andWhere { UserOnCourse.user eq userId }
+
             ListResponse(
                 dbQuery {
                     CourseTable.selectAll()
                         .where { CourseTable.createdBy eq userId }
+                        .orWhere { CourseTable.id inSubQuery otherCoursesIds }
                         .limit(pageSize, (page * pageSize).toLong())
                         .map(::resultRowToCourse)
                 }
@@ -69,9 +73,7 @@ class CourseRepositoryImpl : CourseRepository {
 
     override suspend fun update(data: CourseDto): ApiResult<CourseDto?> = ApiResult.Error.notImplemented()
 
-    override suspend fun add(data: CourseDto): ApiResult<CourseDto> = apiCall(
-        successMessage = ""
-    ) {
+    override suspend fun add(data: CourseDto): ApiResult<CourseDto> = apiCall {
         val id = dbQuery {
             CourseTable.insertAndGetId {
                 courseToInsertStatement(it, data)

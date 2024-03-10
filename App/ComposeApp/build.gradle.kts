@@ -13,13 +13,14 @@ plugins {
 
 kotlin {
     @OptIn(ExperimentalWasmDsl::class)
-    js() {
+    js(IR) {
         moduleName = "composeApp"
         browser {
             commonWebpackConfig {
                 outputFileName = "composeApp.js"
             }
         }
+//        browser()
         binaries.executable()
     }
 
@@ -71,16 +72,23 @@ kotlin {
             implementation(libs.napier)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.ktor.core)
+            implementation(libs.ktor.client.logging)
+
+
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.datetime)
             implementation(libs.koin.core)
 
             implementation(projects.app.feature.account)
+            implementation(projects.app.feature.course)
+
             implementation(libs.ktor.server.serialization.json)
+            implementation(libs.compose.filePicker)
             implementation(libs.ktor.client.content.negotiation)
             implementation(projects.domain)
 
-
+            implementation(libs.decompose)
+            implementation(libs.decompose.compose.multiplatform)
 
         }
 
@@ -90,7 +98,6 @@ kotlin {
             implementation(compose.runtime)
             implementation(libs.sqlDelight.driver.js)
             implementation(libs.ktor.client.js)
-            implementation(libs.ktor.client.logging)
         }
 
         iosMain.dependencies {
@@ -99,16 +106,20 @@ kotlin {
         }
 
         desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
-        }
-
-
-        jvmMain.dependencies {
             implementation(compose.desktop.common)
             implementation(compose.desktop.currentOs)
-            implementation(libs.ktor.client.okhttp)
-            implementation(libs.sqlDelight.driver.sqlite)
+            implementation(libs.org.apache.log4j.core)
+            implementation(libs.org.apache.log4j.impl)
+            implementation(libs.org.apache.log4j.api)
         }
+
+
+//        jvmMain.dependencies {
+//            implementation(compose.desktop.common)
+//            implementation(compose.desktop.currentOs)
+////            implementation(libs.ktor.client.okhttp)
+//            implementation(libs.sqlDelight.driver.sqlite)
+//        }
 
     }
 }
@@ -159,7 +170,7 @@ compose.desktop {
         }
     }
 }
-
+//
 compose.experimental {
     web.application {}
 }

@@ -24,10 +24,7 @@ class CourseService(
         courseRepository.getById(id)
     }
 
-    override suspend fun create(data: CourseDto): ApiResult<CourseDto> = apiCall(
-        successMessage = "Курс успешно добавлен",
-        errorMessage = "Ошибка при добавленнии курса"
-    ) {
+    override suspend fun create(data: CourseDto): ApiResult<CourseDto> = apiCall{
         courseRepository.add(data)
     }
 
@@ -35,10 +32,7 @@ class CourseService(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getAll(page: Int): ApiResult<ListResponse<CourseDto>> = apiCall(
-        errorMessage = "Ошибка при загрузке курсов",
-        successMessage = "Курсы загружены"
-    ) {
+    override suspend fun getAll(page: Int): ApiResult<ListResponse<CourseDto>> = apiCall{
         courseRepository.getAll(page)
     }
 

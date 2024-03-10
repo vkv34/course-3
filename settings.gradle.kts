@@ -18,6 +18,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        maven("https://jitpack.io")
     }
 }
 
@@ -31,5 +32,6 @@ include(":App:Feature")
 include(":App:Feature:Core")
 include(":App:Feature:Account")
 include(":App:Feature:Course")
+include(":App:Feature:FilePicker")
 //include(":App:Util")
 

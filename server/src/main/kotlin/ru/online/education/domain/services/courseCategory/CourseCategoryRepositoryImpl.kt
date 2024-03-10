@@ -1,6 +1,7 @@
 package ru.online.education.domain.services.courseCategory
 
 import model.CourseCategoryDto
+import model.ListResponse
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
@@ -14,17 +15,19 @@ import ru.online.education.di.dbQuery
 import util.ApiResult
 
 class CourseCategoryRepositoryImpl : CourseCategoryRepository {
-    override suspend fun getAll(page: Int): ApiResult<List<CourseCategoryDto>> =
+    override suspend fun getAll(page: Int): ApiResult<ListResponse<CourseCategoryDto>> =
         apiCall(
             successMessage = "",
             errorMessage = "Ошибка при выборке курсов",
             call = {
-                dbQuery {
-                    CourseCategoryTable
-                        .selectAll()
-                        .limit(pageSize, (page * pageSize).toLong())
-                        .map(::resultRowToCourse)
-                }
+                ListResponse(
+                    dbQuery {
+                        CourseCategoryTable
+                            .selectAll()
+                            .limit(pageSize, (page * pageSize).toLong())
+                            .map(::resultRowToCourse)
+                    }
+                )
             }
         )
 
@@ -51,10 +54,7 @@ class CourseCategoryRepositoryImpl : CourseCategoryRepository {
 
     override suspend fun add(data: CourseCategoryDto): ApiResult<CourseCategoryDto> =
 
-        apiCall(
-            successMessage = "Course category added",
-            errorMessage = "Course category not added",
-        ) {
+        apiCall {
             val id = dbQuery {
                 CourseCategoryTable
                     .insertAndGetId {

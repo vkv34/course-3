@@ -34,15 +34,15 @@ inline fun <reified T : BaseModel> Route.role(roles: Iterable<UserRole>) {
         }
         checkNotNull(sessionId)
         val userSession = userSessionRepository.getById(sessionId)
-        if (userSession == null) {
+        if (userSession !is ApiResult.Success) {
             call.respond(HttpStatusCode.Unauthorized, ApiResult.Error<T>("Не верный токен"))
             finish()
-        } else if (userSession.state == SessionState.Ended) {
+            return@intercept
+        } else if (userSession.data.state == SessionState.Ended) {
             call.respond(HttpStatusCode.Unauthorized, ApiResult.Error<T>("Сессия завершена"))
             finish()
         }
-        checkNotNull(userSession)
-        val userId = userSession.userId
+        val userId = userSession.data.userId
         val user = userRepository.getUserById(userId)
 
         if (user == null) {

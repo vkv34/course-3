@@ -25,6 +25,7 @@ ktor = "2.3.7"
 kotlinx-serialization = "1.6.2"
 kotlinx-datetime = "0.5.0"
 sqlDelight = "2.0.1"
+kotlinx_html_version = "0.11.0"
 
 dataStore = "1.1.0-alpha01"
 
@@ -36,6 +37,9 @@ multiplatformSettings = "1.1.1"
 koin = "3.6.0-wasm-alpha1"
 exposed = "0.46.0"
 uiToolingPreviewAndroid = "1.6.0"
+slf4j = "2.23.0"
+
+decompose = "2.2.2-compose-experimental"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -53,7 +57,11 @@ compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = 
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
 compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
+
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+logback-db = { module = "ch.qos.logback.db:logback-classic-db", version = "1.2.11.1" }
+
+org-eclipse-angus-mail = { module = "org.eclipse.angus:angus-mail", version = "2.0.3" }
 
 ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
@@ -66,8 +74,11 @@ ktor-server-validation = { module = "io.ktor:ktor-server-request-validation", ve
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktor" }
 ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktor" }
 
-ktor-server-metric-micrometer = {module = "io.ktor:ktor-server-metrics-micrometer", version.ref = "ktor"}
-micrometer-registry-prometheus = {module = "io.micrometer:micrometer-registry-prometheus", version = "1.12.3"}
+ktor-server-metric-micrometer = { module = "io.ktor:ktor-server-metrics-micrometer", version.ref = "ktor" }
+micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version = "1.12.3" }
+
+decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
+decompose-compose-multiplatform = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose" }
 
 
 
@@ -94,22 +105,31 @@ sqlDelight-driver-js = { module = "app.cash.sqldelight:web-worker-driver", versi
 
 #koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 
-exposed-core = {module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed"}
-exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed"}
-exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed"}
-exposed-crypt= { module = "org.jetbrains.exposed:exposed-crypt", version.ref = "exposed"}
-exposed-kotlin-datetime= { module = "org.jetbrains.exposed:exposed-kotlin-datetime", version.ref = "exposed"}
+exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
+exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
+exposed-crypt = { module = "org.jetbrains.exposed:exposed-crypt", version.ref = "exposed" }
+exposed-kotlin-datetime = { module = "org.jetbrains.exposed:exposed-kotlin-datetime", version.ref = "exposed" }
 
-mysql-connector = { module = "mysql:mysql-connector-java", version = "8.0.33"}
+mysql-connector = { module = "mysql:mysql-connector-java", version = "8.0.33" }
+com-mchange-c3p0 = { module = " com.mchange:c3p0", version = "0.10.0" }
 
 
 
-koin-core = {module = "io.insert-koin:koin-core", version.ref = "koin"}
-koin-ktor = {module = "io.insert-koin:koin-ktor", version.ref = "koin"}
-koin-logger = {module = "io.insert-koin:koin-logger-slf4j", version.ref = "koin"}
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-ktor = { module = "io.insert-koin:koin-ktor", version.ref = "koin" }
+koin-logger = { module = "io.insert-koin:koin-logger-slf4j", version.ref = "koin" }
 androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "uiToolingPreviewAndroid" }
 
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettings" }
+compose-filePicker = { module = "com.darkrockstudios:mpfilepicker", version = "3.0.0" }
+#compose-filePicker = { module = "com.github.Tlaster.KFilePicker:KFilePicker", version = "1.0.5" }
+
+kotlinx-html-js = { module = "org.jetbrains.kotlinx:kotlinx-html-js", version.ref = "kotlinx_html_version" }
+
+org-apache-log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "slf4j" }
+org-apache-log4j-impl = { module = "org.apache.logging.log4j: log4j-slf4j-impl", version.ref = "slf4j" }
+org-apache-log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "slf4j" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

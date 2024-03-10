@@ -48,11 +48,13 @@ class AccountRepositoryImpl(
                 host = hostName
             )
             val id = userSessionRepository.add(userSession)
+            if (id !is ApiResult.Success)
+                throw Exception("Error")
             val token = JWT.create()
                 .withAudience(audience)
                 .withIssuer(issuer)
                 .withExpiresAt(Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(10)))
-                .withClaim("sessionId", id)
+                .withClaim("sessionId", id.data.id)
                 .sign(Algorithm.HMAC256(secret))
             ApiResult.Success(
                 AuthResponse(

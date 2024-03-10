@@ -4,7 +4,7 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-//    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsCompose)
 //    alias(libs.plugins.buildConfig)
     alias(libs.plugins.kotlinx.serialization)
@@ -30,6 +30,14 @@ kotlin {
 
     jvm("desktop")
 
+    androidTarget {
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+
     sourceSets {
 
 
@@ -42,7 +50,7 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.ui)
-            
+
 //            implementation(compose.material)
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
@@ -63,15 +71,17 @@ kotlin {
 
             implementation(projects.domain)
             implementation(projects.app.feature.core)
+
 //            implementation(projects.sharedCompose)
 
 
         }
 
 
-//        jsMain.dependencies {
-//            implementation(compose.html.core)
-//        }
+        jsMain.dependencies {
+            implementation(compose.html.core)
+            implementation(libs.kotlinx.html.js)
+        }
 
 //        iosMain.dependencies {
 //            implementation(libs.ktor.dar)
@@ -80,13 +90,13 @@ kotlin {
     }
 }
 //
-//android {
-//    namespace = "ru.online.education.CourseFeature"
-//    compileSdk = libs.versions.android.compileSdk.get().toInt()
-//    defaultConfig {
-//        minSdk = libs.versions.android.minSdk.get().toInt()
-//    }
-//}
+android {
+    namespace = "ru.online.education.app.feature.account"
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    defaultConfig {
+        minSdk = libs.versions.android.minSdk.get().toInt()
+    }
+}
 //dependencies {
 ////    implementation(libs.androidx.ui.tooling.preview.android)
 //}
