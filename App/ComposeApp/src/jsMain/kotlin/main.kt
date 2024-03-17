@@ -6,6 +6,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.CanvasBasedWindow
+import androidx.compose.ui.window.WindowExceptionHandler
+import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.router.stack.webhistory.DefaultWebHistoryController
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import deepLinking.DeepLink
+import destination.root.RootContent
 import io.ktor.client.*
 import io.ktor.client.engine.js.*
 import io.ktor.client.plugins.*
@@ -26,133 +33,49 @@ import kotlinx.serialization.modules.subclass
 import model.*
 import org.jetbrains.compose.web.renderComposable
 import org.jetbrains.compose.web.renderComposableInBody
-import org.w3c.dom.Document
-import org.w3c.dom.HTMLInputElement
-import org.w3c.dom.ItemArrayLike
-import org.w3c.dom.asList
+import org.w3c.dom.*
 import org.w3c.files.File
 import ru.online.education.app.feature.account.presentation.model.AuthScreenState
 import ru.online.education.app.feature.account.presentation.ui.AuthScreen
 import ru.online.education.app.feature.course.domain.repository.CourseRepositoryImpl
 import ru.online.education.app.feature.course.presentation.ui.CoursesScreen
 import ru.online.education.app.feature.course.presentation.viewModel.AllCoursesScreenViewModel
+import ru.online.education.app.feature.navigation.root.RootComponent
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalDecomposeApi::class)
 fun main() {
-    val url = window.location.toString()
-    onWasmReady {
-        CanvasBasedWindow(canvasElementId = "ComposeTarget") {
-//            var token by remember { mutableStateOf("") }
-//            val httpCLicent = remember {
-//                HttpClient(Js) {
-//                    install(ContentNegotiation) {
-//                        json(
-//                            Json {
-//                                ignoreUnknownKeys = true
-//                                isLenient = true
-//                                serializersModule = SerializersModule {
-//                                    polymorphic(Any::class) {
-//                                        subclass(AuthResponse::class, AuthResponse.serializer())
-//                                        subclass(CourseDto::class, CourseDto.serializer())
-//                                        subclass(CourseCategoryDto::class, CourseCategoryDto.serializer())
-//
-//                                        subclass(ListResponse.serializer(CourseDto.serializer()))
-//                                    }
-////                polymorphic(Any::class) {
-////                    subclass(List::class, ListSerializer(PolymorphicSerializer(Any::class).nullable))
-////                }
-//
-//                                    polymorphic(Image::class) {
-//                                        subclass(Image.ImageResource::class, Image.ImageResource.serializer())
-//                                        subclass(Image.Color::class, Image.Color.serializer())
-//                                    }
-//                                }
-//                            }
-//                        )
-//                    }
-//                    install(Logging) {
-//                        level = LogLevel.ALL
-//                    }
-//
-//                    defaultRequest {
-//                        url("http://localhost:8888/")
-//                        bearerAuth(token)
-//                    }
-//                }
-//            }
-//
-//
-//            val accountRepositoryImpl = remember {
-//                AccountRepositoryImpl(
-//                    client = httpCLicent,
-//                    authCallback = object : AuthCallback {
-//                        override suspend fun onAuth(authResponse: AuthResponse) {
-//                            token = authResponse.token
-//                        }
-//
-//                        override suspend fun onUnAuth() {
-//
-//                        }
-//
-//                    }
-//                )
-//            }
-//
-//            var password by remember { mutableStateOf("") }
-//            var email by remember { mutableStateOf("") }
-//
-//            val corotineScope = rememberCoroutineScope()
-//
-//            val authScreenState = AuthScreenState(accountRepositoryImpl, corotineScope)
-//
-//            if (token.isBlank()) {
-//                AuthScreen(authScreenState)
-//            } else {
-//                val courseRepository = remember {
-//                    CourseRepositoryImpl(
-//                        client = httpCLicent
-//                    )
-//                }
-//                val coursesScreenViewModel = remember {
-//                    AllCoursesScreenViewModel(
-//                        courseRepository,
-//                        corotineScope
-//                    )
-//                }
-//
-//                CoursesScreen(
-//                    coursesScreenViewModel
-//                )
-//            }
+//    val url = window.location.toString()
+    val lifecycle = LifecycleRegistry()
 
-            App()
-//            var showFilePicker by remember { mutableStateOf(false) }
-//            var path by remember { mutableStateOf("") }
-//
-//            val fileType = listOf("jpg", "png")
-//            FilePicker(
-//                show = showFilePicker,
-//                fileExtensions = fileType,
-//                initialDirectory = null,
-//                title = ""
-//            ) { files ->
-//                showFilePicker = false
-//                // do something with the file
-//                path = files.joinToString("\n")
-//            }
-//
-//            Button(
-//                onClick = {
-//                    showFilePicker = true
-//                }
-//            ) {
-//                Text(path)
-//            }
+    val root = RootComponent(
+        context = DefaultComponentContext(lifecycle),
+        deepLink = DeepLink.Web(window.location.pathname),
+        webHistoryController = DefaultWebHistoryController()
+    )
 
+    addEndPointsToServiceWorker(rootEndPoints)
+
+
+    window.onload = { event ->
+        val element = window.document.createElement("canvas")
+        element.id = "ComposeTarget"
+        document.body?.appendChild(element) ?: window.alert("body null")
+        onWasmReady {
+
+            CanvasBasedWindow(canvasElementId = element.id) {
+                WindowExceptionHandler {
+                    console.log(it)
+                }
+                RootContent(
+                    component = root,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
     }
+
 }
 
 @Composable
@@ -171,6 +94,7 @@ public fun FilePicker(
         }
     }
 }
+
 
 private suspend fun Document.selectFilesFromDisk(
     accept: String,

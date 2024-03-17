@@ -21,8 +21,13 @@ import org.jetbrains.compose.resources.painterResource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import io.ktor.client.*
@@ -44,6 +49,10 @@ import ru.online.education.app.feature.account.presentation.ui.AuthScreen
 import ru.online.education.app.feature.course.domain.repository.CourseRepositoryImpl
 import ru.online.education.app.feature.course.presentation.ui.CoursesScreen
 import ru.online.education.app.feature.course.presentation.viewModel.AllCoursesScreenViewModel
+import ru.online.education.app.feature.home.AdaptiveScaffold
+import ru.online.education.app.feature.home.model.NavigationGroup
+import ru.online.education.app.feature.home.model.NavigationItem
+import kotlin.random.Random
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -116,47 +125,76 @@ fun App() {
         var path by remember { mutableStateOf("") }
 
         val fileType = listOf("jpg", "png")
-        FilePicker(
-            show = showFilePicker,
-            fileExtensions = fileType,
-            initialDirectory = null,
-            ) { platformFile ->
-            showFilePicker = false
-                // do something with the file
-                path = platformFile?.path ?: ""
-        }
+//        FilePicker(
+//            show = showFilePicker,
+//            fileExtensions = fileType,
+//            initialDirectory = null,
+//        ) { platformFile ->
+//            showFilePicker = false
+//            // do something with the file
+//            path = platformFile?.path ?: ""
+//        }
 
-        Column {
-
-
-            Button(
-                onClick = {
-                    showFilePicker = true
-                }
-            ) {
-                Text(path)
-            }
-            if (token.isBlank()) {
-                AuthScreen(authScreenState)
-            } else {
-                val courseRepository = remember {
-                    CourseRepositoryImpl(
-                        client = httpCLicent
-                    )
-                }
-                val coursesScreenViewModel = remember {
-                    AllCoursesScreenViewModel(
-                        courseRepository,
-                        corotineScope
-                    )
-                }
-
-                CoursesScreen(
-                    coursesScreenViewModel
-                )
-            }
-
-        }
-
+        //        Column {
+        //
+        //
+        //            Button(
+        //                onClick = {
+        //                    showFilePicker = true
+        //                }
+        //            ) {
+        //                Text(path)
+        //            }
+        //            if (token.isBlank()) {
+        //                AuthScreen(authScreenState)
+        //            } else {
+        //                val courseRepository = remember {
+        //                    CourseRepositoryImpl(
+        //                        client = httpCLicent
+        //                    )
+        //                }
+        //                val coursesScreenViewModel = remember {
+        //                    AllCoursesScreenViewModel(
+        //                        courseRepository,
+        //                        corotineScope
+        //                    )
+        //                }
+        //
+        //                CoursesScreen(
+        //                    coursesScreenViewModel
+        //                )
+        //            }
+        //
+        //        }
+        //
+        //    }
+//        val navItems = listOf(
+//            NavigationItem(
+//                name = "alkfja",
+//                icon = Icons.Default.Home,
+//                selected = false
+//            ) {},
+//            NavigationItem(
+//                name = "sadsadasd",
+//                icon = Icons.Default.Refresh,
+//                selected = false,
+//                navigationGroup = NavigationGroup.accountGroup
+//
+//            ) {},
+//            NavigationItem(
+//                name = ",.cnbkjfh",
+//                icon = Icons.Default.DeleteForever,
+//                selected = true,
+//                navigationGroup = NavigationGroup.menuGroup
+//            ) {},
+//
+//            )
+//
+//        AdaptiveScaffold(
+//            navigationItems = navItems
+//        ) {
+//            val a = rememberSaveable { Random.nextBits(10).toString() }
+//            Text(a)
+//        }
     }
 }

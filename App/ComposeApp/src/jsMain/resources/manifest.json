@@ -1,0 +1,9 @@
+{
+    "name": "Online Education",
+    "short_name": "OE",
+    "theme_color": "#2196f3",
+    "background_color": "#2196f3",
+    "display": "standalone",
+    "scope": "/",
+    "start_url": "/"
+}

@@ -9,6 +9,8 @@ plugins {
     alias(libs.plugins.buildConfig)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.sqlDelight)
+    id("kotlin-parcelize")
+
 }
 
 kotlin {
@@ -25,6 +27,7 @@ kotlin {
     }
 
     androidTarget {
+
         compilations.all {
             kotlinOptions {
                 jvmTarget = "1.8"
@@ -67,7 +70,7 @@ kotlin {
             implementation(compose.components.resources)
             implementation(projects.shared)
 
-            implementation(libs.voyager.navigator)
+//            implementation(libs.voyager.navigator)
             implementation(libs.composeImageLoader)
             implementation(libs.napier)
             implementation(libs.kotlinx.coroutines.core)
@@ -81,6 +84,8 @@ kotlin {
 
             implementation(projects.app.feature.account)
             implementation(projects.app.feature.course)
+            implementation(projects.app.feature.home)
+            implementation(projects.app.feature.navigation)
 
             implementation(libs.ktor.server.serialization.json)
             implementation(libs.compose.filePicker)
@@ -88,6 +93,8 @@ kotlin {
             implementation(projects.domain)
 
             implementation(libs.decompose)
+            implementation(libs.essenty.parcelable)
+            implementation(libs.essenty.lifecycle)
             implementation(libs.decompose.compose.multiplatform)
 
         }
@@ -125,6 +132,7 @@ kotlin {
 }
 
 android {
+
     namespace = "ru.online.education"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 

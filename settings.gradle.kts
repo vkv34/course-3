@@ -33,5 +33,7 @@ include(":App:Feature:Core")
 include(":App:Feature:Account")
 include(":App:Feature:Course")
 include(":App:Feature:FilePicker")
+include(":App:Feature:Home")
+include(":App:Feature:Navigation")
 //include(":App:Util")
 

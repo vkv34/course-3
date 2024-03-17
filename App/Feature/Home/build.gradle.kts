@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.jetbrainsCompose)
@@ -14,20 +13,17 @@ kotlin {
     js(IR) {
         browser()
     }
-
     iosX64()
     iosArm64()
     iosSimulatorArm64()
-
     jvm()
-
     sourceSets {
+
 
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.ui)
-            //            implementation(compose.material)
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
             @OptIn(ExperimentalComposeLibrary::class)
@@ -39,15 +35,17 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.ktor.core)
             implementation(projects.domain)
-
-
+            implementation(projects.app.feature.core)
+            implementation(libs.napier)
+            implementation(libs.decompose)
+            implementation(libs.decompose.compose.multiplatform)
         }
 
-//        jvmMain.dependencies {
-//            implementation(compose.desktop.common)
-//            implementation(compose.desktop.currentOs)
-//        }
 
+        jsMain.dependencies {
+            implementation(compose.html.core)
+            implementation(libs.kotlinx.html.js)
+        }
 
     }
 }

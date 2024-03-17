@@ -11,8 +11,8 @@ androidx-espresso-core = "3.5.1"
 androidx-material = "1.11.0"
 androidx-test-junit = "1.1.5"
 compose = "1.6.2"
-compose-compiler = "1.5.8"
-compose-plugin = "1.6.0"
+compose-compiler = "1.5.10"
+compose-plugin = "1.6.1"
 junit = "4.13.2"
 kotlin = "1.9.21"
 logback = "1.4.14"
@@ -26,6 +26,7 @@ kotlinx-serialization = "1.6.2"
 kotlinx-datetime = "0.5.0"
 sqlDelight = "2.0.1"
 kotlinx_html_version = "0.11.0"
+materialKolor = "1.4.3"
 
 dataStore = "1.1.0-alpha01"
 
@@ -39,7 +40,7 @@ exposed = "0.46.0"
 uiToolingPreviewAndroid = "1.6.0"
 slf4j = "2.23.0"
 
-decompose = "2.2.2-compose-experimental"
+decompose = "3.0.0-alpha09"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -78,11 +79,12 @@ ktor-server-metric-micrometer = { module = "io.ktor:ktor-server-metrics-micromet
 micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version = "1.12.3" }
 
 decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
-decompose-compose-multiplatform = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose" }
+decompose-compose-multiplatform = { module = "com.arkivanov.decompose:extensions-compose", version.ref = "decompose" }
+essenty-parcelable = { module = "com.arkivanov.essenty:parcelable", version = "1.3.0" }
+essenty-lifecycle = { module = "com.arkivanov.essenty:lifecycle", version = "2.0.0-alpha07" }
 
 
-
-voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
+#voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 composeImageLoader = { module = "io.github.qdsfdhvh:image-loader", version.ref = "composeImageLoader" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -131,6 +133,8 @@ org-apache-log4j-core = { module = "org.apache.logging.log4j:log4j-core", versio
 org-apache-log4j-impl = { module = "org.apache.logging.log4j: log4j-slf4j-impl", version.ref = "slf4j" }
 org-apache-log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "slf4j" }
 
+materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -141,3 +145,5 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
+
+parcelize = { id = "kotlin-parcelize" }
