@@ -1,18 +1,27 @@
-services: 
-    mysql:
-        image: mysql
-        restart: always
-        container_name: mysql_local
-#        restart: always
-        environment:
-          MYSQL_ROOT_PASSWORD: 'password'
-        ports:
-          - '3306:3306'
-        volumes:
-            - /var/lib/mysql/
-            - /docker-entrypoint-initdb.d
-            - /etc/mysql/conf.d
-    server:
-        build: .
-        ports:
-            - "8080:8888"
+services:
+  mysql:
+    image: mysql
+    restart: always
+    container_name: mysql_local
+    #        restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '3306:3306'
+    volumes:
+      - db:/var/lib/mysql
+#      - ./database/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+  server:
+    depends_on:
+      - mysql
+    build: .
+    ports:
+      - "8080:8888"
+    environment:
+      CONNECTION_STRING: "jdbc:mysql://mysql:3306/"
+      DATABASE: "online_education"
+      DB_USER: "root"
+      DB_PASSWORD: "password"
+      SERVER_PORT: "8888"
+volumes:
+  db:

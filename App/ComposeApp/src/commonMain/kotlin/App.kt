@@ -114,7 +114,7 @@ fun App() {
             )
         }
 
-        var password by remember { mutableStateOf("") }
+        var password by remember { mutableStateOf("rtwerwerwerwe") }
         var email by remember { mutableStateOf("") }
 
         val corotineScope = rememberCoroutineScope()

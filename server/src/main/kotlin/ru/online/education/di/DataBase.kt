@@ -13,16 +13,50 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.dsl.module
 import ru.online.education.data.table.*
+import java.sql.DriverManager
+import java.sql.SQLException
+import java.util.logging.Logger
+
+fun connectDatabase(
+    jdbcUrl: String,
+    database: String,
+    user: String,
+    password: String
+): Database {
+    val driverClassName = "com.mysql.cj.jdbc.Driver"
+    try {
+        val connection = DriverManager.getConnection(jdbcUrl, user, password)
+//        val resultSet = connection.createStatement().executeQuery("SHOW DATABASES LIKE '$database'")
+        connection.createStatement()
+            .execute("""
+                    create database if not exists $database;
+                """.trimIndent())
+        Logger.getLogger("adsad").severe("Database created")
+    } catch (e: SQLException) {
+        e.printStackTrace()
+        Logger.getLogger("adsad").severe("Not created")
+        Logger.getLogger("adsad").severe(e.message)
+
+    }
+    return Database.connect(
+        jdbcUrl + database,
+        driver = driverClassName,
+        user = System.getenv("DB_USER"),
+        password = System.getenv("DB_PASSWORD")
+    )
+}
 
 val dataBaseModule = module(createdAtStart = true) {
     single<Database> {
         val driverClassName = "com.mysql.cj.jdbc.Driver"
-        val jdbcURL = "jdbc:mysql://45.146.164.243:3306/online_education"
-        val database = Database.connect(
+        val jdbcURL = System.getenv("CONNECTION_STRING")
+        val databaseName = System.getenv("DATABASE")
+
+
+        val database = connectDatabase(
             jdbcURL,
-            driver = driverClassName,
-            user = "root",
-            password = "password"
+            databaseName, System.getenv("DB_USER"),
+            System.getenv("DB_PASSWORD")
         )
 
         transaction(database) {

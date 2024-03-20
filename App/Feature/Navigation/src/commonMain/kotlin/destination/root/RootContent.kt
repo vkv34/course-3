@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -17,8 +18,11 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import destination.home.HomeContent
+import ru.online.education.app.feature.account.presentation.model.AuthState
+import ru.online.education.app.feature.account.presentation.ui.account.AccountCard
 import ru.online.education.app.feature.home.AdaptiveScaffold
 import ru.online.education.app.feature.home.HorizontalNavigationIcon
+import ru.online.education.app.feature.home.NaviagtionIcon
 import ru.online.education.app.feature.home.model.NavigationItem
 import ru.online.education.app.feature.navigation.root.RootComponent
 
@@ -43,15 +47,26 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
 //                    Icon(imageVector = Icons.Default.AccountCircle, contentDescription = null)
 //                }
 //            }
-            HorizontalNavigationIcon(
-                Icons.Default.AccountCircle,
-                text = "Аккаунт",
-                selected = currentConfig is RootComponent.Child.AccountChild,
-                onClick = {
-                    component.navigateUp(RootComponent.Config.Account)
-                          },
-                opened = opened
-            ) 
+//            HorizontalNavigationIcon(
+//                Icons.Default.AccountCircle,
+//                text = "Аккаунт",
+//                selected = currentConfig is RootComponent.Child.AccountChild,
+//                onClick = {
+//                    component.navigateUp(RootComponent.Config.Account)
+//                          },
+//                opened = opened
+//            )
+            if (opened) {
+                AccountCard(AuthState("login", "diplayName"))
+            } else {
+                NaviagtionIcon(
+                    icon = Icons.Default.ManageAccounts,
+                    selected = currentConfig is RootComponent.Child.AccountChild,
+                    onClick = {
+                        component.navigateUp(RootComponent.Config.Account)
+                    }
+                )
+            }
         },
         selected = currentConfig.toConfig().toNavigationItem { }
     ) {

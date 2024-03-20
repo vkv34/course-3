@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ru.online.education.app.core.util.compose.debbugable
 import ru.online.education.app.feature.account.presentation.model.AuthScreenState
@@ -36,14 +37,22 @@ fun AccountCard(
             ) {
                 Icon(imageVector = Icons.Default.ManageAccounts, contentDescription = null)
                 Spacer(Modifier.width(8.dp))
-                Text(authState.login)
+                Text(
+                    authState.login,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
             Spacer(Modifier.width(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(authState.displayName)
+                Text(
+                    authState.displayName,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
     }

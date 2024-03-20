@@ -37,6 +37,7 @@ kotlin {
             implementation(projects.domain)
             implementation(projects.app.feature.core)
             implementation(projects.app.feature.home)
+            implementation(projects.app.feature.account)
             implementation(libs.napier)
             implementation(libs.decompose)
             implementation(libs.decompose.compose.multiplatform)

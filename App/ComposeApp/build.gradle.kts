@@ -1,6 +1,12 @@
+import org.apache.commons.net.ftp.FTP
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.gradle.api.tasks.bundling.Jar
+import org.gradle.kotlin.dsl.*
+import org.apache.commons.net.ftp.FTPClient
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -10,7 +16,7 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.sqlDelight)
     id("kotlin-parcelize")
-
+//    kotlin("jvm")
 }
 
 kotlin {
@@ -118,6 +124,7 @@ kotlin {
             implementation(libs.org.apache.log4j.core)
             implementation(libs.org.apache.log4j.impl)
             implementation(libs.org.apache.log4j.api)
+            implementation("commons-net:commons-net:3.8.0")
         }
 
 
@@ -192,3 +199,50 @@ compose.experimental {
 //        }
 //    }
 //}
+
+
+buildscript {
+    dependencies {
+        classpath("commons-net:commons-net:3.10.0")
+    }
+}
+
+tasks.register<Jar>("publishJsApp") {
+    dependsOn("jsBrowserDevelopmentExecutableDistribution")
+
+    outputs.upToDateWhen { false }
+
+    doLast {
+        val ftpClient = FTPClient()
+
+        val props = Properties()
+        file("../../local.properties").inputStream().use { props.load(it) }
+
+        val server = props.getProperty("ftp.server")
+        val username = props.getProperty("ftp.username")
+        val password = props.getProperty("ftp.password")
+
+        ftpClient.connect(server)
+        ftpClient.login(username, password)
+        ftpClient.setFileType(FTP.BINARY_FILE_TYPE)
+
+        try {
+            val ftr = fileTree("${project.projectDir}\\build\\dist\\js\\developmentExecutable\\")
+            println("baseDir ${project.projectDir}\\build\\dist\\js\\developmentExecutable")
+            ftr.forEach { file ->
+                println("sending file ${file.name}")
+                FileInputStream(file).use { fis ->
+                    print(if (ftpClient.storeFile("vkv34.beget.tech/public_html//${file.name}", fis)) " sended" else " error while sending" )
+                }
+            }
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+
+
+        println("files sended")
+
+        ftpClient.logout()
+        ftpClient.disconnect()
+    }
+}

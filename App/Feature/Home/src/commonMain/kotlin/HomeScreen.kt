@@ -90,7 +90,10 @@ fun AdaptiveScaffold(
             } else {
                 Scaffold(
                     bottomBar = {
-                        HorizontalNavigationBar(navigationItems, selected)
+                        HorizontalNavigationBar(
+                            navigationItems = navigationItems,
+                            selected = selected,
+                            quickSettings = { quickSettings(true) })
                     }
                 ) { pv ->
                     Box(
@@ -266,6 +269,7 @@ fun VerticalNavigationBar(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(8.dp)
+//                    .animateContentSize()
                     .debbugable()
             ) {
 //                if (it) {
@@ -301,13 +305,7 @@ fun VerticalNavigationBar(
 //                    }
 //                }
 
-                Box(
-                    modifier = Modifier.fillMaxWidth()
-                        .wrapContentHeight()
-                        .debbugable()
-                ) {
-                    quickSettings(opened)
-                }
+                quickSettings(it)
 
             }
         }
@@ -466,7 +464,12 @@ fun HorizontalNavigationIcon(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HorizontalNavigationBar(navigationItems: List<NavigationItem>, selected: NavigationItem) {
+fun HorizontalNavigationBar(
+    navigationItems: List<NavigationItem>,
+    selected: NavigationItem,
+    quickSettings: @Composable () -> Unit
+) {
+
     BottomAppBar(
         modifier = Modifier.debbugable()
     ) {
@@ -505,6 +508,13 @@ fun HorizontalNavigationBar(navigationItems: List<NavigationItem>, selected: Nav
                         .padding(horizontal = 8.dp)
                         .debbugable()
                 ) {
+                    Box(
+                        Modifier.fillMaxWidth()
+                            .padding(8.dp)
+                            .debbugable()
+                    ) {
+                        quickSettings()
+                    }
                     navigationItems.filterNot { it.navigationGroup == NavigationGroup.mainGroup }
                         .groupBy { it.navigationGroup }
                         .forEach { navigationGroup ->

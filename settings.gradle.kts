@@ -22,6 +22,9 @@ dependencyResolutionManagement {
     }
 }
 
+
+
+
 //include(":composeApp")
 include(":server")
 include(":shared")
@@ -35,5 +38,7 @@ include(":App:Feature:Course")
 include(":App:Feature:FilePicker")
 include(":App:Feature:Home")
 include(":App:Feature:Navigation")
+include(":App:Feature:Di")
+include(":Tasks")
 //include(":App:Util")
 

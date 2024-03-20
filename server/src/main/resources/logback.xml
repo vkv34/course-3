@@ -4,30 +4,30 @@
             <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
-    <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
-        <connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
-            <dataSource class="com.mchange.v2.c3p0.ComboPooledDataSource">
-                <driverClass>com.mysql.cj.jdbc.Driver</driverClass>
-                <jdbcUrl>jdbc:mysql://45.146.164.243:3306/online_education</jdbcUrl>
-                <user>root</user>
-                <password>password</password>
-            </dataSource>
-        </connectionSource>
-        <sqlDialect class="ch.qos.logback.core.db.dialect.MySQLDialect"/>
-    </appender>
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>testFile.log</file>
-        <append>true</append>
-        <immediateFlush>true</immediateFlush>
-        <encoder>
-            <pattern>%-4relative [%thread] %-5level %logger{35} -%kvp- %msg%n</pattern>
-        </encoder>
-    </appender>
+    <!--<appender name="DB" class="ch.qos.logback.classic.db.DBAppender">-->
+    <!--    <connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">-->
+    <!--        <dataSource class="com.mchange.v2.c3p0.ComboPooledDataSource">-->
+    <!--            <driverClass>com.mysql.cj.jdbc.Driver</driverClass>-->
+    <!--            <jdbcUrl>jdbc:mysql://45.146.164.243:3306/online_education</jdbcUrl>-->
+    <!--            <user>root</user>-->
+    <!--            <password>password</password>-->
+    <!--        </dataSource>-->
+    <!--    </connectionSource>-->
+    <!--    <sqlDialect class="ch.qos.logback.core.db.dialect.MySQLDialect"/>-->
+    <!--</appender>-->
+    <!--<appender name="FILE" class="ch.qos.logback.core.FileAppender">-->
+    <!--    <file>testFile.log</file>-->
+    <!--    <append>true</append>-->
+    <!--    <immediateFlush>true</immediateFlush>-->
+    <!--    <encoder>-->
+    <!--        <pattern>%-4relative [%thread] %-5level %logger{35} -%kvp- %msg%n</pattern>-->
+    <!--    </encoder>-->
+    <!--</appender>-->
     <root level="trace">
         <appender-ref ref="STDOUT"/>
-        <appender-ref ref="DB"/>
-        <appender-ref ref="FILE"/>
+<!--        <appender-ref ref="DB"/>-->
+<!--        <appender-ref ref="FILE"/>-->
     </root>
-    <logger name="org.eclipse.jetty" level="INFO"/>
+<!--    <logger name="org.eclipse.jetty" level="INFO"/>-->
     <logger name="io.netty" level="INFO"/>
 </configuration>
