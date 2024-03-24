@@ -1,14 +1,15 @@
 package repository
 
-import model.User
+import model.UserDto
 import repository.defaults.DefaultPaging
+import repository.defaults.Repository
 
-interface UserRepository : DefaultPaging {
-    suspend fun getAllUsers(page: Int): List<User>
-    
-    suspend fun getUserById(id: Int): User?
-
-    suspend fun findUserByEmail(user: User): User?
-    
-    suspend fun addUser(user: User) : User
+interface UserRepository : Repository<UserDto, Int> {
+//    suspend fun getAllUsers(page: Int): List<UserDto>
+//
+//    suspend fun getUserById(id: Int): UserDto?
+//
+    suspend fun findUserByEmail(user: UserDto): UserDto?
+//
+//    suspend fun addUser(user: UserDto) : UserDto
 }

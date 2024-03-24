@@ -1,6 +1,7 @@
 package ru.online.education.domain.services.userService
 
-import model.User
+import model.ListResponse
+import model.UserDto
 import model.UserRole
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.ResultRow
@@ -9,13 +10,16 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import repository.UserRepository
 import ru.online.education.core.exception.InsertErrorException
+import ru.online.education.core.util.apiCall
 import ru.online.education.data.table.UserRoleTable
 import ru.online.education.data.table.UsersTable
 import ru.online.education.di.dbQuery
+import util.ApiResult
+import ru.online.education.core.exception.SelectExeption
 
 class UserRepositoryImpl : UserRepository {
 
-    private fun resultRowToUser(row: ResultRow) = User(
+    private fun resultRowToUser(row: ResultRow) = UserDto(
         id = row[UsersTable.id].value,
         email = row[UsersTable.email],
         password = row[UsersTable.password],
@@ -25,7 +29,7 @@ class UserRepositoryImpl : UserRepository {
         role = UserRole.entries[row[UsersTable.userRole].value.dec()]
     )
 
-    private fun ResultRow.toUser() = User(
+    private fun ResultRow.toUser() = UserDto(
         id = this[UsersTable.id].value,
         email = this[UsersTable.email],
         password = this[UsersTable.password],
@@ -35,7 +39,7 @@ class UserRepositoryImpl : UserRepository {
         role = UserRole.entries[this[UsersTable.userRole].value.dec()]
     )
 
-    private fun <T : Any> UsersTable.userToInsertStatement(statement: InsertStatement<T>, user: User) {
+    private fun <T : Any> UsersTable.userToInsertStatement(statement: InsertStatement<T>, user: UserDto) {
         val roleId = EntityID(user.role.ordinal.inc(), UserRoleTable)
         statement[id] = user.id
         statement[email] = user.email
@@ -46,23 +50,17 @@ class UserRepositoryImpl : UserRepository {
         statement[userRole] = roleId
     }
 
-    override suspend fun getAllUsers(page: Int): List<User> = dbQuery {
-        UsersTable
-            .selectAll()
-            .limit(n = pageSize, offset = (page * pageSize).toLong())
-            .map(::resultRowToUser)
-    }
+    /* override suspend fun getAllUsers(page: Int): List<UserDto> = dbQuery {
+         UsersTable
+             .selectAll()
+             .limit(n = pageSize, offset = (page * pageSize).toLong())
+             .map(::resultRowToUser)
+     }
 
-    override suspend fun getUserById(id: Int): User? =
-        dbQuery {
-            UsersTable
-                .selectAll()
-                .where { UsersTable.id eq id }
-                .map(::resultRowToUser)
-                .firstOrNull()
-        }
+     override suspend fun getUserById(id: Int): UserDto? =
+ */
 
-    override suspend fun findUserByEmail(user: User): User? = dbQuery {
+    override suspend fun findUserByEmail(user: UserDto): UserDto? = dbQuery {
         UsersTable
             .selectAll()
             .where {
@@ -71,15 +69,43 @@ class UserRepositoryImpl : UserRepository {
             .singleOrNull()
             ?.toUser()
     }
+    /*
+        override suspend fun addUser(user: UserDto): UserDto {
+            val id = dbQuery {
+                UsersTable.insertAndGetId {
+                    userToInsertStatement(it, user)
+                }
+            }.value
 
-    override suspend fun addUser(user: User): User {
-        val id = dbQuery {
-            UsersTable.insertAndGetId {
-                userToInsertStatement(it, user)
-            }
-        }.value
+            return getUserById(id) ?: throw InsertErrorException("addUser error")
+        }*/
 
-        return getUserById(id) ?: throw InsertErrorException("addUser error")
+    override suspend fun getAll(page: Int): ApiResult<ListResponse<UserDto>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getById(id: Int): ApiResult<UserDto> = apiCall(
+        call = {
+            dbQuery {
+                UsersTable
+                    .selectAll()
+                    .where { UsersTable.id eq id }
+                    .map(::resultRowToUser)
+                    .firstOrNull()
+            } ?: throw SelectExeption("Пользователь не найден")
+        }
+    )
+
+    override suspend fun deleteById(id: Int): ApiResult<Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun update(data: UserDto): ApiResult<UserDto?> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun add(data: UserDto): ApiResult<UserDto> {
+        TODO("Not yet implemented")
     }
 
 }

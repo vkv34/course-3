@@ -1,6 +1,7 @@
 package repository
 
 import model.AuthResponse
+import model.UserDto
 import util.ApiResult
 
 interface AccountRepository {
@@ -12,4 +13,6 @@ interface AccountRepository {
     suspend fun logOut()
 
     suspend fun getTestAdminAccount(): ApiResult<AuthResponse>
+
+    suspend fun currentUser(): ApiResult<UserDto>
 }

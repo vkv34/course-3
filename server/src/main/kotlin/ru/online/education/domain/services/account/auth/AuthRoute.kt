@@ -8,15 +8,17 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import model.BaseModel
-import model.User
+import model.UserDto
 import model.UserRole
 import org.koin.ktor.ext.inject
 import repository.AccountRepository
 import repository.UserRepository
 import repository.UserSessionRepository
+import ru.online.education.core.util.respond
 import ru.online.education.core.util.role
 import ru.online.education.domain.services.account.AccountService
 import util.ApiResult
+import java.util.logging.Logger
 
 
 fun Routing.installAccountRoute() {
@@ -25,7 +27,7 @@ fun Routing.installAccountRoute() {
 
     route("/account") {
         post("signIn") {
-            val user = call.receive<User>()
+            val user = call.receive<UserDto>()
             val host = call.request.headers[HttpHeaders.UserAgent] ?: ""
             println(host)
             call.respond(HttpStatusCode.OK, accountService.loginByEmailAndPassword(user.email, user.password, host))
@@ -43,10 +45,14 @@ fun Routing.installAccountRoute() {
                 val userSessionRepository by application.inject<UserSessionRepository>()
                 val sessionId = call.principal<JWTPrincipal>()?.get("sessionId") ?: "asd"
                 val userId = userSessionRepository.getById(sessionId)
-                if (userId is ApiResult.Success){
-                    val user = userRepository.getUserById(userId.data.userId)
-                    call.respondText(user?.email ?: "no user found")
-                    finish()
+
+                Logger.getLogger("AccountLogger").info(userId.message)
+
+                if (userId is ApiResult.Success) {
+                    val user = userRepository.getById(userId.data.userId)
+                    respond(user)
+                } else {
+                    respond(ApiResult.Error<UserDto>("Вы не авторизованы"))
                 }
 
             }

@@ -1,6 +1,14 @@
 {
     "configurations": [
-        
-        
+        {
+            "name": "Online_Education [App:ComposeApp:publishJsApp]",
+            "type": "gradle",
+            "workingDir": "C:\\Users\\dima-\\Diplom\\Online_Education",
+            "tasks": ["App:ComposeApp:publishJsApp"],
+            "args": [""],
+            "initScripts": {
+                "flmapper": "ext.mapPath = { path -> null }"
+            }
+        }
     ]
 }

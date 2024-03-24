@@ -43,21 +43,19 @@ inline fun <reified T : BaseModel> Route.role(roles: Iterable<UserRole>) {
             finish()
         }
         val userId = userSession.data.userId
-        val user = userRepository.getUserById(userId)
+        val user = userRepository.getById(userId)
 
-        if (user == null) {
-            call.respond(HttpStatusCode.Unauthorized, ApiResult.Error<T>("Пользователь не найден"))
-            finish()
-        }
-
-        if (user != null) {
-            if (!roles.any { user.role == it }) {
+        if (user is ApiResult.Success) {
+            if (!roles.any { user.data.role == it }) {
                 call.respond(HttpStatusCode.Forbidden, ApiResult.Error<T>("Не достаточно прав"))
                 finish()
 
             }
 
 
+        }else{
+            call.respond(HttpStatusCode.Unauthorized, ApiResult.Error<T>("Пользователь не найден"))
+            finish()
         }
     }
 

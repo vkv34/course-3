@@ -80,6 +80,12 @@ suspend inline fun <reified T> PipelineContext<Unit, ApplicationCall>.respond(
     call.respond(status = apiResult.toStatusCode(), apiResult)
     finish()
 }
+suspend inline fun <reified T> PipelineContext<Unit, ApplicationCall>.respondCreated(
+    apiResult: ApiResult<T>
+) {
+    call.respond(status = apiResult.toStatusCode(true), apiResult)
+    finish()
+}
 
 
 suspend inline fun <reified T> PipelineContext<Unit, ApplicationCall>.getAndRespond(getScope: () -> ApiResult<T>) {
@@ -96,7 +102,7 @@ suspend inline fun <reified T> PipelineContext<Unit, ApplicationCall>.getAndResp
         }
 
         is ApiResult.Empty -> TODO()
-        is ApiResult.Loading -> TODO()
+//        is ApiResult.Loading -> TODO()
     }
 }
 
@@ -119,11 +125,13 @@ suspend inline fun <reified T, reified K> PipelineContext<Unit, ApplicationCall>
 
 }
 
-inline fun <reified T> ApiResult<T>.toStatusCode() = when (this) {
-    is ApiResult.Success -> HttpStatusCode.OK
+inline fun <reified T> ApiResult<T>.toStatusCode(created: Boolean = false) = when (this) {
+    is ApiResult.Success -> {
+        if (created) HttpStatusCode.Created else HttpStatusCode.OK
+    }
     is ApiResult.Error -> HttpStatusCode.BadRequest
     is ApiResult.Empty -> HttpStatusCode.NoContent
-    is ApiResult.Loading -> TODO()
+//    is ApiResult.Loading -> TODO()
 }
 
 

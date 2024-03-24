@@ -27,8 +27,21 @@ fun AuthScreen(
     val authState by authScreenState.authState.collectAsState()
 
     Column {
-        TextField(authState.email, onValueChange = authScreenState::setEmail)
-        TextField(authState.password, onValueChange = authScreenState::setPassword)
+        TextField(
+            value = authState.email,
+            onValueChange = authScreenState::setEmail,
+            isError = authState.error.isNotEmpty()
+        )
+        TextField(
+            value = authState.password,
+            onValueChange = authScreenState::setPassword,
+            isError = authState.error.isNotEmpty(),
+            supportingText = {
+                if (authState.error.isNotEmpty()) {
+                    Text(authState.error)
+                }
+            }
+        )
         Button(onClick = authScreenState::auth) {
             Text(/*stringResource(Res.string.login)*/"Войти")
         }

@@ -62,6 +62,8 @@ dependencies {
     implementation(libs.ktor.server.netty)
     testImplementation(libs.ktor.server.tests)
     implementation(libs.ktor.server.cors)
+    implementation(libs.ktor.server.openapi)
+    implementation(libs.swagger.codegen)
 
 
 

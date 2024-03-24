@@ -4,5 +4,7 @@ enum class PublicationAttachmentType {
     File,
     Text,
     Image,
-    Link
+    Link,
+    Html,
+    MarkDown
 }

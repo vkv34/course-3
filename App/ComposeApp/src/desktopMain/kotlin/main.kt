@@ -7,13 +7,15 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.lifecycle.LifecycleController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import destination.root.RootContent
+import navgation.destination.root.RootContent
 import ru.online.education.app.composeApp.runOnUiThread
 import ru.online.education.app.feature.navigation.root.RootComponent
 
 @OptIn(ExperimentalDecomposeApi::class)
 fun main() {
     val lifecycle = LifecycleRegistry()
+
+    val koin = instalDi()
 
     val root =
         runOnUiThread {

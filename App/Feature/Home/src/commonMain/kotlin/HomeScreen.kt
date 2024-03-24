@@ -51,11 +51,12 @@ import ru.online.education.app.feature.home.model.NavigationItem
 fun AdaptiveScaffold(
     navigationItems: List<NavigationItem>,
     selected: NavigationItem,
+    modifier: Modifier = Modifier,
     quickSettings: @Composable (opened: Boolean) -> Unit = {},
     content: @Composable () -> Unit
 ) {
     AdaptiveBox(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier/*.fillMaxSize()*/
             .debbugable()
     ) { deviceConf ->
         Crossfade(

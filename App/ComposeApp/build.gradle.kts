@@ -87,20 +87,25 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.datetime)
             implementation(libs.koin.core)
+            implementation(libs.koin.compose)
 
             implementation(projects.app.feature.account)
             implementation(projects.app.feature.course)
             implementation(projects.app.feature.home)
             implementation(projects.app.feature.navigation)
-
-            implementation(libs.ktor.server.serialization.json)
-            implementation(libs.compose.filePicker)
-            implementation(libs.ktor.client.content.negotiation)
+            implementation(projects.app.feature.di)
+            implementation(projects.app.feature.core)
             implementation(projects.domain)
+
+
+            implementation(libs.compose.filePicker)
+            implementation(libs.ktor.server.serialization.json)
+            implementation(libs.ktor.client.content.negotiation)
 
             implementation(libs.decompose)
             implementation(libs.essenty.parcelable)
             implementation(libs.essenty.lifecycle)
+
             implementation(libs.decompose.compose.multiplatform)
 
         }
@@ -229,10 +234,17 @@ tasks.register<Jar>("publishJsApp") {
         try {
             val ftr = fileTree("${project.projectDir}\\build\\dist\\js\\developmentExecutable\\")
             println("baseDir ${project.projectDir}\\build\\dist\\js\\developmentExecutable")
+
             ftr.forEach { file ->
-                println("sending file ${file.name}")
+                print("sending file ${file.name}")
                 FileInputStream(file).use { fis ->
-                    print(if (ftpClient.storeFile("vkv34.beget.tech/public_html//${file.name}", fis)) " sended" else " error while sending" )
+                    println(
+                        if (ftpClient.storeFile(
+                                "vkv34.beget.tech/public_html//${file.name}",
+                                fis
+                            )
+                        ) " sended" else " error while sending"
+                    )
                 }
             }
         } catch (e: Throwable) {

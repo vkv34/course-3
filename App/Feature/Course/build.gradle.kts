@@ -41,6 +41,8 @@ kotlin {
             implementation(projects.app.feature.core)
             implementation(projects.shared)
             implementation(libs.composeImageLoader)
+            implementation(libs.paging)
+            implementation(libs.paging.compose)
 
         }
 

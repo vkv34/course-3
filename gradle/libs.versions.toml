@@ -35,12 +35,14 @@ dataStore = "1.1.0-alpha01"
 multiplatformSettings = "1.1.1"
 
 
-koin = "3.6.0-wasm-alpha1"
+koin = "3.6.0-wasm-alpha2"
 exposed = "0.46.0"
 uiToolingPreviewAndroid = "1.6.0"
 slf4j = "2.23.0"
 
 decompose = "3.0.0-alpha09"
+
+paging = "3.3.0-alpha02-0.5.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -75,6 +77,9 @@ ktor-server-validation = { module = "io.ktor:ktor-server-request-validation", ve
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktor" }
 ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktor" }
 
+ktor-server-openapi = { module = "io.ktor:ktor-server-openapi", version.ref = "ktor" }
+swagger-codegen = { module = "io.swagger.codegen.v3:swagger-codegen-generators", version ="1.0.47" }
+
 ktor-server-metric-micrometer = { module = "io.ktor:ktor-server-metrics-micrometer", version.ref = "ktor" }
 micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version = "1.12.3" }
 
@@ -94,6 +99,7 @@ ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negoti
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf", version.ref = "kotlinx-serialization" }
@@ -119,11 +125,13 @@ com-mchange-c3p0 = { module = " com.mchange:c3p0", version = "0.10.0" }
 
 
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-ktor = { module = "io.insert-koin:koin-ktor", version.ref = "koin" }
 koin-logger = { module = "io.insert-koin:koin-logger-slf4j", version.ref = "koin" }
 androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "uiToolingPreviewAndroid" }
 
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettings" }
+multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatformSettings" }
 compose-filePicker = { module = "com.darkrockstudios:mpfilepicker", version = "3.0.0" }
 #compose-filePicker = { module = "com.github.Tlaster.KFilePicker:KFilePicker", version = "1.0.5" }
 
@@ -134,6 +142,9 @@ org-apache-log4j-impl = { module = "org.apache.logging.log4j: log4j-slf4j-impl",
 org-apache-log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "slf4j" }
 
 materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
+
+paging = {module = "app.cash.paging:paging-common", version.ref="paging"}
+paging-compose = {module = "app.cash.paging:paging-compose-common", version.ref="paging"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

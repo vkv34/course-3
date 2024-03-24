@@ -3,21 +3,20 @@ package ru.online.education.domain.services.account.currentUser
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
-import io.ktor.server.response.*
 import io.ktor.util.pipeline.*
-import model.BaseModel
-import model.User
+import model.UserDto
 import model.UserSession
 import org.koin.ktor.ext.inject
+import repository.UserRepository
 import repository.UserSessionRepository
-import util.ApiResult
-import ru.online.education.core.util.respond
 import ru.online.education.core.exception.AuthException
+import ru.online.education.core.util.respond
+import util.ApiResult
 
-suspend fun getCurrentUser(
-    userSessionRepository: UserSessionRepository,
-    sessionId: String
-) = userSessionRepository.getById(sessionId)
+//suspend fun getCurrentUser(
+//    userSessionRepository: UserSessionRepository,
+//    sessionId: String
+//) = userSessionRepository.getById(sessionId)
 
 suspend fun PipelineContext<Unit, ApplicationCall>.getCurrentSession(): UserSession {
     val repo by application.inject<UserSessionRepository>()
@@ -31,3 +30,11 @@ suspend fun PipelineContext<Unit, ApplicationCall>.getCurrentSession(): UserSess
     }
     throw AuthException()
 }
+
+suspend fun PipelineContext<Unit, ApplicationCall>.getCurrentUser(): UserDto? {
+    val session = getCurrentSession()
+    val userRepository by application.inject<UserRepository>()
+    val user = userRepository.getById(session.userId)
+    return user.successOrNull()
+}
+

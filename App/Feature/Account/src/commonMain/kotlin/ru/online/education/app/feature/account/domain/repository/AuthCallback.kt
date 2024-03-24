@@ -5,7 +5,7 @@ import model.AuthResponse
 
 interface AuthCallback {
     suspend fun onAuth(authResponse: AuthResponse)
-    suspend fun onUnAuth()
+    suspend fun onLogOut()
 }
 
 expect fun onAuth(authRequest: AuthRequest)

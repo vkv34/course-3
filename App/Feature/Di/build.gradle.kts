@@ -34,11 +34,26 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(projects.shared)
+            implementation(projects.app.feature.core)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.datetime)
+
             implementation(libs.ktor.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.auth)
+            implementation(libs.ktor.server.serialization.json)
+            implementation(libs.ktor.client.logging)
+
+
+            implementation(libs.koin.core)
+
             implementation(projects.domain)
+            implementation(projects.app.feature.account)
+            implementation(projects.app.feature.course)
+
+            implementation(libs.multiplatform.settings)
+            implementation(libs.multiplatform.settings.coroutines)
 
         }
 

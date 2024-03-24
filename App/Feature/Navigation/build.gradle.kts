@@ -34,14 +34,20 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.datetime)
             implementation(libs.ktor.core)
+
+
             implementation(projects.domain)
             implementation(projects.app.feature.core)
             implementation(projects.app.feature.home)
             implementation(projects.app.feature.account)
+            implementation(projects.app.feature.course)
+
+
             implementation(libs.napier)
             implementation(libs.decompose)
             implementation(libs.decompose.compose.multiplatform)
             implementation(libs.essenty.lifecycle)
+            implementation(libs.koin.core)
             
 
         }

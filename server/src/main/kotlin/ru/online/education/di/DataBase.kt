@@ -1,13 +1,10 @@
 package ru.online.education.di
 
 import kotlinx.coroutines.Dispatchers
-import model.User
+import model.UserDto
 import model.UserRole
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -73,7 +70,7 @@ val dataBaseModule = module(createdAtStart = true) {
             )
         }
 
-        fun <T : Any> UsersTable.userToInsertStatement(statement: InsertStatement<T>, user: User) {
+        fun <T : Any> UsersTable.userToInsertStatement(statement: InsertStatement<T>, user: UserDto) {
             val roleId = EntityID(user.role.ordinal.inc(), UserRoleTable)
             statement[email] = user.email
             statement[password] = user.password
@@ -95,7 +92,7 @@ val dataBaseModule = module(createdAtStart = true) {
                 UsersTable.insert {
                     userToInsertStatement(
                         it,
-                        User(
+                        UserDto(
                             email = "email",
                             password = "password",
                             firstName = "admin",
@@ -112,5 +109,5 @@ val dataBaseModule = module(createdAtStart = true) {
     }
 }
 
-suspend fun <T> dbQuery(block: suspend () -> T): T =
+suspend fun <T> dbQuery(block: suspend Transaction.() -> T): T =
     newSuspendedTransaction(Dispatchers.IO) { block() }

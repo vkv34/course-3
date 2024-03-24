@@ -25,7 +25,10 @@ data class DeviceConfiguration(
     val screenHeightPixels: Int = 0,
     val deviceType: DeviceType = DeviceType.Phone,
     val isDebbugable: Boolean = true
-)
+){
+    val isHorizontal: Boolean
+        get() = deviceType is Orienatation.Horizontal
+}
 
 interface Orienatation {
     interface Horizontal

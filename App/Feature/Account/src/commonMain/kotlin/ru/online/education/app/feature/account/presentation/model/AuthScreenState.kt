@@ -13,10 +13,12 @@ import ru.online.education.app.core.util.model.ApiState
 import ru.online.education.app.feature.account.domain.model.Auth
 import ru.online.education.app.feature.account.domain.repository.impl.AccountRepositoryImpl
 import ru.online.education.app.feature.account.presentation.model.AuthResult
+import util.ApiResult
 
 class AuthScreenState(
     private val accountRepository: AccountRepository,
-    private val scope: CoroutineScope
+    private val scope: CoroutineScope,
+    private val onSuccess: () -> Unit
 ) {
     private val _authState = MutableStateFlow(Auth())
     val authState = _authState.asStateFlow()
@@ -43,6 +45,13 @@ class AuthScreenState(
             }
 
             _authResult.update { result.toApiState { AuthResult(it.token) } }
+
+            if (result is ApiResult.Success) {
+                _authState.update { it.copy(error = "") }
+                onSuccess()
+            } else {
+                _authState.update { it.copy(error = result.message) }
+            }
         }
     }
 }

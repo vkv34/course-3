@@ -74,7 +74,7 @@ kotlin {
 
 //            implementation(projects.sharedCompose)
 
-
+            implementation(libs.napier)
         }
 
 

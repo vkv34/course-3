@@ -43,4 +43,6 @@ val appModule = module {
     single<CourseCategoryRepository> { CourseCategoryRepositoryImpl() }
     single { CourseCategoryService(courseCategoryRepository = get()) }
 
+
+
 }

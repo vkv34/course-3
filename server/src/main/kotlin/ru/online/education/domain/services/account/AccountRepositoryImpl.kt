@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import model.AuthResponse
 import model.SessionState
-import model.User
+import model.UserDto
 import model.UserSession
 import repository.AccountRepository
 import repository.UserRepository
@@ -25,7 +25,7 @@ class AccountRepositoryImpl(
         password: CharSequence,
         hostName: String
     ): ApiResult<AuthResponse>{
-        val user = userRepository.findUserByEmail(User(email = login.toString(), password = password.toString()))
+        val user = userRepository.findUserByEmail(UserDto(email = login.toString(), password = password.toString()))
         return if (user?.password == password)
             authWithSession(user, hostName)
         else
@@ -36,10 +36,16 @@ class AccountRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTestAdminAccount(): ApiResult<AuthResponse> =
-        authByUser(userRepository.getUserById(1))
+    override suspend fun getTestAdminAccount(): ApiResult<AuthResponse>/* =
+        authByUser(userRepository.getUserById(1))*/{
+        TODO()
+    }
 
-    private suspend fun authWithSession(user: User?, hostName: String) = try{
+    override suspend fun currentUser(): ApiResult<UserDto> {
+        TODO("Not yet implemented")
+    }
+
+    private suspend fun authWithSession(user: UserDto?, hostName: String) = try{
         if (user == null) ApiResult.Error(message = "Пользователь не найден")
         else{
             val userSession = UserSession(
@@ -68,7 +74,7 @@ class AccountRepositoryImpl(
     }
 
 
-    private fun authByUser(user: User?) = try {
+    private fun authByUser(user: UserDto?) = try {
         if (user == null) ApiResult.Error(message = "Пользователь не найден")
         else {
             val token = JWT.create()

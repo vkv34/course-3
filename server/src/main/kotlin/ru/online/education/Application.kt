@@ -1,5 +1,6 @@
 package ru.online.education
 
+import api.serializersModule
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -29,6 +30,9 @@ import ru.online.education.domain.services.courseCategory.courseCategoryRoute
 import ru.online.education.domain.services.telemetry.installTelemetry
 import ru.online.education.domain.services.userService.UserService
 import io.ktor.server.plugins.cors.routing.*
+import io.ktor.server.plugins.openapi.*
+import io.swagger.codegen.v3.generators.html.StaticHtmlCodegen
+import ru.online.education.domain.services.coursePublication.coursePublicationRoute
 
 fun main(args: Array<String>) = io.ktor.server.netty.EngineMain.main(args)
 
@@ -36,6 +40,8 @@ fun main(args: Array<String>) = io.ktor.server.netty.EngineMain.main(args)
 //        .start(wait = true)
 
 fun Application.module() {
+
+
 
     install(Koin) {
         slf4jLogger(Level.DEBUG)
@@ -56,23 +62,7 @@ fun Application.module() {
         json(Json {
             prettyPrint = true
             isLenient = true
-            serializersModule = SerializersModule {
-                polymorphic(Any::class) {
-                    subclass(AuthResponse::class, AuthResponse.serializer())
-                    subclass(CourseDto::class, CourseDto.serializer())
-                    subclass(CourseCategoryDto::class, CourseCategoryDto.serializer())
-
-                    subclass(ListResponse.serializer(CourseDto.serializer()))
-                }
-//                polymorphic(Any::class) {
-//                    subclass(List::class, ListSerializer(PolymorphicSerializer(Any::class).nullable))
-//                }
-
-                polymorphic(Image::class) {
-                    subclass(Image.ImageResource::class, Image.ImageResource.serializer())
-                    subclass(Image.Color::class, Image.Color.serializer())
-                }
-            }
+            serializersModule = api.serializersModule
         })
     }
 
@@ -100,6 +90,12 @@ fun Application.module() {
         courseRoute()
 
         courseCategoryRoute()
+
+        coursePublicationRoute()
+
+       /* openAPI(path="openapi", swaggerFile = "openapi/documentation.yaml") {
+            codegen = StaticHtmlCodegen()
+        }*/
 
         get("/error") {
             logError(call, Exception("Test Error"))

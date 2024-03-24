@@ -1,9 +1,11 @@
 package ru.online.education.app.feature.course.presentation.viewModel
 
 import androidx.compose.runtime.Stable
+import app.cash.paging.Pager
+import app.cash.paging.cachedIn
+import app.cash.paging.createPagingConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import model.CourseDto
@@ -12,7 +14,7 @@ import repository.CourseRepository
 import ru.online.education.app.core.util.api.toApiState
 import ru.online.education.app.core.util.coruotines.DispatcherProvider
 import ru.online.education.app.core.util.model.ApiState
-import util.ApiResult
+import ru.online.education.app.feature.course.domain.repository.CoursePagingSource
 
 @Stable
 class AllCoursesScreenViewModel(
@@ -22,7 +24,18 @@ class AllCoursesScreenViewModel(
 
     private val _courseResult: MutableStateFlow<ApiState<ListResponse<CourseDto>>> =
         MutableStateFlow(ApiState.Default())
-    val courseResult = _courseResult.asStateFlow()
+    val courses = Pager(
+        config = createPagingConfig(
+            pageSize = courseRepository.pageSize,
+        ),
+        initialKey = 0,
+        pagingSourceFactory = {
+            CoursePagingSource(
+                source = courseRepository::getAll
+            )
+        }
+    ).flow
+        .cachedIn(coroutineScope)
 
     init {
         fetchCourses()

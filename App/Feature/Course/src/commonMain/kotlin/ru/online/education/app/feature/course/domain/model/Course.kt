@@ -5,6 +5,7 @@ import model.Image
 import onlineeducation.app.feature.course.generated.resources.Res
 
 data class Course(
+    val id: Int = 0,
     val name: String ="",
     val shortDescription: String = "",
     val longDescription: String = "",

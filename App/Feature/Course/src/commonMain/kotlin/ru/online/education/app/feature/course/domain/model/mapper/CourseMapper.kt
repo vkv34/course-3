@@ -5,6 +5,7 @@ import ru.online.education.app.feature.course.domain.model.Course
 
 fun CourseDto.toCourse() =
     Course(
+        id = id,
         name = name,
         shortDescription = shortDescription,
         longDescription = longDescription,

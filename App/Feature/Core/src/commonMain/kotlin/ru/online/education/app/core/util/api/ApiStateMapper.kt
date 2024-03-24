@@ -6,12 +6,12 @@ import util.ApiResult
 inline fun <reified T> ApiResult<T>.toApiState(): ApiState<T> = when (this) {
     is ApiResult.Empty -> ApiState.Default()
     is ApiResult.Error -> ApiState.Error(Error())
-    is ApiResult.Loading -> ApiState.Loading()
+//    is ApiResult.Loading -> ApiState.Loading()
     is ApiResult.Success -> ApiState.Success(data)
 }
 inline fun <reified T, reified V> ApiResult<T>.toApiState(mapper: (T) -> V): ApiState<V> = when (this) {
     is ApiResult.Empty -> ApiState.Default()
     is ApiResult.Error -> ApiState.Error(Error())
-    is ApiResult.Loading -> ApiState.Loading()
+//    is ApiResult.Loading -> ApiState.Loading()
     is ApiResult.Success -> ApiState.Success(mapper(data))
 }

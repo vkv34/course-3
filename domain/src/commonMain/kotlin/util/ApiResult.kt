@@ -7,7 +7,6 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import model.BaseModel
 
 @Serializable
 sealed class ApiResult<T>(
@@ -33,9 +32,7 @@ sealed class ApiResult<T>(
     @Serializable
     class Empty<T>(override val message: String) : ApiResult<T>()
 
-    @Serializable
-    class Loading<T>(override val message: String) : ApiResult<T>()
-
+    fun successOrNull() = (this as? Success<T>)?.data
 }
 
 object ThrowableSerializer : KSerializer<Throwable> {
