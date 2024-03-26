@@ -31,4 +31,4 @@ jobs:
       - name: publish
         run: | 
           bash props.sh ${{github.event.inputs.ftp_server}} ${{github.event.inputs.ftp_username}} ${{github.event.inputs.ftp_password}} 
-          ./gradlew :ComposeApp:publishJsApp --no-daemon
+          ./gradlew App:ComposeApp:publishJsApp --no-daemon
