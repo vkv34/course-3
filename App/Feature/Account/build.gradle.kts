@@ -1,5 +1,6 @@
-import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.compose.ExperimentalComposeLibrary
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -33,7 +34,7 @@ kotlin {
         compilations.all {
 
             kotlinOptions {
-                jvmTarget = JavaVersion.VERSION_21.toString()
+                jvmTarget = JavaVersion.VERSION_1_8.toString()
             }
         }
     }
