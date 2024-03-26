@@ -4,7 +4,7 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
+//    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsCompose)
 //    alias(libs.plugins.buildConfig)
     alias(libs.plugins.kotlinx.serialization)
@@ -15,6 +15,9 @@ kotlin {
     js(IR) {
         browser()
     }
+
+
+
 
 //    androidTarget {
 //        compilations.all {
@@ -28,16 +31,20 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
-    jvm("desktop")
+    jvm("desktop"){
 
-    androidTarget {
-        compilations.all {
-
-            kotlinOptions {
-                jvmTarget = JavaVersion.VERSION_1_8.toString()
-            }
-        }
     }
+
+//    androidTarget {
+//        compilations.all {
+//
+//            kotlinOptions {
+//                jvmTarget = JavaVersion.VERSION_1_8.toString()
+//            }
+//        }
+//
+//
+//    }
 
     sourceSets {
 
@@ -91,19 +98,22 @@ kotlin {
 //
     }
 }
-//
-android {
-    namespace = "ru.online.education.app.feature.account"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-    defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
-    }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-}
+
+//android {
+//    namespace = "ru.online.education.app.feature.account"
+//    compileSdk = libs.versions.android.compileSdk.get().toInt()
+//    defaultConfig {
+//        minSdk = libs.versions.android.minSdk.get().toInt()
+//    }
+//
+//    compileOptions {
+//        sourceCompatibility = JavaVersion.VERSION_1_8
+//        targetCompatibility = JavaVersion.VERSION_1_8
+//    }
+//
+//}
+
 //dependencies {
 ////    implementation(libs.androidx.ui.tooling.preview.android)
 //}
