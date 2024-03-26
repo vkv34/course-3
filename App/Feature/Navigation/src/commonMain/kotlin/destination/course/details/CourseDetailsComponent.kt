@@ -1,8 +1,12 @@
 package com.arkivanov.sample.shared.multipane.details
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.slot.SlotNavigation
+import com.arkivanov.decompose.router.slot.childSlot
+import com.arkivanov.decompose.router.slot.dismiss
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.update
+import destination.course.details.create.CreateCourseDialogComponent
 import destination.course.publication.PublicationComponent
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -24,7 +28,6 @@ class CourseDetailsComponent(
     val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 ) : ComponentContext by componentContext, KoinComponent {
 
-
     private val courseRepository: CourseRepository by inject()
 
     val currentCourse = MutableValue<ApiState<Course>>(ApiState.Default<Course>())
@@ -42,4 +45,5 @@ class CourseDetailsComponent(
     fun onCloseClicked() {
         onFinished()
     }
+
 }

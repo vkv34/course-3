@@ -13,3 +13,14 @@ fun CourseDto.toCourse() =
         avatar = avatar,
         background = background
     )
+
+fun Course.toCourseDto() =
+    CourseDto(
+        id = id,
+        name = name,
+        shortDescription = shortDescription,
+        longDescription = longDescription,
+        dateCreate = dateCreate,
+        avatar = avatar,
+        background = background
+    )

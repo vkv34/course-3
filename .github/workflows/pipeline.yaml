@@ -20,6 +20,6 @@ jobs:
       - name: chmod
         run: chmod +x gradlew
       - name: Check style
-        run: ./gradlew ktlintCheck --no-daemon
+        run: ./gradlew --continue ktlintCheck --no-daemon
       - name: Print result
         run: cat "$(</home/runner/work/course-3/course-3/build/reports/ktlint/ktlintKotlinScriptCheck/ktlintKotlinScriptCheck.txt)"

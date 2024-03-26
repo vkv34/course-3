@@ -1,7 +1,12 @@
 package destination.course.list
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.slot.SlotNavigation
+import com.arkivanov.decompose.router.slot.activate
+import com.arkivanov.decompose.router.slot.childSlot
+import com.arkivanov.decompose.router.slot.dismiss
 import com.arkivanov.essenty.lifecycle.doOnDestroy
+import destination.course.details.create.CreateCourseDialogComponent
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -20,6 +25,21 @@ class CourseListComponent(
 
     private val scope = CoroutineScope(DispatcherProvider.Main + SupervisorJob())
 
+    private val dialogNavigation = SlotNavigation<Unit>()
+
+    val createCourseDialog = childSlot(
+        source = dialogNavigation,
+        serializer = null,
+        handleBackButton = true
+    ) { configuration, componentContext ->
+        CreateCourseDialogComponent(
+            context = componentContext,
+            coroutineScope = scope,
+            onDismiss = dialogNavigation::dismiss,
+            onSuccess = { dialogNavigation.dismiss() },
+        )
+    }
+
     init {
         lifecycle.doOnDestroy {
             scope.cancel(cause = CancellationException("CourseListComponent destroyed"))
@@ -29,10 +49,15 @@ class CourseListComponent(
     val allCoursesViewModel = AllCoursesScreenViewModel(
         courseRepository = get(),
         coroutineScope = scope,
+        accountRepository = get()
     )
 
     fun onCourseClicked(id: Long) {
         onCourseSelected(id)
+    }
+
+    fun openCreateDialog() {
+        dialogNavigation.activate(Unit)
     }
 //    private val _models =
 //        MutableValue(
