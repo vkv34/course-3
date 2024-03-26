@@ -18,4 +18,4 @@ jobs:
           distribution: 'corretto'
           java-version: 21
       - name: Check style
-        run: ./gradlew lint
+        run: ./gradlew build
