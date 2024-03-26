@@ -18,6 +18,6 @@ jobs:
           distribution: 'corretto'
           java-version: 21
       - name: chmod
-        run: chmod +ux gradlew
+        run: chmod +x gradlew
       - name: Check style
         run: ./gradlew build
