@@ -11,7 +11,6 @@ jobs:
     steps:
       - name: Git clone repo
         uses: actions/checkout@v4
-
       - name: Set java version
         uses: actions/setup-java@v4
         with:
@@ -21,5 +20,4 @@ jobs:
         run: chmod +x gradlew
       - name: Check style
         run: ./gradlew --continue ktlintCheck --no-daemon
-      - name: Print result
-        run: cat "$(</home/runner/work/course-3/course-3/build/reports/ktlint/ktlintKotlinScriptCheck/ktlintKotlinScriptCheck.txt)"
+

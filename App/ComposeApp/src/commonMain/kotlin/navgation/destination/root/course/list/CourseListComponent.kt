@@ -17,6 +17,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import destination.course.list.CourseListComponent
 import ru.online.education.app.core.util.compose.debbugable
 import ru.online.education.app.feature.course.presentation.ui.CoursesList
+import ru.online.education.app.feature.course.presentation.ui.CreateCourseDialog
 
 @Composable
 fun CourseListComponent(
@@ -40,11 +41,11 @@ fun CourseListComponent(
             screenState.canEdit,
             modifier = Modifier
                 .padding(end = 16.dp, bottom = 16.dp)
-        ){ canEdit ->
-            if (canEdit){
+        ) { canEdit ->
+            if (canEdit) {
                 FloatingActionButton(
                     onClick = context::openCreateDialog,
-                ){
+                ) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = null)
                 }
             }
@@ -54,6 +55,9 @@ fun CourseListComponent(
     val state by context.createCourseDialog.subscribeAsState()
 
     state.child?.instance?.also { createCourseDialogComponent ->
-
+        CreateCourseDialog(
+            courseDialogState = createCourseDialogComponent.dialogState,
+            onDismiss = createCourseDialogComponent.onDismiss
+        )
     }
 }
