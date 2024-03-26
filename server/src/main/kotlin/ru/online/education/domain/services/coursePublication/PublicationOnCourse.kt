@@ -9,6 +9,7 @@ import org.jetbrains.exposed.sql.statements.InsertStatement
 import repository.PublicationOnCourseRepository
 import ru.online.education.core.exception.SelectExeption
 import ru.online.education.core.util.apiCall
+import ru.online.education.core.util.dbCall
 import ru.online.education.data.table.PublicationOnCourse
 import ru.online.education.di.dbQuery
 import util.ApiResult
@@ -18,7 +19,7 @@ class PublicationOnCourseRepositoryImpl : PublicationOnCourseRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getById(id: Int): ApiResult<PublicationOnCourseDto> = apiCall(
+    override suspend fun getById(id: Int): ApiResult<PublicationOnCourseDto> = dbCall(
         errorMessage = "Ошибка при выборке данных",
         call = {
             dbQuery {
@@ -32,7 +33,7 @@ class PublicationOnCourseRepositoryImpl : PublicationOnCourseRepository {
         }
     )
 
-    override suspend fun deleteById(id: Int): ApiResult<Unit> {
+    override suspend fun deleteById(id: Int): ApiResult<PublicationOnCourseDto> {
         TODO("Not yet implemented")
     }
 

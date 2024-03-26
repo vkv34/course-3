@@ -5,12 +5,10 @@ import model.UserDto
 import model.UserRole
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import repository.UserRepository
-import ru.online.education.core.exception.InsertErrorException
-import ru.online.education.core.util.apiCall
+import ru.online.education.core.util.dbCall
 import ru.online.education.data.table.UserRoleTable
 import ru.online.education.data.table.UsersTable
 import ru.online.education.di.dbQuery
@@ -84,7 +82,7 @@ class UserRepositoryImpl : UserRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getById(id: Int): ApiResult<UserDto> = apiCall(
+    override suspend fun getById(id: Int): ApiResult<UserDto> = dbCall(
         call = {
             dbQuery {
                 UsersTable
@@ -96,7 +94,7 @@ class UserRepositoryImpl : UserRepository {
         }
     )
 
-    override suspend fun deleteById(id: Int): ApiResult<Unit> {
+    override suspend fun deleteById(id: Int): ApiResult<UserDto> {
         TODO("Not yet implemented")
     }
 

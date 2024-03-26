@@ -1,5 +1,6 @@
 package ru.online.education.app.core.util.ktorUtil
 
+import domain.NotificationManager
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -31,4 +32,23 @@ suspend inline fun <reified T, reified V> HttpClient.safePostAsJson(
 } catch (e: Exception) {
     ApiResult.Error<V>("Ошбика ${e.message}", e)
 }
+
+suspend inline fun <reified T, reified V> HttpClient.safePostAsJson(
+    path: String,
+    body: T,
+    notificationManager: NotificationManager,
+    builder: HttpRequestBuilder.() -> Unit = {}
+) = try {
+    val response = post(path) {
+        contentType(ContentType.Application.Json)
+        setBody(body)
+        builder()
+    }
+
+    response.body<ApiResult<V>>()
+} catch (e: Exception) {
+    notificationManager.sendError(e.message ?: "Ошбика ${e.message}", e.stackTraceToString())
+    ApiResult.Error<V>("Ошбика ${e.message}", e)
+}
+
 

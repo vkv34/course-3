@@ -4,6 +4,7 @@ import model.CourseDto
 import model.ListResponse
 import repository.CourseRepository
 import ru.online.education.core.util.apiCall
+import ru.online.education.core.util.dbCall
 import ru.online.education.domain.model.BaseService
 import util.ApiResult
 
@@ -19,7 +20,6 @@ class CourseService(
     suspend fun addCourse(course: CourseDto) = courseRepository.add(course)
 
     suspend fun getCourseById(id: Int) = apiCall(
-        errorMessage = "Курс не найден"
     ) {
         courseRepository.getById(id)
     }

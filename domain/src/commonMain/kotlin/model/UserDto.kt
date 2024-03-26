@@ -13,4 +13,6 @@ data class UserDto (
 
 
     val role: UserRole = UserRole.Unspecified
-): BaseModel()
+): BaseModel(){
+    val fio: String = "$firstName $secondName $lastName"
+}

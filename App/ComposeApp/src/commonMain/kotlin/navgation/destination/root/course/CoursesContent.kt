@@ -56,7 +56,7 @@ internal fun CoursesContent(component: MultiPaneComponent, modifier: Modifier = 
                 ) {
                     Box(
                         modifier = Modifier.fillMaxHeight()
-                            .weight(0.4F)
+                            .weight(0.2F)
                             .debbugable()
                     ) {
                         listPane(children.listChild)
@@ -64,10 +64,10 @@ internal fun CoursesContent(component: MultiPaneComponent, modifier: Modifier = 
 
                     Box(
                         modifier = Modifier.fillMaxHeight()
-                            .weight(0.6F)
+                            .weight(0.8F)
                             .debbugable()
                     ) {
-                        AnimatedContent(children.detailsChild){ detailsChild ->
+                        AnimatedContent(children.detailsChild) { detailsChild ->
                             if (detailsChild != null) {
                                 detailsPane(detailsChild)
                             }
@@ -76,8 +76,18 @@ internal fun CoursesContent(component: MultiPaneComponent, modifier: Modifier = 
                     }
                 }
 
-            detailsChild != null -> detailsPane(detailsChild)
-            else -> listPane(listChild)
+
+            else -> {
+                AnimatedContent(detailsChild) { detailsChild ->
+                    if (detailsChild != null) {
+                        detailsPane(detailsChild)
+                    } else {
+                        listPane(listChild)
+
+                    }
+
+                }
+            }
         }
 
         val localDeviceConfiguration = LocalDeviceConfiguration.current

@@ -1,4 +1,3 @@
-package destination.account.auth.dialog
 
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext

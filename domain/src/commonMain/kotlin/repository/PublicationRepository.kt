@@ -5,7 +5,7 @@ import model.ListResponse
 import repository.defaults.Repository
 import util.ApiResult
 
-interface CoursePublicationRepository: Repository<PublicationDto, Int> {
+interface PublicationRepository: Repository<PublicationDto, Int> {
 
     suspend fun getByCourseId(courseId: Int, page: Int): ApiResult<ListResponse<PublicationDto>>
 

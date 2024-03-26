@@ -10,12 +10,14 @@ import ru.online.education.app.feature.account.domain.repository.impl.UserAuthst
 import ru.online.education.app.feature.di.ktorClientModule
 
 val accountModule = module(
-    
-){
+
+) {
     includes(ktorClientModule)
     single<UserAuthStore> {
         UserAuthstoreImpl(
-            keyValueStorage = get()
+            keyValueStorage = get(),
+            notificationManager = get()
+
         )
     }
     factory<AuthCallback> {
@@ -26,7 +28,8 @@ val accountModule = module(
     factory<AccountRepository> {
         AccountRepositoryImpl(
             client = get(),
-            authCallback = get()
+            authCallback = get(),
+            notificationManager = get()
         )
     }
 }

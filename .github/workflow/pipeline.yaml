@@ -1,0 +1,21 @@
+name: Check Style
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  check_style:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone repo
+        uses: actions/checkout@v4
+
+      - name: Set java version
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: 21
+      - name: Check style
+        run: ./gradlew lint

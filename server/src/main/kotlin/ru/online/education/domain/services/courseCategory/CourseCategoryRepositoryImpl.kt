@@ -7,16 +7,16 @@ import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import repository.CourseCategoryRepository
-import ru.online.education.core.exception.InsertErrorException
 import ru.online.education.core.exception.SelectExeption
 import ru.online.education.core.util.apiCall
+import ru.online.education.core.util.dbCall
 import ru.online.education.data.table.CourseCategoryTable
 import ru.online.education.di.dbQuery
 import util.ApiResult
 
 class CourseCategoryRepositoryImpl : CourseCategoryRepository {
     override suspend fun getAll(page: Int): ApiResult<ListResponse<CourseCategoryDto>> =
-        apiCall(
+        dbCall(
             successMessage = "",
             errorMessage = "Ошибка при выборке курсов",
             call = {
@@ -33,7 +33,7 @@ class CourseCategoryRepositoryImpl : CourseCategoryRepository {
 
 
     override suspend fun getById(id: Int): ApiResult<CourseCategoryDto> =
-        apiCall(
+        dbCall(
             errorMessage = "Course category not added",
             call = {
                 dbQuery {
@@ -46,7 +46,7 @@ class CourseCategoryRepositoryImpl : CourseCategoryRepository {
             }
         )
 
-    override suspend fun deleteById(id: Int): ApiResult<Unit> = ApiResult.Error("Not Implemented")
+    override suspend fun deleteById(id: Int): ApiResult<CourseCategoryDto> = ApiResult.Error("Not Implemented")
 
     override suspend fun update(data: CourseCategoryDto): ApiResult<CourseCategoryDto?> {
         TODO("Not yet implemented")

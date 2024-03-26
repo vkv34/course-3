@@ -71,6 +71,7 @@ kotlin {
 
             implementation(projects.domain)
             implementation(projects.app.feature.core)
+            implementation(projects.app.feature.notification)
 
 //            implementation(projects.sharedCompose)
 

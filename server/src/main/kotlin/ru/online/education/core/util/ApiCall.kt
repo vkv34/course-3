@@ -10,7 +10,7 @@ import model.BaseModel
 import ru.online.education.domain.model.BaseService
 import util.ApiResult
 
-inline fun <reified T> apiCall(
+inline fun <reified T: BaseModel> dbCall(
     successMessage: String = "",
     errorMessage: String = "",
     call: () -> T
@@ -21,7 +21,7 @@ inline fun <reified T> apiCall(
         ApiResult.Error(errorMessage, e)
     }
 
-inline fun <reified T> apiCall(
+inline fun <reified T: BaseModel> apiCall(
     apiResultCall: () -> ApiResult<T>
 ): ApiResult<T> =
     try {
@@ -74,13 +74,13 @@ suspend inline fun <reified T, reified K> PipelineContext<Unit, ApplicationCall>
     */
 }
 
-suspend inline fun <reified T> PipelineContext<Unit, ApplicationCall>.respond(
+suspend inline fun <reified T: BaseModel> PipelineContext<Unit, ApplicationCall>.respond(
     apiResult: ApiResult<T>
 ) {
     call.respond(status = apiResult.toStatusCode(), apiResult)
     finish()
 }
-suspend inline fun <reified T> PipelineContext<Unit, ApplicationCall>.respondCreated(
+suspend inline fun <reified T: BaseModel> PipelineContext<Unit, ApplicationCall>.respondCreated(
     apiResult: ApiResult<T>
 ) {
     call.respond(status = apiResult.toStatusCode(true), apiResult)

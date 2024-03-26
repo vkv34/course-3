@@ -15,6 +15,7 @@ import com.arkivanov.decompose.value.update
 import com.arkivanov.sample.shared.multipane.MultiPaneComponent
 import deepLinking.DeepLink
 import destination.course.DefaultMultiPaneComponent
+import domain.NotificationManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
@@ -46,6 +47,8 @@ class RootComponent(
 
     val authStorage by inject<UserAuthStore>()
     val appState = MutableValue(AppState())
+
+    val notificationManager by inject<NotificationManager>()
 
     init {
         scope.launch(DispatcherProvider.IO) {

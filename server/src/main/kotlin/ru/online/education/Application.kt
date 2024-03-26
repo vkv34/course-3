@@ -33,6 +33,7 @@ import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.openapi.*
 import io.swagger.codegen.v3.generators.html.StaticHtmlCodegen
 import ru.online.education.domain.services.coursePublication.coursePublicationRoute
+import ru.online.education.domain.services.userService.userRoute
 
 fun main(args: Array<String>) = io.ktor.server.netty.EngineMain.main(args)
 
@@ -96,6 +97,8 @@ fun Application.module() {
        /* openAPI(path="openapi", swaggerFile = "openapi/documentation.yaml") {
             codegen = StaticHtmlCodegen()
         }*/
+
+        userRoute()
 
         get("/error") {
             logError(call, Exception("Test Error"))

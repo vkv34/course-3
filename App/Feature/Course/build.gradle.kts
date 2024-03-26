@@ -43,6 +43,8 @@ kotlin {
             implementation(libs.composeImageLoader)
             implementation(libs.paging)
             implementation(libs.paging.compose)
+            implementation(projects.app.feature.notification)
+
 
         }
 

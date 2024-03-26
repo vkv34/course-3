@@ -17,7 +17,8 @@ data class PublicationDto(
     @SerialName("publicationType")
     val type: PublicationCategory = PublicationCategory.WithoutAnswer,
     val visible: Boolean = true,
-    val temp: Boolean = false
+    val temp: Boolean = false,
+    val courseCategoryId: Int = 0,
 ): BaseModel(), Validator{
     override fun validate(): Map<String, String> {
         val errors = mutableMapOf<String, String>()

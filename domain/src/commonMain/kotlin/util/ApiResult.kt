@@ -46,3 +46,9 @@ object ThrowableSerializer : KSerializer<Throwable> {
 
 
 }
+
+inline fun <reified T, reified R> ApiResult<T>.map(mapper: (T) -> R): ApiResult<R> = when (this) {
+    is ApiResult.Success -> ApiResult.Success(mapper(data), message)
+    is ApiResult.Error -> ApiResult.Error(message, throwable)
+    is ApiResult.Empty -> ApiResult.Empty(message)
+}

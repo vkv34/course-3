@@ -95,6 +95,8 @@ kotlin {
             implementation(projects.app.feature.navigation)
             implementation(projects.app.feature.di)
             implementation(projects.app.feature.core)
+            implementation(projects.app.feature.publication)
+            implementation(projects.app.feature.notification)
             implementation(projects.domain)
 
 

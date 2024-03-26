@@ -51,6 +51,9 @@ kotlin {
             implementation(projects.domain)
             implementation(projects.app.feature.account)
             implementation(projects.app.feature.course)
+            implementation(projects.app.feature.publication)
+            implementation(projects.app.feature.notification)
+            implementation(projects.app.feature.users)
 
             implementation(libs.multiplatform.settings)
             implementation(libs.multiplatform.settings.coroutines)

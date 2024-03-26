@@ -9,6 +9,7 @@ import org.jetbrains.exposed.sql.statements.InsertStatement
 import repository.CourseRepository
 import ru.online.education.core.exception.SelectExeption
 import ru.online.education.core.util.apiCall
+import ru.online.education.core.util.dbCall
 import ru.online.education.data.table.CourseCategoryTable
 import ru.online.education.data.table.CourseTable
 import ru.online.education.data.table.UserOnCourse
@@ -21,7 +22,7 @@ class CourseRepositoryImpl : CourseRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun filterByUser(page: Int, userId: Int): ApiResult<ListResponse<CourseDto>> = apiCall(
+    override suspend fun filterByUser(page: Int, userId: Int): ApiResult<ListResponse<CourseDto>> = dbCall(
         call = {
             val otherCoursesIds = UserOnCourse.select(UserOnCourse.course)
                 .where { UserOnCourse.role eq 0 }
@@ -40,7 +41,7 @@ class CourseRepositoryImpl : CourseRepository {
     )
 
     override suspend fun getAll(page: Int): ApiResult<ListResponse<CourseDto>> =
-        apiCall(
+        dbCall(
             successMessage = "Курс найден",
             errorMessage = "Курс не найден",
             call = {
@@ -55,7 +56,7 @@ class CourseRepositoryImpl : CourseRepository {
         )
 
     override suspend fun getById(id: Int): ApiResult<CourseDto> =
-        apiCall(
+        dbCall(
             successMessage = "Курс найден",
             errorMessage = "Курс не найден",
             call = {
@@ -69,7 +70,7 @@ class CourseRepositoryImpl : CourseRepository {
         )
 
 
-    override suspend fun deleteById(id: Int): ApiResult<Unit> = ApiResult.Error.notImplemented()
+    override suspend fun deleteById(id: Int): ApiResult<CourseDto> = ApiResult.Error.notImplemented()
 
     override suspend fun update(data: CourseDto): ApiResult<CourseDto?> = ApiResult.Error.notImplemented()
 

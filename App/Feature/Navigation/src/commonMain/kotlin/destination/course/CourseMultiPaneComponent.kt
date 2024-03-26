@@ -35,7 +35,7 @@ internal class DefaultMultiPaneComponent(
                 Children(
                     isMultiPane = navState.isMultiPane,
                     listChild = children.first { it.instance is CourseListComponent } as Child.Created<*, CourseListComponent>,
-                    detailsChild = children.find { it.instance is CourseDetailsComponent } as Child.Created<*, CourseDetailsComponent>?,
+                    detailsChild = children.find { it.instance is CourseDetailsComponent } as? Child.Created<*, CourseDetailsComponent>,
                 )
             },
             onStateChanged = { newState, _ -> navState.update { newState } },
@@ -58,8 +58,8 @@ internal class DefaultMultiPaneComponent(
     private fun detailsComponent(config: Config.Details, componentContext: ComponentContext): CourseDetailsComponent =
         CourseDetailsComponent(
             componentContext = componentContext,
-            articleId = config.articleId,
-            isToolbarVisible = navState.filterNotNull().map { it.isMultiPane },
+            courseId = config.articleId,
+            isToolbarVisible = navState.filterNotNull().map { !it.isMultiPane },
             onFinished = { navigation.navigate { it.copy(articleId = null) } },
         )
 

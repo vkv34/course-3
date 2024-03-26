@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import repository.AccountRepository
 import ru.online.education.app.core.util.api.toApiState
 import ru.online.education.app.core.util.coruotines.DispatcherProvider
@@ -48,7 +49,7 @@ class AuthScreenState(
 
             if (result is ApiResult.Success) {
                 _authState.update { it.copy(error = "") }
-                onSuccess()
+                withContext(DispatcherProvider.Main) { onSuccess() }
             } else {
                 _authState.update { it.copy(error = result.message) }
             }

@@ -1,5 +1,6 @@
 package ru.online.education.app.feature.account.domain.repository.impl
 
+import domain.NotificationManager
 import io.github.aakira.napier.Napier
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -15,7 +16,8 @@ import util.ApiResult
 
 class AccountRepositoryImpl(
     private val client: HttpClient,
-    private val authCallback: AuthCallback
+    private val authCallback: AuthCallback,
+    val notificationManager: NotificationManager
 ) : AccountRepository {
     override suspend fun loginByEmailAndPassword(
         login: CharSequence,
@@ -23,12 +25,13 @@ class AccountRepositoryImpl(
         hostName: String
     ): ApiResult<AuthResponse> {
         val response: ApiResult<AuthResponse> = client.safePostAsJson(
-            "account/signIn",
-            AuthRequest(
+            path = "account/signIn",
+            body = AuthRequest(
                 email = login.toString(),
                 password = password.toString(),
 
-                )
+                ),
+            notificationManager = notificationManager
         )
 
         if (response is ApiResult.Success) {
@@ -48,5 +51,5 @@ class AccountRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun currentUser(): ApiResult<UserDto> = client.safeGet<UserDto>("/account/current")
+    override suspend fun currentUser(): ApiResult<UserDto> = client.safeGet<UserDto>("/account/current", notificationManager)
 }

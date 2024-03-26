@@ -12,6 +12,7 @@ import org.jetbrains.exposed.sql.update
 import repository.UserSessionRepository
 import ru.online.education.core.exception.SelectExeption
 import ru.online.education.core.util.apiCall
+import ru.online.education.core.util.dbCall
 import ru.online.education.data.table.UserSessionTable
 import ru.online.education.data.table.UsersTable
 import ru.online.education.di.dbQuery
@@ -22,7 +23,7 @@ class UserSessionRepositoryImpl : UserSessionRepository {
     override suspend fun checkSession(id: String): Boolean =
         (getById(id) as? ApiResult.Success)?.data?.state == SessionState.Started
 
-    override suspend fun getAll(page: Int): ApiResult<ListResponse<UserSession>> = apiCall(
+    override suspend fun getAll(page: Int): ApiResult<ListResponse<UserSession>> = dbCall(
         call = {
             ListResponse(
                 dbQuery {
@@ -36,7 +37,7 @@ class UserSessionRepositoryImpl : UserSessionRepository {
     )
 
     override suspend fun getById(id: String): ApiResult<UserSession> =
-        apiCall(
+        dbCall(
             call = {
                 dbQuery {
                     UserSessionTable
@@ -48,17 +49,16 @@ class UserSessionRepositoryImpl : UserSessionRepository {
             }
         )
 
-    override suspend fun deleteById(id: String): ApiResult<Unit> =
-        apiCall(
-            call = {
-                dbQuery {
-                    UserSessionTable
-                        .update({ UserSessionTable.id eq UUID.fromString(id) }) {
-                            it[state] = SessionState.Ended
-                        }
-                }
+    override suspend fun deleteById(id: String): ApiResult<UserSession> =
+        apiCall {
+            dbQuery {
+                UserSessionTable
+                    .update({ UserSessionTable.id eq UUID.fromString(id) }) {
+                        it[state] = SessionState.Ended
+                    }
             }
-        )
+           getById(id)
+        }
 
     override suspend fun update(data: UserSession): ApiResult<UserSession?> {
         TODO("Not yet implemented")

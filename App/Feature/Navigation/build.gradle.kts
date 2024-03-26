@@ -41,6 +41,7 @@ kotlin {
             implementation(projects.app.feature.home)
             implementation(projects.app.feature.account)
             implementation(projects.app.feature.course)
+            implementation(projects.app.feature.notification)
 
 
             implementation(libs.napier)

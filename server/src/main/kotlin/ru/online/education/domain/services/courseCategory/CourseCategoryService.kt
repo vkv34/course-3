@@ -3,7 +3,6 @@ package ru.online.education.domain.services.courseCategory
 import model.CourseCategoryDto
 import model.ListResponse
 import repository.CourseCategoryRepository
-import ru.online.education.core.util.apiCall
 import ru.online.education.domain.model.BaseService
 import util.ApiResult
 

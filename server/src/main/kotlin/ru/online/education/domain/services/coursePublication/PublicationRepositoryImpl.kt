@@ -9,9 +9,10 @@ import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.slf4j.LoggerFactory
-import repository.CoursePublicationRepository
+import repository.PublicationRepository
 import ru.online.education.core.exception.SelectExeption
 import ru.online.education.core.util.apiCall
+import ru.online.education.core.util.dbCall
 import ru.online.education.data.table.PublicationOnCourse
 import ru.online.education.data.table.PublicationTable
 import ru.online.education.di.dbQuery
@@ -21,11 +22,11 @@ class PublicationRepositoryImpl(
     private val userRole: UserRole,
 //    private val courseCategoryRepository: CourseCategoryRepository,
 //    private val publicationOnCourseRepository: PublicationOnCourseRepository
-) : CoursePublicationRepository {
+) : PublicationRepository {
 
     val logger = LoggerFactory.getLogger(this::class.java)
     override suspend fun getByCourseId(courseId: Int, page: Int): ApiResult<ListResponse<PublicationDto>> =
-        apiCall(
+        dbCall(
             errorMessage = "Ошибка при выборке публикации курса с id = $courseId",
             call = {
                 ListResponse(
@@ -51,7 +52,7 @@ class PublicationRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getById(id: Int): ApiResult<PublicationDto> = apiCall(
+    override suspend fun getById(id: Int): ApiResult<PublicationDto> = dbCall(
         call = {
             dbQuery {
                 PublicationTable
@@ -63,7 +64,7 @@ class PublicationRepositoryImpl(
         }
     )
 
-    override suspend fun deleteById(id: Int): ApiResult<Unit> {
+    override suspend fun deleteById(id: Int): ApiResult<PublicationDto> {
         TODO("Not yet implemented")
     }
 

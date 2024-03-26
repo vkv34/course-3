@@ -9,12 +9,14 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.webhistory.DefaultWebHistoryController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import deepLinking.DeepLink
-import navgation.destination.root.RootContent
-import kotlinx.browser.window
-import org.jetbrains.skiko.wasm.onWasmReady
 import kotlinx.browser.document
+import kotlinx.browser.window
+import kotlinx.coroutines.*
+import navgation.destination.root.RootContent
+import org.jetbrains.skiko.wasm.onWasmReady
 import org.w3c.dom.*
 import org.w3c.files.File
+import ru.online.education.app.core.util.coruotines.DispatcherProvider
 import ru.online.education.app.feature.navigation.root.RootComponent
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -36,6 +38,17 @@ fun main() {
 
     instalDi()
 
+    val scope = CoroutineScope(SupervisorJob() + DispatcherProvider.IO)
+
+    scope.launch {
+        root.notificationManager.notificationFlow().collect { messages ->
+           val message = messages.first()
+            withContext(Dispatchers.Main) {
+                window.alert("${message.title} \n ${message.content}")
+            }
+        }
+    }
+
 
     window.onload = { event ->
         val element = window.document.createElement("canvas")
@@ -46,8 +59,8 @@ fun main() {
 
             CanvasBasedWindow(canvasElementId = element.id) {
                 RootContent(
-                        component = root,
-                        modifier = Modifier.fillMaxSize()
+                    component = root,
+                    modifier = Modifier.fillMaxSize()
                 )
                 WindowExceptionHandler {
                     console.log(it)

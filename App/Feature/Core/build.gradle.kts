@@ -39,6 +39,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.ktor.core)
             implementation(projects.domain)
+            implementation(projects.app.feature.notification)
 
 
         }

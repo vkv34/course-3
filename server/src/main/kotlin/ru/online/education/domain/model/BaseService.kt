@@ -1,9 +1,10 @@
 package ru.online.education.domain.model
 
+import model.BaseModel
 import model.ListResponse
 import util.ApiResult
 
-interface BaseService<T, K> {
+interface BaseService<T: BaseModel, K> {
     suspend fun create(data: T): ApiResult<T>
 
     suspend fun update(data: T): ApiResult<K>
