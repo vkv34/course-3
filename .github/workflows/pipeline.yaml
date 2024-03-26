@@ -15,7 +15,7 @@ jobs:
       - name: Set java version
         uses: actions/setup-java@v4
         with:
-          distribution: 'corretto'
+#          distribution: 'corretto'
           java-version: 1.8
       - name: chmod
         run: chmod +x gradlew
