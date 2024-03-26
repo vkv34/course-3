@@ -19,17 +19,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      steps:
-        - name: Git clone repo
-          uses: actions/checkout@v4
-        - name: Set java version
-          uses: actions/setup-java@v4
-          with:
-            distribution: 'oracle'
-            java-version: 21
-        - name: chmod
-          run: chmod +x gradlew && chmod +x props.sh
-        - name: publish
-          run: | 
-            ./props ${{github.event.inputs.ftp_server}} ${{github.event.inputs.ftp_username}} ${{github.event.inputs.ftp_password}} 
-            ./gradlew :ComposeApp:publishJsApp --no-daemon
+      - name: Git clone repo
+        uses: actions/checkout@v4
+      - name: Set java version
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'oracle'
+          java-version: 21
+      - name: chmod
+        run: chmod +x gradlew && chmod +x props.sh
+      - name: publish
+        run: | 
+          ./props ${{github.event.inputs.ftp_server}} ${{github.event.inputs.ftp_username}} ${{github.event.inputs.ftp_password}} 
+          ./gradlew :ComposeApp:publishJsApp --no-daemon
