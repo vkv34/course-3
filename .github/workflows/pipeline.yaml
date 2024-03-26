@@ -20,4 +20,4 @@ jobs:
       - name: chmod
         run: chmod +x gradlew
       - name: Check style
-        run: ./gradlew lint :server --no-daemon
+        run: ./gradlew lint server --no-daemon
