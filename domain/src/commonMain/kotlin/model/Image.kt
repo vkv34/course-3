@@ -13,6 +13,6 @@ sealed class Image {
     
     companion object{
         val default = NoImage
-        val defaultColor = Color(50, 50, 230)
+        val defaultColor = Color(230, 142, 10)
     }
 }
