@@ -44,6 +44,7 @@ kotlin {
             implementation(libs.paging)
             implementation(libs.paging.compose)
             implementation(projects.app.feature.notification)
+            implementation(projects.app.feature.courseCategory)
 
 
         }

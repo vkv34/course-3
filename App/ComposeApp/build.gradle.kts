@@ -99,6 +99,7 @@ kotlin {
             implementation(projects.app.feature.core)
             implementation(projects.app.feature.publication)
             implementation(projects.app.feature.notification)
+            implementation(projects.app.feature.courseCategory)
             implementation(projects.domain)
 
 
@@ -111,6 +112,8 @@ kotlin {
             implementation(libs.essenty.lifecycle)
 
             implementation(libs.decompose.compose.multiplatform)
+
+            implementation(libs.materialKolor)
 
         }
 

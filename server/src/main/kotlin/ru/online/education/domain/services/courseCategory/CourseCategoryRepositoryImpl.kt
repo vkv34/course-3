@@ -15,6 +15,22 @@ import ru.online.education.di.dbQuery
 import util.ApiResult
 
 class CourseCategoryRepositoryImpl : CourseCategoryRepository {
+    override suspend fun findByName(name: String, page: Int): ApiResult<ListResponse<CourseCategoryDto>> = apiCall {
+        val result = dbQuery {
+            CourseCategoryTable
+                .selectAll()
+                .where { CourseCategoryTable.name like "%$name%" }
+                .limit(pageSize, (page * pageSize).toLong())
+                .map(::resultRowToCourse)
+        }
+        if (result.isNotEmpty()) {
+            ApiResult.Success(ListResponse(result))
+        } else {
+            ApiResult.Success(ListResponse(listOf()))
+        }
+
+    }
+
     override suspend fun getAll(page: Int): ApiResult<ListResponse<CourseCategoryDto>> =
         dbCall(
             successMessage = "",

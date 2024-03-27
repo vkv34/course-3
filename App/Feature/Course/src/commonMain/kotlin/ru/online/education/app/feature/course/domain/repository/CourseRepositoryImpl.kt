@@ -35,5 +35,5 @@ class CourseRepositoryImpl(
     }
 
     override suspend fun add(data: CourseDto): ApiResult<CourseDto> =
-        client.safePostAsJson("course", data, notificationManager)
+        client.safePostAsJson("course/new", data, notificationManager)
 }

@@ -6,7 +6,7 @@ import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.router.slot.dismiss
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.update
-import destination.course.details.create.CreateCourseDialogComponent
+import destination.course.list.create.CreateCourseDialogComponent
 import destination.course.publication.PublicationComponent
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow

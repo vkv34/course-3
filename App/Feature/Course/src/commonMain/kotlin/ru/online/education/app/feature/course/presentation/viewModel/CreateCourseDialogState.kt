@@ -4,9 +4,13 @@ import androidx.compose.runtime.Stable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
+import model.CourseCategory
+import presentation.viewModel.CourseCategorySearchBarState
+import repository.CourseCategoryRepository
 import repository.CourseRepository
 import ru.online.education.app.core.util.coruotines.DispatcherProvider
 import ru.online.education.app.feature.course.domain.model.Course
@@ -17,6 +21,7 @@ import util.ApiResult
 @Stable
 class CreateCourseDialogState(
     private val courseRepository: CourseRepository,
+    private val courseCategoryRepository: CourseCategoryRepository,
     private val coroutineScope: CoroutineScope,
     private val onSuccess: (createdCourse: Course) -> Unit,
 //    private val onDismiss: () -> Unit
@@ -31,6 +36,28 @@ class CreateCourseDialogState(
 
     private val _screenState = MutableStateFlow(ScreenState())
     val screenState = _screenState.asStateFlow()
+
+    private val _courseCategory = MutableStateFlow(CourseCategory())
+    val courseCategory = _courseCategory.asStateFlow()
+
+    val searchBarState = CourseCategorySearchBarState(
+        courseCategoryRepository = courseCategoryRepository,
+        coroutineScope = coroutineScope
+    )
+
+    init {
+        coroutineScope.launch {
+            searchBarState.selectedCourseCategory
+                .filterNotNull()
+                .collect { selectedCategory ->
+                    _courseCategory.update { selectedCategory }
+                }
+        }
+    }
+
+    fun setCourseCategory(category: CourseCategory) {
+        _courseCategory.update { category }
+    }
 
     fun onNameChange(name: String) {
         _courseState.update { it.copy(name = name) }
@@ -58,7 +85,7 @@ class CreateCourseDialogState(
 
     fun onAddClick() {
         coroutineScope.launch(DispatcherProvider.IO) {
-            val result = createCourse(_courseState.value)
+            val result = createCourse(_courseState.value, _courseCategory.value.id)
 
             if (result is ApiResult.Success) {
                 val createdCourse = result.data
@@ -69,8 +96,12 @@ class CreateCourseDialogState(
         }
     }
 
-    private suspend fun createCourse(course: Course) =
-        courseRepository.add(course.toCourseDto())
+    private suspend fun createCourse(course: Course, courseCategoryId: Int) =
+        courseRepository
+            .add(
+                course.toCourseDto()
+                    .copy(courseCategoryId = courseCategoryId)
+            )
 
 
 }

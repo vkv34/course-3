@@ -102,6 +102,8 @@ val dataBaseModule = module(createdAtStart = true) {
                         )
                     )
                 }
+
+                exec("""create fulltext index course_category_name_index on CourseCategory(name)""")
             }
         }
 

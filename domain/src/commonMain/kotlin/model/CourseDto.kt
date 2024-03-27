@@ -20,6 +20,7 @@ data class CourseDto(
         val errors = mutableMapOf<String, String>()
         when {
             name.isEmpty() -> errors[::name.name] = "Наименование не может быть пустым"
+            courseCategoryId == 0 -> errors[::courseCategoryId.name] = "Необходимо указать катиегорию курса"
         }
         return errors
     }

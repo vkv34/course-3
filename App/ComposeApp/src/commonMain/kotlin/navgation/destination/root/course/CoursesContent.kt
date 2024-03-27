@@ -2,10 +2,12 @@ package com.arkivanov.sample.shared.multipane
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.SaveableStateHolder
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.sample.shared.multipane.details.CourseDetailsComponent
@@ -54,10 +56,11 @@ internal fun CoursesContent(component: MultiPaneComponent, modifier: Modifier = 
                     modifier = Modifier.fillMaxSize()
                         .debbugable()
                 ) {
-                    Box(
+                    Surface(
                         modifier = Modifier.fillMaxHeight()
                             .weight(0.2F)
-                            .debbugable()
+                            .debbugable(),
+                        elevation = 2.dp
                     ) {
                         listPane(children.listChild)
                     }

@@ -6,7 +6,7 @@ import com.arkivanov.decompose.router.slot.activate
 import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.router.slot.dismiss
 import com.arkivanov.essenty.lifecycle.doOnDestroy
-import destination.course.details.create.CreateCourseDialogComponent
+import destination.course.list.create.CreateCourseDialogComponent
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -36,7 +36,10 @@ class CourseListComponent(
             context = componentContext,
             coroutineScope = scope,
             onDismiss = dialogNavigation::dismiss,
-            onSuccess = { dialogNavigation.dismiss() },
+            onSuccess = {
+                dialogNavigation.dismiss()
+                allCoursesViewModel.refresh()
+            },
         )
     }
 

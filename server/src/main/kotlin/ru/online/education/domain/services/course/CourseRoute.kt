@@ -1,13 +1,16 @@
 package ru.online.education.domain.services.course
 
 import io.ktor.server.application.*
+import io.ktor.server.request.*
 import io.ktor.server.routing.*
 import model.BaseModel
+import model.CourseDto
 import model.UserRole
 import org.koin.ktor.ext.inject
-import ru.online.education.core.util.createAndRespond
 import ru.online.education.core.util.respond
+import ru.online.education.core.util.respondCreated
 import ru.online.education.core.util.role
+import ru.online.education.core.util.validateInput
 import ru.online.education.domain.services.account.auth.jwtAuthenticate
 import ru.online.education.domain.services.account.currentUser.getCurrentSession
 
@@ -28,7 +31,14 @@ fun Routing.courseRoute() {
         jwtAuthenticate {
             role<BaseModel>(listOf(UserRole.Teacher, UserRole.Admin))
             post("new") {
-                createAndRespond(courseService)
+                val input = call.receive<CourseDto>().copy(
+                    creatorId = getCurrentSession().userId
+                )
+                validateInput(input)
+                val result = courseService.create(input)
+                respondCreated(
+                    result
+                )
             }
         }
 

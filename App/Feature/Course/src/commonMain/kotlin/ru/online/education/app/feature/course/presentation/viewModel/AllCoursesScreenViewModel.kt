@@ -3,17 +3,20 @@ package ru.online.education.app.feature.course.presentation.viewModel
 import androidx.compose.runtime.Stable
 import app.cash.paging.Pager
 import app.cash.paging.cachedIn
+import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.paging.createPagingConfig
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import model.UserRole
 import repository.AccountRepository
 import repository.CourseRepository
+import ru.online.education.app.core.util.coruotines.DispatcherProvider
 import ru.online.education.app.feature.course.domain.repository.CoursePagingSource
 import util.ApiResult
+import kotlin.time.Duration.Companion.milliseconds
 
 @Stable
 class AllCoursesScreenViewModel(
@@ -30,18 +33,26 @@ class AllCoursesScreenViewModel(
 
     //    private val _courseResult: MutableStateFlow<ApiState<ListResponse<CourseDto>>> =
 //        MutableStateFlow(ApiState.Default())
-    val courses = Pager(
-        config = createPagingConfig(
-            pageSize = courseRepository.pageSize,
-        ),
-        initialKey = 0,
-        pagingSourceFactory = {
-            CoursePagingSource(
-                source = courseRepository::getAll
-            )
-        }
-    ).flow
-        .cachedIn(coroutineScope)
+    private val allCoursesPagingSource = MutableStateFlow(CoursePagingSource(
+        source = courseRepository::getAll
+    ))
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+    val courses = allCoursesPagingSource
+        .debounce(300.milliseconds)
+        .flatMapLatest {pagingSource ->
+            Pager(
+                config = createPagingConfig(
+                    pageSize = courseRepository.pageSize,
+                ),
+                initialKey = 0,
+                pagingSourceFactory = {
+                    pagingSource
+                }
+            ).flow
+                .cachedIn(coroutineScope)
+        }.flowOn(DispatcherProvider.IO)
+
+
 
     init {
 //        fetchCourses()
@@ -61,5 +72,13 @@ class AllCoursesScreenViewModel(
         val canEdit = result is ApiResult.Success && result.data.role == UserRole.Admin
         _screenState.update { it.copy(canEdit = canEdit) }
     }
+
+    fun refresh(){
+        checkCanEdit()
+        allCoursesPagingSource.value = CoursePagingSource(
+            source = courseRepository::getAll
+        )
+    }
+
 
 }

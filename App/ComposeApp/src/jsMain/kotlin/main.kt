@@ -58,10 +58,13 @@ fun main() {
 
 
             CanvasBasedWindow(canvasElementId = element.id) {
-                RootContent(
-                    component = root,
-                    modifier = Modifier.fillMaxSize()
-                )
+                ApplicationTheme {
+                    RootContent(
+                        component = root,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+
                 WindowExceptionHandler {
                     console.log(it)
                 }

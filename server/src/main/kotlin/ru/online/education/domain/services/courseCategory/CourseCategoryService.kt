@@ -16,9 +16,7 @@ class CourseCategoryService(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getAll(page: Int): ApiResult<ListResponse<CourseCategoryDto>> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getAll(page: Int): ApiResult<ListResponse<CourseCategoryDto>> = courseCategoryRepository.getAll(page)
 
     override suspend fun getById(id: Int): ApiResult<CourseCategoryDto> {
         TODO("Not yet implemented")
