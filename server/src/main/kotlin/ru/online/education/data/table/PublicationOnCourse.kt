@@ -10,5 +10,5 @@ object PublicationOnCourse : IntIdTable() {
     val user = reference("creator", UsersTable, onDelete = ReferenceOption.CASCADE)
 
     val visible = bool("visible").default(true)
-    val temp = bool("temp").default(true)
+    val temp = bool("temp").default(false)
 }

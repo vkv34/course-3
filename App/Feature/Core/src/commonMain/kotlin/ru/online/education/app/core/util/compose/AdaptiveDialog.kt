@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -16,14 +17,22 @@ fun AdaptiveDialog(
     modifier: Modifier = Modifier,
     adaptiveContent: @Composable () -> Unit
 ) {
-    BasicAlertDialog(
-        onDismissRequest = onDismiss,
-        modifier = modifier,
-    ) {
-        Card(
-            modifier = Modifier.fillMaxSize()
-                .padding(8.dp)
+    val localDeviceConfiguration = LocalDeviceConfiguration.current
+    if (localDeviceConfiguration.isHorizontal){
+        BasicAlertDialog(
+            onDismissRequest = onDismiss,
+            modifier = modifier,
         ) {
+            Card(
+                modifier = Modifier
+            ) {
+                adaptiveContent()
+            }
+        }
+    }else{
+        ModalBottomSheet(
+            onDismissRequest = onDismiss
+        ){
             adaptiveContent()
         }
     }

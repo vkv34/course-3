@@ -1,13 +1,14 @@
 package model
 
 data class Publication(
-    val id: Int,
-    val title: String,
-    val subTitle: String,
-    val content: String,
-    val type: PublicationCategory,
-    val visible: Boolean,
-    val temp: Boolean,
-    val author: String,
+    val id: Int = 0,
+    val title: String = "",
+    val subTitle: String = "",
+    val content: String = "",
+    val type: PublicationCategory = PublicationCategory.WithoutAnswer,
+    val visible: Boolean = false,
+    val temp: Boolean = true,
+    val author: String = "",
+    val date: String = "",
     val topic: String = ""
 )

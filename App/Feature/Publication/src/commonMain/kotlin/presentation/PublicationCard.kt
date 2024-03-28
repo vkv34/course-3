@@ -30,7 +30,7 @@ fun PublicationCard(
     Card(
         modifier = modifier
             .padding(8.dp)
-            .animateContentSize()
+//            .animateContentSize()
             .debbugable(),
 
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
@@ -45,6 +45,7 @@ fun PublicationCard(
                     .fillMaxWidth()
                     .padding(8.dp)
                     .debbugable()
+                    .animateContentSize()
             ) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -89,42 +90,36 @@ fun PublicationCard(
                         .debbugable()
                 )
 
-                Crossfade(
-                    targetState = expanded,
-                    modifier = Modifier.fillMaxWidth()
-                        .debbugable()
-                ) {
-                    if (it && publication.content.isNotEmpty()) {
-                        Column(
-                            modifier = Modifier.fillMaxWidth()
-                                .padding(8.dp)
+                if (expanded && publication.content.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(8.dp)
+                            .debbugable()
+                    ) {
+                        Spacer(
+                            Modifier.height(16.dp)
+                                .debbugable()
+                        )
+                        val richTextState = rememberRichTextState()
+
+                        LaunchedEffect(Unit) {
+                            richTextState.setHtml(publication.content)
+                        }
+
+                        SelectionContainer(
+                            Modifier.fillMaxWidth()
                                 .debbugable()
                         ) {
-                            Spacer(
-                                Modifier.height(16.dp)
-                                    .debbugable()
+                            RichText(
+                                state = richTextState,
+                                modifier = Modifier.fillMaxWidth()
+                                    .debbugable(),
+                                style = MaterialTheme.typography.bodyLarge
                             )
-                            val richTextState = rememberRichTextState()
-
-                            LaunchedEffect(Unit) {
-                                richTextState.setHtml(publication.content)
-                            }
-
-                            SelectionContainer(
-                                Modifier.fillMaxWidth()
-                                    .debbugable()
-                            ) {
-                                RichText(
-                                    state = richTextState,
-                                    modifier = Modifier.fillMaxWidth()
-                                        .debbugable(),
-                                    style = MaterialTheme.typography.bodyLarge
-                                )
-
-                            }
-
 
                         }
+
+
                     }
                 }
                 HorizontalDivider(

@@ -59,8 +59,8 @@ fun Routing.coursePublicationRoute() {
                         publicationId = addedPublication.data.publicationId,
                         courseId = courseId,
                         userId = currentUser.id,
-                        visible = addedPublication.data.visible,
-                        temp = addedPublication.data.temp
+                        visible = publication.visible,
+                        temp = publication.temp
                     )
                 )
 

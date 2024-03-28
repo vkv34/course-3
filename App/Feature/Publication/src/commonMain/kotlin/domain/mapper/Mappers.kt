@@ -16,3 +16,13 @@ fun PublicationDto.toPublication(
     temp = temp,
     author = author
 )
+
+fun Publication.toPublicationDto() = PublicationDto(
+    publicationId = id,
+    title = title,
+    subTitle = subTitle,
+    content = content,
+    type = type,
+    visible = visible,
+    temp = temp
+)

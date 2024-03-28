@@ -11,7 +11,7 @@ import util.ApiResult
 
 class PublicationRepositoryImpl(
     private val httpClient: HttpClient,
-    private val notificationManager: NotificationManager
+    private val notificationManager: NotificationManager,
 ) : PublicationRepository {
     override suspend fun getByCourseId(courseId: Int, page: Int): ApiResult<ListResponse<PublicationDto>> =
         httpClient.safeGet("course/$courseId/publication/$page", notificationManager)

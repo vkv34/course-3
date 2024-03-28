@@ -13,6 +13,11 @@ val courseModule = module {
             notificationManager = get()
         )
     }
-    factory<PublicationRepository> { PublicationRepositoryImpl(httpClient = get(), notificationManager = get()) }
+    factory<PublicationRepository> {
+        PublicationRepositoryImpl(
+            httpClient = get(),
+            notificationManager = get()
+        )
+    }
 
 }

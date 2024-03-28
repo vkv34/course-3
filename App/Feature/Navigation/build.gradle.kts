@@ -43,6 +43,7 @@ kotlin {
             implementation(projects.app.feature.course)
             implementation(projects.app.feature.courseCategory)
             implementation(projects.app.feature.notification)
+            implementation(projects.app.feature.publication)
 
 
             implementation(libs.napier)

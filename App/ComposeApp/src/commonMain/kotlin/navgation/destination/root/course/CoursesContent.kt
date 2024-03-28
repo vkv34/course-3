@@ -1,6 +1,7 @@
 package com.arkivanov.sample.shared.multipane
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
@@ -59,24 +60,30 @@ internal fun CoursesContent(component: MultiPaneComponent, modifier: Modifier = 
                     Surface(
                         modifier = Modifier.fillMaxHeight()
                             .weight(0.2F)
+                            .animateContentSize()
                             .debbugable(),
                         elevation = 2.dp
                     ) {
                         listPane(children.listChild)
                     }
 
-                    Box(
-                        modifier = Modifier.fillMaxHeight()
-                            .weight(0.8F)
-                            .debbugable()
-                    ) {
-                        AnimatedContent(children.detailsChild) { detailsChild ->
-                            if (detailsChild != null) {
-                                detailsPane(detailsChild)
+                    if (detailsChild != null) {
+                        Surface(
+                            modifier = Modifier.fillMaxHeight()
+                                .weight(0.8F)
+                                .debbugable(),
+                            elevation = 3.dp
+                        ) {
+                            AnimatedContent(children.detailsChild) { detailsChild ->
+                                if (detailsChild != null) {
+                                    detailsPane(detailsChild)
+                                }
                             }
-                        }
 
+                        }
                     }
+
+
                 }
 
 

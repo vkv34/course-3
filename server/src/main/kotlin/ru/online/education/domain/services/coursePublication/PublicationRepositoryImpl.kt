@@ -3,11 +3,9 @@ package ru.online.education.domain.services.coursePublication
 import model.ListResponse
 import model.PublicationDto
 import model.UserRole
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.andWhere
-import org.jetbrains.exposed.sql.insertAndGetId
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.statements.InsertStatement
+import org.jetbrains.exposed.sql.statements.UpdateStatement
 import org.slf4j.LoggerFactory
 import repository.PublicationRepository
 import ru.online.education.core.exception.SelectExeption
@@ -35,7 +33,7 @@ class PublicationRepositoryImpl(
                             .selectAll()
                             .where { PublicationOnCourse.courseTable eq courseId }
                             .apply {
-                                if (userRole != UserRole.Student) {
+                                if (userRole == UserRole.Student) {
                                     andWhere { PublicationOnCourse.visible eq true }
                                         .andWhere { PublicationOnCourse.temp eq false }
                                 }
@@ -74,16 +72,24 @@ class PublicationRepositoryImpl(
 
     override suspend fun add(data: PublicationDto): ApiResult<PublicationDto> = apiCall {
         val id = dbQuery {
-            PublicationTable
-                .insertAndGetId {
-                    coursePublicationDtoToInsertStatement(it, data)
-                }.value
+            if (data.publicationId == 0) {
+                PublicationTable
+                    .insertAndGetId {
+                        coursePublicationDtoToInsertStatement(it, data)
+                    }.value
+            } else {
+                PublicationTable
+                    .update(where = { PublicationTable.id eq data.publicationId }) {
+                        coursePublicationDtoToUpdateStatement(it, data)
+                    }
+                data.publicationId
+            }
         }
         getById(id)
     }
 
     private fun resultRowToCoursePublication(row: ResultRow) = row.toCoursePublication()
-    private fun ResultRow.toCoursePublication() = try{
+    private fun ResultRow.toCoursePublication() = try {
         logger.debug("this.hasValue(PublicationTable.id)")
         PublicationDto(
             publicationId = this[PublicationTable.id].value,
@@ -123,7 +129,21 @@ class PublicationRepositoryImpl(
             statement[PublicationTable.content] = content
             statement[PublicationTable.author] = authorId
             statement[PublicationTable.type] = type
+//            statement[PublicationTable.visible] = visible
+        }
 
+    }
+
+    private fun coursePublicationDtoToUpdateStatement(
+        statement: UpdateStatement,
+        publicationDto: PublicationDto
+    ) {
+        with(publicationDto) {
+            statement[PublicationTable.id] = publicationId
+            statement[PublicationTable.title] = title
+            statement[PublicationTable.subTitle] = subTitle
+            statement[PublicationTable.content] = content
+            statement[PublicationTable.type] = type
         }
 
     }

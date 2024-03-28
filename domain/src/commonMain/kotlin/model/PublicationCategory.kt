@@ -2,5 +2,10 @@ package model
 
 enum class PublicationCategory {
     WithAnswer,
-    WithoutAnswer
+    WithoutAnswer;
+
+    override fun toString(): String = when (this) {
+        WithAnswer -> "С ответом"
+        WithoutAnswer -> "Без ответа"
+    }
 }

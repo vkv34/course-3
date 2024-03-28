@@ -2,23 +2,32 @@ package navgation.destination.root.course.details
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.PostAdd
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.sample.shared.multipane.details.CourseDetailsComponent
 import domain.PublicationScreenState
+import presentation.EditPublicationDialog
 import presentation.PublicationListScreen
 import ru.online.education.app.core.util.compose.debbugable
 import ru.online.education.app.core.util.model.ApiState
@@ -37,11 +46,13 @@ fun CourseDetailsContent(
     )
     val currentCourse by context.currentCourse.subscribeAsState()
     val isToolBarVisible by context.isToolbarVisible.collectAsState(initial = null)
-    Column(
+    Box(
         modifier = Modifier.fillMaxSize()
-            .debbugable()
     ) {
-        if (isToolBarVisible == true) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+                .debbugable()
+        ) {
             TopAppBar(
                 title = {
                     Crossfade(
@@ -74,9 +85,29 @@ fun CourseDetailsContent(
                 },
                 modifier = Modifier.debbugable()
             )
+            PublicationListScreen(state = screenState)
+
+
         }
-        PublicationListScreen(state = screenState)
 
+        FloatingActionButton(
+            onClick = context::openAddPublicationDialog,
+            modifier = Modifier.align(Alignment.BottomEnd)
+                .padding(end = 16.dp, bottom = 16.dp)
+        ){
+            Icon(
+                imageVector = Icons.Default.PostAdd,
+                contentDescription = null
+            )
+        }
+    }
 
+    val addingDialog by context.publicationDialogChild.subscribeAsState()
+
+    addingDialog.child?.instance?.also { dialog ->
+        EditPublicationDialog(
+            publicationState = dialog.dialogState,
+            onDismiss = context::closeAddPublicationDialog
+        )
     }
 }

@@ -30,7 +30,7 @@ inline fun <reified T: BaseModel> apiCall(
         ApiResult.Error(e.localizedMessage ?: "", e)
     }
 
-suspend inline fun <reified T> PipelineContext<Unit, ApplicationCall>.validateInput(data: T): Boolean
+suspend inline fun <reified T> PipelineContext<Unit, ApplicationCall>.validateInput(data: T)
         where T : Validator, T : BaseModel {
     if (!data.isValid) {
         call.respond(
@@ -38,8 +38,9 @@ suspend inline fun <reified T> PipelineContext<Unit, ApplicationCall>.validateIn
             message = ApiResult.Error<T>(data.errorsAsString) as ApiResult<T>
         )
         finish()
+        return
     }
-    return data.isValid
+//    return data.isValid
 }
 
 suspend inline fun <reified T, reified K> PipelineContext<Unit, ApplicationCall>.createAndRespond(
@@ -48,7 +49,7 @@ suspend inline fun <reified T, reified K> PipelineContext<Unit, ApplicationCall>
         where T : BaseModel, T : Validator {
     val input = call.receive<T>()
     val isValid = validateInput(input)
-    if (isValid){
+    if (isValid == Unit){
         val result = service.create(input)
         respond(result)
     }
