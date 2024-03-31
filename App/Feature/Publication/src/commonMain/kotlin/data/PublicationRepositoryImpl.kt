@@ -16,13 +16,18 @@ class PublicationRepositoryImpl(
     override suspend fun getByCourseId(courseId: Int, page: Int): ApiResult<ListResponse<PublicationDto>> =
         httpClient.safeGet("course/$courseId/publication/$page", notificationManager)
 
+    override suspend fun getByPublicationOnCourseId(publicationOnCourseId: Int): ApiResult<PublicationDto> =
+        httpClient.safeGet("publicationOnCourse/$publicationOnCourseId", notificationManager)
+
+
     override suspend fun getAll(page: Int): ApiResult<ListResponse<PublicationDto>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getById(id: Int): ApiResult<PublicationDto> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getById(id: Int): ApiResult<PublicationDto> = httpClient.safeGet(
+        "publication/$id",
+        notificationManager
+    )
 
     override suspend fun deleteById(id: Int): ApiResult<PublicationDto> {
         TODO("Not yet implemented")

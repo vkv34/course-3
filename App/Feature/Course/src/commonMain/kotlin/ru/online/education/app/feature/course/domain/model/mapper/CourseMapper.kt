@@ -11,7 +11,8 @@ fun CourseDto.toCourse() =
         longDescription = longDescription,
         dateCreate = dateCreate,
         avatar = avatar,
-        background = background
+        background = background,
+
     )
 
 fun Course.toCourseDto() =

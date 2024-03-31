@@ -52,7 +52,8 @@ class CourseListComponent(
     val allCoursesViewModel = AllCoursesScreenViewModel(
         courseRepository = get(),
         coroutineScope = scope,
-        accountRepository = get()
+        accountRepository = get(),
+        userRepository = get()
     )
 
     fun onCourseClicked(id: Long) {

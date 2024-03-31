@@ -58,6 +58,7 @@ kotlin {
 
             implementation(libs.multiplatform.settings)
             implementation(libs.multiplatform.settings.coroutines)
+            implementation(projects.app.feature.publicationAttachment)
 
         }
 

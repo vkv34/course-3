@@ -4,6 +4,7 @@ import model.ListResponse
 import model.PublicationDto
 import model.UserRole
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.UpdateStatement
 import org.slf4j.LoggerFactory
@@ -38,12 +39,28 @@ class PublicationRepositoryImpl(
                                         .andWhere { PublicationOnCourse.temp eq false }
                                 }
                             }
+                            .orderBy(PublicationOnCourse.visible to SortOrder.ASC_NULLS_FIRST)
+                            .orderBy(PublicationOnCourse.temp to SortOrder.DESC_NULLS_FIRST)
+                            .orderBy(PublicationOnCourse.createdAt to SortOrder.DESC_NULLS_LAST)
                             .limit(pageSize, page.toLong() * pageSize)
                             .map(::resultRowToCoursePublication)
                     }
                 )
             }
         )
+
+    override suspend fun getByPublicationOnCourseId(publicationOnCourseId: Int): ApiResult<PublicationDto> = dbCall(
+        call = {
+            dbQuery {
+                (PublicationOnCourse innerJoin PublicationTable)
+                    .selectAll()
+                    .where { PublicationOnCourse.id eq publicationOnCourseId }
+                    .singleOrNull()
+                    ?.toCoursePublication()
+            } ?: throw SelectExeption("Публикация в курсе с id = $publicationOnCourseId не найдена")
+        }
+    )
+
 
 
     override suspend fun getAll(page: Int): ApiResult<ListResponse<PublicationDto>> {
@@ -53,7 +70,7 @@ class PublicationRepositoryImpl(
     override suspend fun getById(id: Int): ApiResult<PublicationDto> = dbCall(
         call = {
             dbQuery {
-                PublicationTable
+                (PublicationOnCourse rightJoin  PublicationTable)
                     .selectAll()
                     .where { PublicationTable.id eq id }
                     .singleOrNull()
@@ -73,15 +90,18 @@ class PublicationRepositoryImpl(
     override suspend fun add(data: PublicationDto): ApiResult<PublicationDto> = apiCall {
         val id = dbQuery {
             if (data.publicationId == 0) {
-                PublicationTable
+                val result =PublicationTable
                     .insertAndGetId {
                         coursePublicationDtoToInsertStatement(it, data)
                     }.value
+                commit()
+                result
             } else {
                 PublicationTable
                     .update(where = { PublicationTable.id eq data.publicationId }) {
                         coursePublicationDtoToUpdateStatement(it, data)
                     }
+                commit()
                 data.publicationId
             }
         }
@@ -95,8 +115,12 @@ class PublicationRepositoryImpl(
             publicationId = this[PublicationTable.id].value,
             courseId = this[PublicationOnCourse.courseTable].value,
             publicationInCourseId = this[PublicationOnCourse.id].value,
+
             visible = this[PublicationOnCourse.visible],
             temp = this[PublicationOnCourse.temp],
+            createdAt = this[PublicationOnCourse.createdAt],
+            deadLine = this[PublicationOnCourse.deadLine],
+
             title = this[PublicationTable.title],
             subTitle = this[PublicationTable.subTitle],
             content = this[PublicationTable.content],

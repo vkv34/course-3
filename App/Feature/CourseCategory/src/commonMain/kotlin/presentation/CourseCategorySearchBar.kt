@@ -3,15 +3,16 @@ package presentation
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.window.PopupProperties
 import app.cash.paging.LoadStateLoading
 import app.cash.paging.compose.collectAsLazyPagingItems
@@ -32,12 +33,6 @@ fun CourseCategorySearchBar(
         courseCategories.loadState.refresh is LoadStateLoading || courseCategories.loadState.append is LoadStateLoading
     BoxWithConstraints(
         modifier = modifier.debbugable()
-            .clickable(
-                interactionSource = MutableInteractionSource(),
-                indication = null
-            ) {
-                expanded = true
-            }
     ) {
         OutlinedTextField(
             value = query,
@@ -50,6 +45,28 @@ fun CourseCategorySearchBar(
             },
             modifier = Modifier.debbugable()
                 .fillMaxWidth()
+//                .clickable(
+//                    role = Role.DropdownList
+//                ) {
+//                    expanded = true
+//                }
+            ,
+            trailingIcon = {
+                IconButton(
+                    onClick = {
+                        expanded = !expanded
+                    }
+
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowDropDown,
+                        contentDescription = null
+                    )
+                }
+            },
+            placeholder = {
+                Text("Начните вводить...")
+            }
         )
         DropdownMenu(
             expanded = expanded,

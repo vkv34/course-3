@@ -51,4 +51,13 @@ suspend inline fun <reified T, reified V> HttpClient.safePostAsJson(
     ApiResult.Error<V>("Ошбика ${e.message}", e)
 }
 
+suspend inline fun <reified T> HttpClient.safeDelete(
+    path: String
+): ApiResult<T> = try {
+    val response = delete(path)
+    response.body<ApiResult<T>>()
+} catch (e: Exception) {
+    ApiResult.Error("Ошбика ${e.message}", e)
+}
+
 

@@ -2,6 +2,8 @@ package ru.online.education.data.table
 
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ReferenceOption
+import org.jetbrains.exposed.sql.kotlin.datetime.CurrentDateTime
+import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 
 object PublicationOnCourse : IntIdTable() {
 
@@ -11,4 +13,7 @@ object PublicationOnCourse : IntIdTable() {
 
     val visible = bool("visible").default(true)
     val temp = bool("temp").default(false)
+
+    val createdAt = datetime("createdAt").defaultExpression(CurrentDateTime)
+    val deadLine = datetime("deadLine").defaultExpression(CurrentDateTime)
 }

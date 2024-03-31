@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.OutlinedRichTextEditor
 import domain.AddPublicationScreenState
+import domain.AttachmentListState
 import model.PublicationCategory
 import presentation.components.RichTextStyleRow
 import ru.online.education.app.core.util.compose.AdaptiveDialog
@@ -30,13 +31,14 @@ import ru.online.education.app.core.util.compose.debbugable
 @Composable
 fun EditPublicationDialog(
     publicationState: AddPublicationScreenState,
+    attachmentListState: AttachmentListState,
     onDismiss: () -> Unit
 ) {
     val screenState by publicationState.uiState.collectAsState()
     val publication by publicationState.publication.collectAsState()
     val richTextState = rememberRichTextState()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(publication.content) {
         richTextState.setHtml(publication.content)
     }
 
@@ -198,6 +200,11 @@ fun EditPublicationDialog(
             HorizontalDivider(
                 modifier = Modifier.fillMaxWidth()
                     .padding(bottom = 16.dp)
+            )
+
+            AttachmentList(
+                attachmentListState = attachmentListState,
+                modifier = Modifier.fillMaxWidth()
             )
 
             ElevatedButton(

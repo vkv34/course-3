@@ -1,20 +1,14 @@
 package ru.online.education
 
-import api.serializersModule
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
-import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
-import kotlinx.serialization.modules.subclass
-import model.*
 import org.jetbrains.exposed.sql.Database
 import org.koin.core.logger.Level
 import org.koin.ktor.ext.inject
@@ -30,9 +24,8 @@ import ru.online.education.domain.services.courseCategory.courseCategoryRoute
 import ru.online.education.domain.services.telemetry.installTelemetry
 import ru.online.education.domain.services.userService.UserService
 import io.ktor.server.plugins.cors.routing.*
-import io.ktor.server.plugins.openapi.*
-import io.swagger.codegen.v3.generators.html.StaticHtmlCodegen
 import ru.online.education.domain.services.coursePublication.coursePublicationRoute
+import ru.online.education.domain.services.publicationAttachment.publicationAttachmentRoute
 import ru.online.education.domain.services.userService.userRoute
 
 fun main(args: Array<String>) = io.ktor.server.netty.EngineMain.main(args)
@@ -63,7 +56,7 @@ fun Application.module() {
         json(Json {
             prettyPrint = true
             isLenient = true
-            serializersModule = api.serializersModule
+            serializersModule = api.defaultSerializersModule
         })
     }
 
@@ -93,6 +86,8 @@ fun Application.module() {
         courseCategoryRoute()
 
         coursePublicationRoute()
+
+        publicationAttachmentRoute()
 
        /* openAPI(path="openapi", swaggerFile = "openapi/documentation.yaml") {
             codegen = StaticHtmlCodegen()

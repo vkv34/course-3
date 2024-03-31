@@ -3,6 +3,7 @@ import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import repository.account.accountModule
 import repository.course.courseModule
+import repository.course.publicationAttachmentModule
 import repository.courseCategory.courseCategoryModule
 import repository.user.usersModule
 import ru.online.education.app.feature.di.ktorClientModule
@@ -16,7 +17,8 @@ fun KoinApplication.installAppDi() {
         accountModule,
         courseModule,
         usersModule,
-        courseCategoryModule
+        courseCategoryModule,
+        publicationAttachmentModule
     )
 }
 

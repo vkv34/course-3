@@ -23,5 +23,9 @@ services:
       DB_USER: "root"
       DB_PASSWORD: "password"
       SERVER_PORT: "8888"
+      ATTACHMENT_DIR: "/server/data/attachments"
+    volumes:
+      - attachment:/server/data/attachments
 volumes:
   db:
+  attachment:

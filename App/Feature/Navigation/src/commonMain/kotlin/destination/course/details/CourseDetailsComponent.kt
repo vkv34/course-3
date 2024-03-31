@@ -9,6 +9,7 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.update
 import destination.course.publication.PublicationComponent
 import destination.course.publication.create.PublicationDialogComponent
+import domain.PublicationScreenState
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +18,8 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import repository.AccountRepository
 import repository.CourseRepository
+import repository.PublicationRepository
+import repository.UserRepository
 import ru.online.education.app.core.util.api.toApiState
 import ru.online.education.app.core.util.coruotines.DispatcherProvider
 import ru.online.education.app.core.util.model.ApiState
@@ -53,6 +56,16 @@ class CourseDetailsComponent(
         }
     }
 
+    private val publicationRepository: PublicationRepository by inject()
+    private val userRepository: UserRepository by inject()
+
+    val screenState = PublicationScreenState(
+        publicationRepository = publicationRepository,
+        userRepository = userRepository,
+        courseId = courseId.toInt(),
+        scope = coroutineScope
+    )
+
 
     private val addPublicationDialogNavigation = SlotNavigation<Unit>()
 
@@ -68,12 +81,23 @@ class CourseDetailsComponent(
         )
     }
 
+    fun openEditDialog(publicationId: Int) {
+        addPublicationDialogNavigation.activate(Unit)
+        publicationDialogChild
+            .value
+            .child
+            ?.instance
+            ?.openPublication(publicationId)
+
+    }
+
     fun openAddPublicationDialog() {
         addPublicationDialogNavigation.activate(Unit)
     }
 
     fun closeAddPublicationDialog() {
         addPublicationDialogNavigation.dismiss()
+        screenState.reload()
     }
 
 

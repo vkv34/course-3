@@ -23,37 +23,37 @@ inline fun <reified T : BaseModel> Route.role(roles: Iterable<UserRole>) {
 
         val principal = call.principal<JWTPrincipal>()
         if (principal == null) {
-            call.respond(HttpStatusCode.Unauthorized, ApiResult.Error<T>("Не верный токен"))
+            call.respond(HttpStatusCode.Unauthorized, ApiResult.Error<T>("Не верный токен") as ApiResult<T>)
             finish()
         }
 
         val sessionId = principal?.payload?.claims?.get("sessionId")?.asString()
         if (sessionId.isNullOrEmpty()) {
-            call.respond(HttpStatusCode.Unauthorized, ApiResult.Error<T>("Не верный токен"))
+            call.respond(HttpStatusCode.Unauthorized, ApiResult.Error<T>("Не верный токен") as ApiResult<T>)
             finish()
         }
         checkNotNull(sessionId)
         val userSession = userSessionRepository.getById(sessionId)
         if (userSession !is ApiResult.Success) {
-            call.respond(HttpStatusCode.Unauthorized, ApiResult.Error<T>("Не верный токен"))
+            call.respond(HttpStatusCode.Unauthorized, ApiResult.Error<T>("Не верный токен") as ApiResult<T>)
             finish()
             return@intercept
         } else if (userSession.data.state == SessionState.Ended) {
-            call.respond(HttpStatusCode.Unauthorized, ApiResult.Error<T>("Сессия завершена"))
+            call.respond(HttpStatusCode.Unauthorized, ApiResult.Error<T>("Сессия завершена") as ApiResult<T>)
             finish()
         }
         val userId = userSession.data.userId
         val user = userRepository.getById(userId)
 
         if (user is ApiResult.Success) {
-            if (!roles.any { user.data.role == it }) {
-                call.respond(HttpStatusCode.Forbidden, ApiResult.Error<T>("Не достаточно прав"))
+            if (!roles.any(user.data.role::equals)) {
+                call.respond(HttpStatusCode.Forbidden, ApiResult.Error<T>("Не достаточно прав") as ApiResult<T>)
                 finish()
 
             }
 
 
-        }else{
+        } else {
             call.respond(HttpStatusCode.Unauthorized, ApiResult.Error<T>("Пользователь не найден"))
             finish()
         }

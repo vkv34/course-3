@@ -41,6 +41,7 @@ kotlin {
             implementation(projects.app.feature.core)
             implementation(projects.shared)
             implementation(projects.app.feature.notification)
+            implementation(projects.app.feature.publicationAttachment)
 
 
             implementation(libs.composeImageLoader)

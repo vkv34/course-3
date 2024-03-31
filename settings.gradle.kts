@@ -22,11 +22,7 @@ dependencyResolutionManagement {
         maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
     }
 }
-
-
-
-
-//include(":composeApp")
+// include(":composeApp")
 include(":server")
 include(":shared")
 include(":domain")
@@ -38,6 +34,7 @@ include(":App:Feature:Account")
 include(":App:Feature:Course")
 include(":App:Feature:CourseCategory")
 include(":App:Feature:Publication")
+include(":App:Feature:PublicationAttachment")
 include(":App:Feature:FilePicker")
 include(":App:Feature:Home")
 include(":App:Feature:Navigation")
@@ -45,5 +42,4 @@ include(":App:Feature:Di")
 include(":App:Feature:Notification")
 include(":App:Feature:Users")
 include(":Tasks")
-//include(":App:Util")
-
+// include(":App:Util")

@@ -14,13 +14,16 @@ import app.cash.paging.compose.collectAsLazyPagingItems
 import domain.PublicationScreenState
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
+import model.Publication
 import ru.online.education.app.core.util.compose.debbugable
 import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(FlowPreview::class, ExperimentalFoundationApi::class)
 @Composable
 fun PublicationListScreen(
-    state: PublicationScreenState
+    state: PublicationScreenState,
+    editable: Boolean = false,
+    onEditClick : (Publication) -> Unit = {}
 ) {
     val publications = state.publications
         .collectAsLazyPagingItems()
@@ -42,6 +45,10 @@ fun PublicationListScreen(
                         },
                         modifier = Modifier.fillMaxWidth()
                             .animateItemPlacement(),
+                        editable = editable,
+                        onEditClick = {
+                            onEditClick(publication)
+                        }
                     )
                 }
                 key("spacer") {

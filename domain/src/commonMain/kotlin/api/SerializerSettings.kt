@@ -1,11 +1,21 @@
 package api
 
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import model.*
 
-val serializersModule = SerializersModule {
+val defaultJson by lazy {
+    Json {
+        serializersModule = defaultSerializersModule
+        isLenient = true
+        ignoreUnknownKeys = true
+        prettyPrint = true
+    }
+}
+
+val defaultSerializersModule = SerializersModule {
     polymorphic(BaseModel::class) {
         subclass(AuthResponse::class, AuthResponse.serializer())
         subclass(AuthRequest::class, AuthRequest.serializer())
@@ -14,6 +24,7 @@ val serializersModule = SerializersModule {
         subclass(CourseCategoryDto::class, CourseCategoryDto.serializer())
         subclass(PublicationDto::class, PublicationDto.serializer())
         subclass(PublicationOnCourseDto::class, PublicationOnCourseDto.serializer())
+        subclass(PublicationAttachmentDto::class, PublicationAttachmentDto.serializer())
 
 //        subclass(ListResponse::class,ListResponse.serializer())
     }
@@ -25,7 +36,10 @@ val serializersModule = SerializersModule {
         subclass(CourseCategoryDto::class, CourseCategoryDto.serializer())
         subclass(PublicationDto::class, PublicationDto.serializer())
         subclass(PublicationOnCourseDto::class, PublicationOnCourseDto.serializer())
+        subclass(PublicationAttachmentDto::class, PublicationAttachmentDto.serializer())
+
         subclass(ListResponse.serializer(BaseModel.serializer()))
+
     }
 
     polymorphic(Image::class) {

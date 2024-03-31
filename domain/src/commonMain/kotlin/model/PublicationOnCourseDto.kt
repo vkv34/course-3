@@ -1,5 +1,9 @@
 package model
 
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -9,5 +13,10 @@ data class PublicationOnCourseDto(
     val courseId: Int,
     val userId: Int,
     val visible: Boolean = true,
-    val temp: Boolean = false
+    val temp: Boolean = false,
+
+    val createdAt: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+    val deadLine: LocalDateTime? = null
+
+
 ) : BaseModel()

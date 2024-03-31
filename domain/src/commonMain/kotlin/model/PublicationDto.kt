@@ -1,6 +1,10 @@
 package model
 
 import core.Validator
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -19,7 +23,10 @@ data class PublicationDto(
     val visible: Boolean = true,
     val temp: Boolean = false,
     val courseCategoryId: Int = 0,
-): BaseModel(), Validator{
+
+    val createdAt: LocalDateTime? = Clock.System.now().toLocalDateTime(TimeZone.UTC),
+    val deadLine: LocalDateTime? = null
+) : BaseModel(), Validator {
     override fun validate(): Map<String, String> {
         val errors = mutableMapOf<String, String>()
         when {

@@ -3,7 +3,6 @@ package ru.online.education.app.feature.course.presentation.viewModel
 import androidx.compose.runtime.Stable
 import app.cash.paging.Pager
 import app.cash.paging.cachedIn
-import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.paging.createPagingConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -13,6 +12,7 @@ import kotlinx.coroutines.launch
 import model.UserRole
 import repository.AccountRepository
 import repository.CourseRepository
+import repository.UserRepository
 import ru.online.education.app.core.util.coruotines.DispatcherProvider
 import ru.online.education.app.feature.course.domain.repository.CoursePagingSource
 import util.ApiResult
@@ -21,6 +21,7 @@ import kotlin.time.Duration.Companion.milliseconds
 @Stable
 class AllCoursesScreenViewModel(
     private val courseRepository: CourseRepository,
+    private val userRepository: UserRepository,
     private val accountRepository: AccountRepository,
     val coroutineScope: CoroutineScope
 ) {
@@ -33,13 +34,17 @@ class AllCoursesScreenViewModel(
 
     //    private val _courseResult: MutableStateFlow<ApiState<ListResponse<CourseDto>>> =
 //        MutableStateFlow(ApiState.Default())
-    private val allCoursesPagingSource = MutableStateFlow(CoursePagingSource(
-        source = courseRepository::getAll
-    ))
+    private val allCoursesPagingSource = MutableStateFlow(
+        CoursePagingSource(
+            source = courseRepository::getAll,
+            authorSource = {  userRepository.getById(it).successOrNull()?.fio ?: "Автор не указан" }
+        )
+    )
+
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     val courses = allCoursesPagingSource
         .debounce(300.milliseconds)
-        .flatMapLatest {pagingSource ->
+        .flatMapLatest { pagingSource ->
             Pager(
                 config = createPagingConfig(
                     pageSize = courseRepository.pageSize,
@@ -51,7 +56,6 @@ class AllCoursesScreenViewModel(
             ).flow
                 .cachedIn(coroutineScope)
         }.flowOn(DispatcherProvider.IO)
-
 
 
     init {
@@ -73,10 +77,13 @@ class AllCoursesScreenViewModel(
         _screenState.update { it.copy(canEdit = canEdit) }
     }
 
-    fun refresh(){
+    fun refresh() {
         checkCanEdit()
         allCoursesPagingSource.value = CoursePagingSource(
-            source = courseRepository::getAll
+            source = courseRepository::getAll,
+            authorSource = {
+                userRepository.getById(it).successOrNull()?.fio ?: "Автор не указан"
+            }
         )
     }
 

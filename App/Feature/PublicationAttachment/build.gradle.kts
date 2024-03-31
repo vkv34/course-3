@@ -36,6 +36,9 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.io.core)
+
+
             implementation(libs.ktor.core)
             implementation(projects.domain)
             implementation(projects.app.feature.core)
