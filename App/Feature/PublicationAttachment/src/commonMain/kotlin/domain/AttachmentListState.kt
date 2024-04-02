@@ -94,4 +94,40 @@ class AttachmentListState(
 //            fetchAttachments()
         }
     }
+
+    fun uploadFile(
+        file: Attachment.File,
+        fileBytes: suspend () -> ByteArray
+    ) {
+        val state = AttachmentCardState(
+            attachmentRepository = attachmentRepository,
+            attachmentState = AttachmentState.Loading(
+                progress = 0f,
+                attachment = file
+            )
+        )
+        coroutineScope.launch(DispatcherProvider.IO) {
+            launch {
+                state.uploadFile(
+                    byteArray = fileBytes,
+                    publicationId = publicationId
+                )
+            }
+            launch {
+                _attachments.update {
+                    it + state
+                }
+            }
+        }
+    }
+
+    fun removeAttachment(attachmentCardState: AttachmentCardState) {
+        coroutineScope.launch(DispatcherProvider.IO) {
+            attachmentRepository.deleteById(attachmentCardState.attachment.value.attachment.id)
+        }
+
+        _attachments.update {
+            it - attachmentCardState
+        }
+    }
 }

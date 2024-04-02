@@ -6,6 +6,8 @@ import model.ListResponse
 import model.PublicationAttachmentDto
 import model.PublicationAttachmentType
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
@@ -17,18 +19,20 @@ import ru.online.education.data.table.PublicationAttachmentTable
 import ru.online.education.di.dbQuery
 import util.ApiResult
 import java.io.File
+import java.io.IOException
 import java.util.*
 
 class AttachmentRepositoryImpl : AttachmentRepository {
 
-    val defaultFilePath = System.getenv("ATTACHMENT_DIR")
+    private val defaultFilePath: String = System.getenv("ATTACHMENT_DIR")
     override suspend fun uploadFile(
         file: ByteArray,
         fileName: String,
         publicationId: Int,
         progressChanged: (sentBytes: Long, totalBytes: Long) -> Unit
     ): ApiResult<PublicationAttachmentDto> = try {
-        val path = "$defaultFilePath/${UUID.randomUUID()}.${fileName.split(".").last()}"
+        val resultFileName = "${UUID.randomUUID()}.${fileName.split(".").last()}"
+        val path = "$defaultFilePath/$resultFileName"
         withContext(Dispatchers.IO) {
             File(path).writeBytes(file)
         }
@@ -37,7 +41,7 @@ class AttachmentRepositoryImpl : AttachmentRepository {
             PublicationAttachmentDto(
                 publicationId = publicationId,
                 name = fileName,
-                content = path,
+                content = resultFileName,
                 contentType = PublicationAttachmentType.File
             )
         )
@@ -73,7 +77,23 @@ class AttachmentRepositoryImpl : AttachmentRepository {
         }
 
     override suspend fun deleteById(id: Int): ApiResult<PublicationAttachmentDto> {
-        TODO("Not yet implemented")
+        val attachment = getById(id)
+        if (attachment !is ApiResult.Success)
+            return attachment
+        val path = "$defaultFilePath/${attachment.data.content}"
+
+        try {
+            withContext(Dispatchers.IO) {
+                File(path).delete()
+            }
+        } catch (e: IOException) {
+            return ApiResult.Error("Вложение не удалось удалить", e)
+        }
+        return dbQuery {
+            PublicationAttachmentTable
+                .deleteWhere { PublicationAttachmentTable.id eq id }
+            ApiResult.Success(attachment.data)
+        }
     }
 
     override suspend fun update(data: PublicationAttachmentDto): ApiResult<PublicationAttachmentDto?> {

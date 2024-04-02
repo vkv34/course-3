@@ -8,6 +8,7 @@ import io.ktor.client.plugins.logging.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
+import ru.online.education.app.core.util.api.baseUrl
 import ru.online.education.app.feature.account.domain.repository.UserAuthStore
 
 val ktorClientModule = module {
@@ -32,7 +33,7 @@ val ktorClientModule = module {
             install(authPlugin(authstore))
 
             defaultRequest {
-                url("http://45.146.164.243:8080/")
+                url(baseUrl)
             }
 
 

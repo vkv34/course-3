@@ -2,22 +2,25 @@ package presentation
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
+import com.mohamedrejeb.calf.core.LocalPlatformContext
+import com.mohamedrejeb.calf.io.getName
+import com.mohamedrejeb.calf.io.readByteArray
+import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
+import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
 import domain.AttachmentListState
+import domain.AttachmentState
 import domain.model.Attachment
+import ru.online.education.app.core.util.api.baseUrl
 import ru.online.education.app.core.util.compose.debbugable
 
 @Composable
@@ -26,6 +29,24 @@ fun AttachmentList(
     modifier: Modifier = Modifier
 ) {
     val attachments by attachmentListState.attachments.collectAsState()
+
+    val scope = rememberCoroutineScope()
+    val context = LocalPlatformContext.current
+    val filePickerLauncher = rememberFilePickerLauncher(
+        selectionMode = FilePickerSelectionMode.Multiple
+    ) { files ->
+        files.forEach {
+            attachmentListState.uploadFile(
+                file = Attachment.File(
+                    name = it.getName(context) ?: "",
+                    url = ""
+                ),
+                fileBytes = { it.readByteArray(context) }
+            )
+        }
+
+    }
+    val uriHandler = LocalUriHandler.current
 
     LazyColumn(
         modifier = modifier
@@ -36,7 +57,15 @@ fun AttachmentList(
             key(attachment.attachment.id) {
                 AttachmentCard(
                     state = attachment,
-                    onClick = {},
+                    onClick = { clickedAttachment ->
+                        if (clickedAttachment !is AttachmentState.Loaded) return@AttachmentCard
+                        when (val attach = clickedAttachment.attachment) {
+                            is Attachment.File -> uriHandler.openUri("${baseUrl}attachment/file/${attach.id}")
+                            is Attachment.Image -> Unit
+                            is Attachment.Link -> uriHandler.openUri(attach.url)
+                        }
+                    },
+                    onDeleteCLick = { attachmentListState.removeAttachment(attachmentCardState) },
                     modifier = Modifier.fillMaxWidth()
                         .debbugable()
                 )
@@ -52,44 +81,58 @@ fun AttachmentList(
                 }
             ) {
                 Text("Добавить вложение")
-            }
 
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = {
-                    expanded = false
-                }
-            ) {
-                DropdownMenuItem(
-                    text = {
-                        Text("Ссылка")
-                    },
-                    onClick = {
-                        addLinkDialoOpened = true
-                    },
-                    leadingIcon = {
-                        Icon(Icons.Default.Link, contentDescription = null)
-                    }
-                )
-            }
-
-            if (addLinkDialoOpened) {
-                AddLinkDialog(
+                DropdownMenu(
+                    expanded = expanded,
                     onDismissRequest = {
-                        addLinkDialoOpened = false
-                    },
-                    onLinkAdded = { link, name ->
-                        attachmentListState.addAttachment(
-                            Attachment.Link(
-                                id = 0,
-                                name = name,
-                                url = link
-                            )
-                        )
-                        addLinkDialoOpened = false
+                        expanded = false
                     }
-                )
+                ) {
+                    DropdownMenuItem(
+                        text = {
+                            Text("Ссылка")
+                        },
+                        onClick = {
+                            addLinkDialoOpened = true
+                        },
+                        leadingIcon = {
+                            Icon(Icons.Default.Link, contentDescription = null)
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = {
+                            Text("Файл")
+                        },
+                        onClick = {
+                            filePickerLauncher.launch()
+                        },
+                        leadingIcon = {
+                            Icon(Icons.Default.Description, contentDescription = null)
+                        }
+                    )
+                }
+
+                if (addLinkDialoOpened) {
+                    AddLinkDialog(
+                        onDismissRequest = {
+                            addLinkDialoOpened = false
+                            expanded = false
+                        },
+                        onLinkAdded = { link, name ->
+                            attachmentListState.addAttachment(
+                                Attachment.Link(
+                                    id = 0,
+                                    name = name,
+                                    url = link
+                                )
+                            )
+                            addLinkDialoOpened = false
+                        }
+                    )
+                }
             }
+
+
         }
     }
 }

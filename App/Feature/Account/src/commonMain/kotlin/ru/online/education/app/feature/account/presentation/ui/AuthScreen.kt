@@ -1,10 +1,7 @@
 package ru.online.education.app.feature.account.presentation.ui
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.collectAsState
@@ -27,12 +24,15 @@ fun AuthScreen(
     val authState by authScreenState.authState.collectAsState()
 
     Column {
-        TextField(
+        OutlinedTextField(
             value = authState.email,
             onValueChange = authScreenState::setEmail,
-            isError = authState.error.isNotEmpty()
+            isError = authState.error.isNotEmpty(),
+            label = {
+                Text("Почта")
+            }
         )
-        TextField(
+        OutlinedTextField(
             value = authState.password,
             onValueChange = authScreenState::setPassword,
             isError = authState.error.isNotEmpty(),
@@ -40,6 +40,9 @@ fun AuthScreen(
                 if (authState.error.isNotEmpty()) {
                     Text(authState.error)
                 }
+            },
+            label = {
+                Text("Пароль")
             }
         )
         Button(onClick = authScreenState::auth) {

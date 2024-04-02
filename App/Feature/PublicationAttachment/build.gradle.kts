@@ -50,6 +50,7 @@ kotlin {
             implementation(libs.paging)
             implementation(libs.paging.compose)
             implementation(libs.richeditor)
+            implementation(libs.calf.filepicker)
         }
 
 

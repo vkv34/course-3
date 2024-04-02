@@ -20,5 +20,15 @@ suspend inline fun <reified T> HttpClient.safeGet(
 ) = try {
     get(path).body<ApiResult<T>>()
 } catch (e: Exception) {
+    notificationManager.sendError(e.message?:"", e.stackTraceToString())
+    ApiResult.Error(e.message ?: "", e)
+}
+suspend inline fun <reified T> HttpClient.safeDelete(
+    path: String,
+    notificationManager: NotificationManager
+) = try {
+    delete(path).body<ApiResult<T>>()
+} catch (e: Exception) {
+    notificationManager.sendError(e.message?:"", e.stackTraceToString())
     ApiResult.Error(e.message ?: "", e)
 }

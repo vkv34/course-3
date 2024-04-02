@@ -27,6 +27,7 @@ kotlinx-datetime = "0.6.0-RC"
 sqlDelight = "2.0.1"
 kotlinx_html_version = "0.11.0"
 kotlinx-io = "0.3.2"
+calf = "0.4.0"
 
 
 dataStore = "1.1.0-alpha01"
@@ -152,6 +153,8 @@ paging-compose = {module = "app.cash.paging:paging-compose-common", version.ref=
 richeditor = { module = "com.mohamedrejeb.richeditor:richeditor-compose", version = "1.0.0-rc02" }
 androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
 
+
+calf-filepicker = { module = "com.mohamedrejeb.calf:calf-file-picker", version.ref = "calf" }
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }

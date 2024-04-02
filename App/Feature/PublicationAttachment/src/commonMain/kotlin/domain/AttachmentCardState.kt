@@ -15,9 +15,9 @@ class AttachmentCardState(
     private val _attachment = MutableStateFlow(attachmentState)
     val attachment = _attachment.asStateFlow()
 
-    suspend fun uploadFile(byteArray: ByteArray, publicationId: Int) {
+    suspend fun uploadFile(byteArray: suspend () -> ByteArray, publicationId: Int) {
         val result = attachmentRepository.uploadFile(
-            file = byteArray,
+            file = byteArray(),
             fileName = attachment.value.attachment.name,
             publicationId = publicationId,
             progressChanged = { sentBytes, totalBytes ->

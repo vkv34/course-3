@@ -51,7 +51,7 @@ class AttachmentRepositoryImpl(
             }
         )*/
 
-        val response = client.submitFormWithBinaryData("/attachment", formData = formData {
+        val response = client.submitFormWithBinaryData("/attachment/file", formData = formData {
             append(
                 key = "file",
                 value = file,
@@ -86,7 +86,8 @@ class AttachmentRepositoryImpl(
     )
 
     override suspend fun deleteById(id: Int): ApiResult<PublicationAttachmentDto> = client.safeDelete(
-        path = "/attachment/$id"
+        path = "/attachment/$id",
+        notificationManager = notificationManager
     )
 
     override suspend fun update(data: PublicationAttachmentDto): ApiResult<PublicationAttachmentDto?> {

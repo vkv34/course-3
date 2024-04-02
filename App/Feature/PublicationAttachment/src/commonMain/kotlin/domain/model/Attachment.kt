@@ -6,7 +6,7 @@ sealed class Attachment{
 
     abstract val displayName: String
     data class File(
-        override val id: Int,
+        override val id: Int = 0,
         override val name: String,
         val url: String
     ): Attachment(){
