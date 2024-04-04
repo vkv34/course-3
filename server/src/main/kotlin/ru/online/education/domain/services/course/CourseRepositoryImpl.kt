@@ -22,23 +22,28 @@ class CourseRepositoryImpl : CourseRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun filterByUser(page: Int, userId: Int): ApiResult<ListResponse<CourseDto>> = dbCall(
-        call = {
-            val otherCoursesIds = UserOnCourse.select(UserOnCourse.course)
-                .where { UserOnCourse.role eq 0 }
-                .andWhere { UserOnCourse.user eq userId }
+    override suspend fun filterByUser(
+        page: Int,
+        userId: Int,
+    ): ApiResult<ListResponse<CourseDto>> =
+        dbCall(
+            call = {
+                val otherCoursesIds =
+                    UserOnCourse.select(UserOnCourse.course)
+                        .where { UserOnCourse.role eq 0 }
+                        .andWhere { UserOnCourse.user eq userId }
 
-            ListResponse(
-                dbQuery {
-                    CourseTable.selectAll()
-                        .where { CourseTable.createdBy eq userId }
-                        .orWhere { CourseTable.id inSubQuery otherCoursesIds }
-                        .limit(pageSize, (page * pageSize).toLong())
-                        .map(::resultRowToCourse)
-                }
-            )
-        }
-    )
+                ListResponse(
+                    dbQuery {
+                        CourseTable.selectAll()
+                            .where { CourseTable.createdBy eq userId }
+                            .orWhere { CourseTable.id inSubQuery otherCoursesIds }
+                            .limit(pageSize, (page * pageSize).toLong())
+                            .map(::resultRowToCourse)
+                    },
+                )
+            },
+        )
 
     override suspend fun getAll(page: Int): ApiResult<ListResponse<CourseDto>> =
         dbCall(
@@ -50,9 +55,9 @@ class CourseRepositoryImpl : CourseRepository {
                         CourseTable.selectAll()
                             .limit(pageSize, (page * pageSize).toLong())
                             .map(::resultRowToCourse)
-                    }
+                    },
                 )
-            }
+            },
         )
 
     override suspend fun getById(id: Int): ApiResult<CourseDto> =
@@ -66,41 +71,48 @@ class CourseRepositoryImpl : CourseRepository {
                         .singleOrNull()
                         ?.toCourse()
                 } ?: throw SelectExeption("Курс с id = $id не найден")
-            }
+            },
         )
-
 
     override suspend fun deleteById(id: Int): ApiResult<CourseDto> = ApiResult.Error.notImplemented()
 
     override suspend fun update(data: CourseDto): ApiResult<CourseDto?> = ApiResult.Error.notImplemented()
 
-    override suspend fun add(data: CourseDto): ApiResult<CourseDto> = apiCall {
-        val id = dbQuery {
-            CourseTable.insertAndGetId {
-                courseToInsertStatement(it, data)
-            }.value
+    override suspend fun add(data: CourseDto): ApiResult<CourseDto> =
+        apiCall {
+            val id =
+                dbQuery {
+                    CourseTable.insertAndGetId {
+                        courseToInsertStatement(it, data)
+                    }.value
+                }
+            getById(id)
         }
-        getById(id)
-    }
 
     private fun resultRowToCourse(row: ResultRow) = row.toCourse()
-    private fun ResultRow.toCourse() = CourseDto(
-        id = this[CourseTable.id].value,
-        name = this[CourseTable.name],
-        creatorId = this[CourseTable.createdBy]?.value,
-        shortDescription = this[CourseTable.shortDescription],
-        longDescription = this[CourseTable.longDescription],
-        dateCreate = this[CourseTable.dateCreate],
-        avatar = Image.ImageResource(this[CourseTable.avatar]),
-        background = Image.ImageResource(this[CourseTable.color]),
-        courseCategoryId = this[CourseTable.courseCategory].value
-    )
 
-    private fun <T : Any> courseToInsertStatement(statement: InsertStatement<T>, course: CourseDto) {
+    private fun ResultRow.toCourse() =
+        CourseDto(
+            id = this[CourseTable.id].value,
+            name = this[CourseTable.name],
+            creatorId = this[CourseTable.createdBy]?.value,
+            shortDescription = this[CourseTable.shortDescription],
+            longDescription = this[CourseTable.longDescription],
+            dateCreate = this[CourseTable.dateCreate],
+            avatar = Image.ImageResource(this[CourseTable.avatar]),
+            background = Image.ImageResource(this[CourseTable.color]),
+            courseCategoryId = this[CourseTable.courseCategory].value,
+        )
+
+    private fun <T : Any> courseToInsertStatement(
+        statement: InsertStatement<T>,
+        course: CourseDto,
+    ) {
         with(course) {
             statement[CourseTable.name] = name
-            if (creatorId != null)
+            if (creatorId != null) {
                 statement[CourseTable.createdBy] = EntityID(creatorId!!, UsersTable)
+            }
             statement[CourseTable.courseCategory] = EntityID(courseCategoryId, CourseCategoryTable)
             statement[CourseTable.shortDescription] = shortDescription
             statement[CourseTable.longDescription] = longDescription
@@ -108,6 +120,5 @@ class CourseRepositoryImpl : CourseRepository {
             statement[CourseTable.avatar] = (avatar as? Image.ImageResource)?.src ?: ""
             statement[CourseTable.color] = (background as? Image.ImageResource)?.src ?: ""
         }
-
     }
 }

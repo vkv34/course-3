@@ -12,45 +12,30 @@ import repository.UserSessionRepository
 import ru.online.education.data.model.JwtParameters
 
 fun Application.installJWTAuth() {
-
     val jwtParameters by inject<JwtParameters>()
     val userSessionRepository by inject<UserSessionRepository>()
 
     install(Authentication) {
         jwt("auth-jwt") {
-//            verifier(
-//                JWT
-//                    .require(Algorithm.HMAC256(jwtParameters.secret))
-//                    .withAudience(jwtParameters.audience)
-//                    .withIssuer(jwtParameters.issuer)
-//                    .build()
-//            )
-
 
             this.verifier(jwtParameters.issuer, jwtParameters.audience, Algorithm.HMAC256(jwtParameters.secret))
 
             validate { credential ->
                 val sessionId = credential.payload.getClaim("sessionId").asString()
-                if (sessionId.isNullOrEmpty())
+                if (sessionId.isNullOrEmpty()) {
                     null
-                else if (userSessionRepository.checkSession(sessionId))
+                } else if (userSessionRepository.checkSession(sessionId)) {
                     JWTPrincipal(credential.payload)
-                else
+                } else {
                     null
+                }
             }
-
-
 
             challenge { defaultScheme, realm ->
                 call.respond(HttpStatusCode.Unauthorized, "Token is not valid or has expired")
             }
-
         }
-
     }
-
 }
 
 fun Route.jwtAuthenticate(authScope: Route.() -> Unit) = authenticate("auth-jwt") { authScope() }
-
-

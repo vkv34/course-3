@@ -14,36 +14,35 @@ import ru.online.education.domain.services.userService.UserRepositoryImpl
 import ru.online.education.domain.services.userService.UserService
 import ru.online.education.domain.services.userSession.UserSessionRepositoryImpl
 
-val appModule = module {
-    single<UserRepository> { UserRepositoryImpl() }
-    single { UserService(get()) }
+val appModule =
+    module {
+        single<UserRepository> { UserRepositoryImpl() }
+        single { UserService(get()) }
 
-    single<UserSessionRepository> { UserSessionRepositoryImpl() }
+        single<UserSessionRepository> { UserSessionRepositoryImpl() }
 
-    single<AccountRepository> {
+        single<AccountRepository> {
 
-        val jwtParameters = get<JwtParameters>()
+            val jwtParameters = get<JwtParameters>()
 
-        with(jwtParameters) {
-            AccountRepositoryImpl(
-                userRepository = get(),
-                userSessionRepository = get(),
-                secret,
-                issuer,
-                audience
-            )
+            with(jwtParameters) {
+                AccountRepositoryImpl(
+                    userRepository = get(),
+                    userSessionRepository = get(),
+                    secret,
+                    issuer,
+                    audience,
+                )
+            }
         }
+
+        single { AccountService(get()) }
+
+        single<CourseRepository> { CourseRepositoryImpl() }
+        single { CourseService(courseRepository = get()) }
+
+        single<CourseCategoryRepository> { CourseCategoryRepositoryImpl() }
+        single { CourseCategoryService(courseCategoryRepository = get()) }
+
+        single<AttachmentRepository> { AttachmentRepositoryImpl() }
     }
-
-
-    single { AccountService(get()) }
-
-    single<CourseRepository> { CourseRepositoryImpl() }
-    single { CourseService(courseRepository = get()) }
-
-    single<CourseCategoryRepository> { CourseCategoryRepositoryImpl() }
-    single { CourseCategoryService(courseCategoryRepository = get()) }
-
-    single<AttachmentRepository> { AttachmentRepositoryImpl() }
-
-}

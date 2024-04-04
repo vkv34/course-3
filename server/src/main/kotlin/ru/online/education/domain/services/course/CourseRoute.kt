@@ -18,7 +18,6 @@ fun Routing.courseRoute() {
     val courseService by application.inject<CourseService>()
 
     route("/course") {
-
         jwtAuthenticate {
             role<BaseModel>(UserRole.all)
             get("my/{page}") {
@@ -31,13 +30,14 @@ fun Routing.courseRoute() {
         jwtAuthenticate {
             role<BaseModel>(listOf(UserRole.Teacher, UserRole.Admin))
             post("new") {
-                val input = call.receive<CourseDto>().copy(
-                    creatorId = getCurrentSession().userId
-                )
+                val input =
+                    call.receive<CourseDto>().copy(
+                        creatorId = getCurrentSession().userId,
+                    )
                 validateInput(input)
                 val result = courseService.create(input)
                 respondCreated(
-                    result
+                    result,
                 )
             }
         }
@@ -49,6 +49,5 @@ fun Routing.courseRoute() {
                 respond(courseService.getCourseById(id))
             }
         }
-
     }
 }

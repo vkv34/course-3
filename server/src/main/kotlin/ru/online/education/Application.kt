@@ -5,6 +5,7 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.delay
@@ -21,11 +22,10 @@ import ru.online.education.domain.services.account.auth.installAccountRoute
 import ru.online.education.domain.services.account.auth.installJWTAuth
 import ru.online.education.domain.services.course.courseRoute
 import ru.online.education.domain.services.courseCategory.courseCategoryRoute
-import ru.online.education.domain.services.telemetry.installTelemetry
-import ru.online.education.domain.services.userService.UserService
-import io.ktor.server.plugins.cors.routing.*
 import ru.online.education.domain.services.coursePublication.coursePublicationRoute
 import ru.online.education.domain.services.publicationAttachment.publicationAttachmentRoute
+import ru.online.education.domain.services.telemetry.installTelemetry
+import ru.online.education.domain.services.userService.UserService
 import ru.online.education.domain.services.userService.userRoute
 
 fun main(args: Array<String>) = io.ktor.server.netty.EngineMain.main(args)
@@ -34,15 +34,12 @@ fun main(args: Array<String>) = io.ktor.server.netty.EngineMain.main(args)
 //        .start(wait = true)
 
 fun Application.module() {
-
-
-
     install(Koin) {
         slf4jLogger(Level.DEBUG)
         modules(
             appModule,
             dataBaseModule,
-            getJwtModule(this@module)
+            getJwtModule(this@module),
         )
     }
 
@@ -53,11 +50,13 @@ fun Application.module() {
       }*/
 
     install(ContentNegotiation) {
-        json(Json {
-            prettyPrint = true
-            isLenient = true
-            serializersModule = api.defaultSerializersModule
-        })
+        json(
+            Json {
+                prettyPrint = true
+                isLenient = true
+                serializersModule = api.defaultSerializersModule
+            },
+        )
     }
 
     install(CORS) {
@@ -74,7 +73,6 @@ fun Application.module() {
     installJWTAuth()
 
     installTelemetry()
-
 
     val userService by inject<UserService>()
     val dataBase by inject<Database>()
@@ -108,7 +106,6 @@ fun Application.module() {
         }
 
         post("/") {
-
         }
     }
 }

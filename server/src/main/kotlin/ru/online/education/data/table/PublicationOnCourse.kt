@@ -6,7 +6,6 @@ import org.jetbrains.exposed.sql.kotlin.datetime.CurrentDateTime
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 
 object PublicationOnCourse : IntIdTable() {
-
     val publication = reference("publication", PublicationTable, onDelete = ReferenceOption.CASCADE)
     val courseTable = reference("course", CourseTable, onDelete = ReferenceOption.CASCADE)
     val user = reference("creator", UsersTable, onDelete = ReferenceOption.CASCADE)

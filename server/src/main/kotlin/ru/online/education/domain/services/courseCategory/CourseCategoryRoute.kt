@@ -28,12 +28,11 @@ fun Routing.courseCategoryRoute() {
             }
 
             get("") {
-                val search = call.request.queryParameters["search"]?:""
+                val search = call.request.queryParameters["search"] ?: ""
                 val page = call.request.queryParameters["page"]?.toInt() ?: 0
 
                 respond(courseCategoryRepository.findByName(search, page))
             }
         }
     }
-
 }

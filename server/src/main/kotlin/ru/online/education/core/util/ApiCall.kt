@@ -10,10 +10,10 @@ import model.BaseModel
 import ru.online.education.domain.model.BaseService
 import util.ApiResult
 
-inline fun <reified T: BaseModel> dbCall(
+inline fun <reified T : BaseModel> dbCall(
     successMessage: String = "",
     errorMessage: String = "",
-    call: () -> T
+    call: () -> T,
 ): ApiResult<T> =
     try {
         ApiResult.Success(call(), successMessage)
@@ -21,9 +21,7 @@ inline fun <reified T: BaseModel> dbCall(
         ApiResult.Error(errorMessage.ifEmpty { e.localizedMessage }, e)
     }
 
-inline fun <reified T: BaseModel> apiCall(
-    apiResultCall: () -> ApiResult<T>
-): ApiResult<T> =
+inline fun <reified T : BaseModel> apiCall(apiResultCall: () -> ApiResult<T>): ApiResult<T> =
     try {
         apiResultCall()
     } catch (e: Exception) {
@@ -35,7 +33,7 @@ suspend inline fun <reified T> PipelineContext<Unit, ApplicationCall>.validateIn
     if (!data.isValid) {
         call.respond(
             status = HttpStatusCode.BadRequest,
-            message = ApiResult.Error<T>(data.errorsAsString) as ApiResult<T>
+            message = ApiResult.Error<T>(data.errorsAsString) as ApiResult<T>,
         )
         finish()
         return
@@ -44,15 +42,16 @@ suspend inline fun <reified T> PipelineContext<Unit, ApplicationCall>.validateIn
 }
 
 suspend inline fun <reified T, reified K> PipelineContext<Unit, ApplicationCall>.createAndRespond(
-    service: BaseService<T, K>
+    service: BaseService<T, K>,
 )
         where T : BaseModel, T : Validator {
     val input = call.receive<T>()
     val isValid = validateInput(input)
-    if (isValid == Unit){
-        val result = service.create(input)
-        respond(result)
-    }
+    if (isValid == Unit)
+        {
+            val result = service.create(input)
+            respond(result)
+        }
 
 //    when (val result = service.create(input)) {
 //        is ApiResult.Success -> {
@@ -76,22 +75,18 @@ suspend inline fun <reified T, reified K> PipelineContext<Unit, ApplicationCall>
     /*
         call.respond(status = result.toStatusCode(), message = result)
         finish()
-    */
+     */
 }
 
-suspend inline fun <reified T: BaseModel> PipelineContext<Unit, ApplicationCall>.respond(
-    apiResult: ApiResult<T>
-) {
+suspend inline fun <reified T : BaseModel> PipelineContext<Unit, ApplicationCall>.respond(apiResult: ApiResult<T>) {
     call.respond(status = apiResult.toStatusCode(), apiResult)
     finish()
 }
-suspend inline fun <reified T: BaseModel> PipelineContext<Unit, ApplicationCall>.respondCreated(
-    apiResult: ApiResult<T>
-) {
+
+suspend inline fun <reified T : BaseModel> PipelineContext<Unit, ApplicationCall>.respondCreated(apiResult: ApiResult<T>) {
     call.respond(status = apiResult.toStatusCode(true), apiResult)
     finish()
 }
-
 
 suspend inline fun <reified T> PipelineContext<Unit, ApplicationCall>.getAndRespond(getScope: () -> ApiResult<T>) {
     val result = getScope()
@@ -112,7 +107,7 @@ suspend inline fun <reified T> PipelineContext<Unit, ApplicationCall>.getAndResp
 }
 
 suspend inline fun <reified T, reified K> PipelineContext<Unit, ApplicationCall>.getAndRespond(
-    service: BaseService<T, K>
+    service: BaseService<T, K>,
 ) where T : BaseModel {
     val page = call.parameters["page"]?.toInt() ?: 0
     val result = service.getAll(page)
@@ -127,17 +122,14 @@ suspend inline fun <reified T, reified K> PipelineContext<Unit, ApplicationCall>
 //        }
 //    }
     call.respond(status = result.toStatusCode(), message = result)
-
 }
 
-inline fun <reified T> ApiResult<T>.toStatusCode(created: Boolean = false) = when (this) {
-    is ApiResult.Success -> {
-        if (created) HttpStatusCode.Created else HttpStatusCode.OK
-    }
-    is ApiResult.Error -> HttpStatusCode.BadRequest
-    is ApiResult.Empty -> HttpStatusCode.NoContent
+inline fun <reified T> ApiResult<T>.toStatusCode(created: Boolean = false) =
+    when (this) {
+        is ApiResult.Success -> {
+            if (created) HttpStatusCode.Created else HttpStatusCode.OK
+        }
+        is ApiResult.Error -> HttpStatusCode.BadRequest
+        is ApiResult.Empty -> HttpStatusCode.NoContent
 //    is ApiResult.Loading -> TODO()
-}
-
-
-
+    }

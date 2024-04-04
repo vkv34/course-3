@@ -13,10 +13,10 @@ import ru.online.education.core.exception.AuthException
 import ru.online.education.core.util.respond
 import util.ApiResult
 
-//suspend fun getCurrentUser(
+// suspend fun getCurrentUser(
 //    userSessionRepository: UserSessionRepository,
 //    sessionId: String
-//) = userSessionRepository.getById(sessionId)
+// ) = userSessionRepository.getById(sessionId)
 
 suspend fun PipelineContext<Unit, ApplicationCall>.getCurrentSession(): UserSession {
     val repo by application.inject<UserSessionRepository>()
@@ -37,4 +37,3 @@ suspend fun PipelineContext<Unit, ApplicationCall>.getCurrentUser(): UserDto? {
     val user = userRepository.getById(session.userId)
     return user.successOrNull()
 }
-

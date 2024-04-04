@@ -8,36 +8,40 @@ import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import repository.UserRepository
+import ru.online.education.core.exception.SelectExeption
 import ru.online.education.core.util.dbCall
 import ru.online.education.data.table.UserRoleTable
 import ru.online.education.data.table.UsersTable
 import ru.online.education.di.dbQuery
 import util.ApiResult
-import ru.online.education.core.exception.SelectExeption
 
 class UserRepositoryImpl : UserRepository {
+    private fun resultRowToUser(row: ResultRow) =
+        UserDto(
+            id = row[UsersTable.id].value,
+            email = row[UsersTable.email],
+            password = row[UsersTable.password],
+            firstName = row[UsersTable.firstName],
+            secondName = row[UsersTable.secondName],
+            lastName = row[UsersTable.lastName],
+            role = UserRole.entries[row[UsersTable.userRole].value.dec()],
+        )
 
-    private fun resultRowToUser(row: ResultRow) = UserDto(
-        id = row[UsersTable.id].value,
-        email = row[UsersTable.email],
-        password = row[UsersTable.password],
-        firstName = row[UsersTable.firstName],
-        secondName = row[UsersTable.secondName],
-        lastName = row[UsersTable.lastName],
-        role = UserRole.entries[row[UsersTable.userRole].value.dec()]
-    )
+    private fun ResultRow.toUser() =
+        UserDto(
+            id = this[UsersTable.id].value,
+            email = this[UsersTable.email],
+            password = this[UsersTable.password],
+            firstName = this[UsersTable.firstName],
+            secondName = this[UsersTable.secondName],
+            lastName = this[UsersTable.lastName],
+            role = UserRole.entries[this[UsersTable.userRole].value.dec()],
+        )
 
-    private fun ResultRow.toUser() = UserDto(
-        id = this[UsersTable.id].value,
-        email = this[UsersTable.email],
-        password = this[UsersTable.password],
-        firstName = this[UsersTable.firstName],
-        secondName = this[UsersTable.secondName],
-        lastName = this[UsersTable.lastName],
-        role = UserRole.entries[this[UsersTable.userRole].value.dec()]
-    )
-
-    private fun <T : Any> UsersTable.userToInsertStatement(statement: InsertStatement<T>, user: UserDto) {
+    private fun <T : Any> UsersTable.userToInsertStatement(
+        statement: InsertStatement<T>,
+        user: UserDto,
+    ) {
         val roleId = EntityID(user.role.ordinal.inc(), UserRoleTable)
         statement[id] = user.id
         statement[email] = user.email
@@ -56,17 +60,18 @@ class UserRepositoryImpl : UserRepository {
      }
 
      override suspend fun getUserById(id: Int): UserDto? =
- */
+     */
 
-    override suspend fun findUserByEmail(user: UserDto): UserDto? = dbQuery {
-        UsersTable
-            .selectAll()
-            .where {
-                UsersTable.email eq user.email
-            }
-            .singleOrNull()
-            ?.toUser()
-    }
+    override suspend fun findUserByEmail(user: UserDto): UserDto? =
+        dbQuery {
+            UsersTable
+                .selectAll()
+                .where {
+                    UsersTable.email eq user.email
+                }
+                .singleOrNull()
+                ?.toUser()
+        }
     /*
         override suspend fun addUser(user: UserDto): UserDto {
             val id = dbQuery {
@@ -82,17 +87,18 @@ class UserRepositoryImpl : UserRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getById(id: Int): ApiResult<UserDto> = dbCall(
-        call = {
-            dbQuery {
-                UsersTable
-                    .selectAll()
-                    .where { UsersTable.id eq id }
-                    .map(::resultRowToUser)
-                    .firstOrNull()
-            } ?: throw SelectExeption("Пользователь не найден")
-        }
-    )
+    override suspend fun getById(id: Int): ApiResult<UserDto> =
+        dbCall(
+            call = {
+                dbQuery {
+                    UsersTable
+                        .selectAll()
+                        .where { UsersTable.id eq id }
+                        .map(::resultRowToUser)
+                        .firstOrNull()
+                } ?: throw SelectExeption("Пользователь не найден")
+            },
+        )
 
     override suspend fun deleteById(id: Int): ApiResult<UserDto> {
         TODO("Not yet implemented")
@@ -105,5 +111,4 @@ class UserRepositoryImpl : UserRepository {
     override suspend fun add(data: UserDto): ApiResult<UserDto> {
         TODO("Not yet implemented")
     }
-
 }

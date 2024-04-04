@@ -18,18 +18,19 @@ class AccountRepositoryImpl(
     val userSessionRepository: UserSessionRepository,
     val secret: String,
     val issuer: String,
-    val audience: String
+    val audience: String,
 ) : AccountRepository {
     override suspend fun loginByEmailAndPassword(
         login: CharSequence,
         password: CharSequence,
-        hostName: String
-    ): ApiResult<AuthResponse>{
+        hostName: String,
+    ): ApiResult<AuthResponse>  {
         val user = userRepository.findUserByEmail(UserDto(email = login.toString(), password = password.toString()))
-        return if (user?.password == password)
+        return if (user?.password == password) {
             authWithSession(user, hostName)
-        else
+        } else {
             ApiResult.Error("Пользователь с такими данными не найден")
+        }
     }
 
     override suspend fun logOut() {
@@ -37,7 +38,7 @@ class AccountRepositoryImpl(
     }
 
     override suspend fun getTestAdminAccount(): ApiResult<AuthResponse>/* =
-        authByUser(userRepository.getUserById(1))*/{
+        authByUser(userRepository.getUserById(1))*/  {
         TODO()
     }
 
@@ -45,52 +46,62 @@ class AccountRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    private suspend fun authWithSession(user: UserDto?, hostName: String) = try{
-        if (user == null) ApiResult.Error(message = "Пользователь не найден")
-        else{
-            val userSession = UserSession(
-                userId = user.id,
-                state = SessionState.Started,
-                host = hostName
-            )
-            val id = userSessionRepository.add(userSession)
-            if (id !is ApiResult.Success)
-                throw Exception("Error")
-            val token = JWT.create()
-                .withAudience(audience)
-                .withIssuer(issuer)
-                .withExpiresAt(Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(10)))
-                .withClaim("sessionId", id.data.id)
-                .sign(Algorithm.HMAC256(secret))
-            ApiResult.Success(
-                AuthResponse(
-                    token = token
-                ),
-                message = "Успешная авторизация"
-            )
-        }
+    private suspend fun authWithSession(
+        user: UserDto?,
+        hostName: String,
+    ) = try {
+        if (user == null) {
+            ApiResult.Error(message = "Пользователь не найден")
+        } else
+            {
+                val userSession =
+                    UserSession(
+                        userId = user.id,
+                        state = SessionState.Started,
+                        host = hostName,
+                    )
+                val id = userSessionRepository.add(userSession)
+                if (id !is ApiResult.Success) {
+                    throw Exception("Error")
+                }
+                val token =
+                    JWT.create()
+                        .withAudience(audience)
+                        .withIssuer(issuer)
+                        .withExpiresAt(Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(10)))
+                        .withClaim("sessionId", id.data.id)
+                        .sign(Algorithm.HMAC256(secret))
+                ApiResult.Success(
+                    AuthResponse(
+                        token = token,
+                    ),
+                    message = "Успешная авторизация",
+                )
+            }
     } catch (e: Exception) {
         ApiResult.Error(message = e.localizedMessage ?: "Ошибка сервера", e)
     }
 
-
-    private fun authByUser(user: UserDto?) = try {
-        if (user == null) ApiResult.Error(message = "Пользователь не найден")
-        else {
-            val token = JWT.create()
-                .withAudience(audience)
-                .withIssuer(issuer)
-                .withExpiresAt(Date(System.currentTimeMillis() + 60000))
-                .withClaim("userId", user.id)
-                .sign(Algorithm.HMAC256(secret))
-            ApiResult.Success(
-                AuthResponse(
-                    token = token
-                ),
-                message = "Успешная авторизация"
-            )
+    private fun authByUser(user: UserDto?) =
+        try {
+            if (user == null) {
+                ApiResult.Error(message = "Пользователь не найден")
+            } else {
+                val token =
+                    JWT.create()
+                        .withAudience(audience)
+                        .withIssuer(issuer)
+                        .withExpiresAt(Date(System.currentTimeMillis() + 60000))
+                        .withClaim("userId", user.id)
+                        .sign(Algorithm.HMAC256(secret))
+                ApiResult.Success(
+                    AuthResponse(
+                        token = token,
+                    ),
+                    message = "Успешная авторизация",
+                )
+            }
+        } catch (e: Exception) {
+            ApiResult.Error(message = e.localizedMessage ?: "Ошибка сервера", e)
         }
-    } catch (e: Exception) {
-        ApiResult.Error(message = e.localizedMessage ?: "Ошибка сервера", e)
-    }
 }

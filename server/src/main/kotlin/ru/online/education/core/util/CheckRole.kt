@@ -16,7 +16,6 @@ import repository.UserSessionRepository
 import util.ApiResult
 
 inline fun <reified T : BaseModel> Route.role(roles: Iterable<UserRole>) {
-
     intercept(ApplicationPhase.Call) {
         val userRepository by application.inject<UserRepository>()
         val userSessionRepository by application.inject<UserSessionRepository>()
@@ -49,17 +48,12 @@ inline fun <reified T : BaseModel> Route.role(roles: Iterable<UserRole>) {
             if (!roles.any(user.data.role::equals)) {
                 call.respond(HttpStatusCode.Forbidden, ApiResult.Error<T>("Не достаточно прав") as ApiResult<T>)
                 finish()
-
             }
-
-
         } else {
             call.respond(HttpStatusCode.Unauthorized, ApiResult.Error<T>("Пользователь не найден"))
             finish()
         }
     }
-
-
 }
 
 inline fun <reified T : BaseModel> Route.role(role: UserRole) = role<T>(listOf(role))

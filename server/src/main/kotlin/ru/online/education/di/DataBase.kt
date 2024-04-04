@@ -18,98 +18,103 @@ fun connectDatabase(
     jdbcUrl: String,
     database: String,
     user: String,
-    password: String
+    password: String,
 ): Database {
     val driverClassName = "com.mysql.cj.jdbc.Driver"
     try {
         val connection = DriverManager.getConnection(jdbcUrl, user, password)
 //        val resultSet = connection.createStatement().executeQuery("SHOW DATABASES LIKE '$database'")
         connection.createStatement()
-            .execute("""
-                    create database if not exists $database;
-                """.trimIndent())
+            .execute(
+                """
+                create database if not exists $database;
+                """.trimIndent(),
+            )
         Logger.getLogger("adsad").severe("Database created")
     } catch (e: SQLException) {
         e.printStackTrace()
         Logger.getLogger("adsad").severe("Not created")
         Logger.getLogger("adsad").severe(e.message)
-
     }
     return Database.connect(
         jdbcUrl + database,
         driver = driverClassName,
         user = System.getenv("DB_USER"),
-        password = System.getenv("DB_PASSWORD")
+        password = System.getenv("DB_PASSWORD"),
     )
 }
 
-val dataBaseModule = module(createdAtStart = true) {
-    single<Database> {
-        val driverClassName = "com.mysql.cj.jdbc.Driver"
-        val jdbcURL = System.getenv("CONNECTION_STRING")
-        val databaseName = System.getenv("DATABASE")
+val dataBaseModule =
+    module(createdAtStart = true) {
+        single<Database> {
+            val driverClassName = "com.mysql.cj.jdbc.Driver"
+            val jdbcURL = System.getenv("CONNECTION_STRING")
+            val databaseName = System.getenv("DATABASE")
 
+            val database =
+                connectDatabase(
+                    jdbcURL,
+                    databaseName,
+                    System.getenv("DB_USER"),
+                    System.getenv("DB_PASSWORD"),
+                )
 
-        val database = connectDatabase(
-            jdbcURL,
-            databaseName, System.getenv("DB_USER"),
-            System.getenv("DB_PASSWORD")
-        )
+            transaction(database) {
+                SchemaUtils.create(
+                    UserRoleTable,
+                    UsersTable,
+                    CourseCategoryTable,
+                    CourseTable,
+                    UserOnCourse,
+                    PublicationTable,
+                    PublicationAttachmentTable,
+                    PublicationOnCourse,
+                    UserSessionTable,
+                )
+            }
 
-        transaction(database) {
-            SchemaUtils.create(
-                UserRoleTable,
-                UsersTable,
-                CourseCategoryTable,
-                CourseTable,
-                UserOnCourse,
-                PublicationTable,
-                PublicationAttachmentTable,
-                PublicationOnCourse,
-                UserSessionTable
-            )
-        }
+            fun <T : Any> UsersTable.userToInsertStatement(
+                statement: InsertStatement<T>,
+                user: UserDto,
+            ) {
+                val roleId = EntityID(user.role.ordinal.inc(), UserRoleTable)
+                statement[email] = user.email
+                statement[password] = user.password
+                statement[firstName] = user.firstName
+                statement[secondName] = user.secondName
+                statement[lastName] = user.lastName
+                statement[userRole] = roleId
+            }
 
-        fun <T : Any> UsersTable.userToInsertStatement(statement: InsertStatement<T>, user: UserDto) {
-            val roleId = EntityID(user.role.ordinal.inc(), UserRoleTable)
-            statement[email] = user.email
-            statement[password] = user.password
-            statement[firstName] = user.firstName
-            statement[secondName] = user.secondName
-            statement[lastName] = user.lastName
-            statement[userRole] = roleId
-        }
-
-        transaction(database) {
-            if (UserRoleTable.selectAll().empty()) {
-                UserRole.entries.forEach { userRole: UserRole ->
-                    UserRoleTable.insert {
-                        it[name] = userRole.name
+            transaction(database) {
+                if (UserRoleTable.selectAll().empty()) {
+                    UserRole.entries.forEach { userRole: UserRole ->
+                        UserRoleTable.insert {
+                            it[name] = userRole.name
+                        }
                     }
                 }
-            }
-            if (UsersTable.selectAll().limit(10).empty()) {
-                UsersTable.insert {
-                    userToInsertStatement(
-                        it,
-                        UserDto(
-                            email = "email",
-                            password = "password",
-                            firstName = "admin",
-                            secondName = "admin",
-                            lastName = "admin",
-                            role = UserRole.Admin
+                if (UsersTable.selectAll().limit(10).empty()) {
+                    UsersTable.insert {
+                        userToInsertStatement(
+                            it,
+                            UserDto(
+                                email = "email",
+                                password = "password",
+                                firstName = "admin",
+                                secondName = "admin",
+                                lastName = "admin",
+                                role = UserRole.Admin,
+                            ),
                         )
-                    )
+                    }
+
+                    exec("""create fulltext index course_category_name_index on CourseCategory(name)""")
                 }
-
-                exec("""create fulltext index course_category_name_index on CourseCategory(name)""")
             }
+
+            database
         }
-
-        database
     }
-}
 
-suspend fun <T> dbQuery(block: suspend Transaction.() -> T): T =
-    newSuspendedTransaction(Dispatchers.IO) { block() }
+suspend fun <T> dbQuery(block: suspend Transaction.() -> T): T = newSuspendedTransaction(Dispatchers.IO) { block() }

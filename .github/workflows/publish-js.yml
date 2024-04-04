@@ -1,19 +1,8 @@
 name: publish Js App
 on:
-  workflow_dispatch:
-    inputs:
-      ftp_username:
-        description: 'FTP username'
-        required: true
-        default: ''
-      ftp_password:
-        description: 'FTP password'
-        required: true
-        default: ''
-      ftp_server:
-        description: 'FTP server'
-        required: true
-        default: ''
+  push:
+    branches:
+      - master
 
 jobs:
   build:
@@ -29,6 +18,10 @@ jobs:
       - name: chmod
         run: chmod +x gradlew && chmod +x props.sh
       - name: publish
+        env:
+          FTP_SERVER: ${{secret.FTP_SERVER}}
+          FTP_LOGIN: ${{secret.FTP_LOGIN}}
+          FTP_PASSWORD: ${{secret.FTP_PASSWORD}}
         run: | 
-          bash props.sh ${{github.event.inputs.ftp_server}} ${{github.event.inputs.ftp_username}} ${{github.event.inputs.ftp_password}} 
+          bash props.sh $FTP_SERVER $FTP_LOGIN $FTP_PASSWORD
           ./gradlew App:ComposeApp:publishJsApp --no-daemon

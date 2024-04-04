@@ -23,31 +23,32 @@ import java.io.IOException
 import java.util.*
 
 class AttachmentRepositoryImpl : AttachmentRepository {
-
     private val defaultFilePath: String = System.getenv("ATTACHMENT_DIR")
+
     override suspend fun uploadFile(
         file: ByteArray,
         fileName: String,
         publicationId: Int,
-        progressChanged: (sentBytes: Long, totalBytes: Long) -> Unit
-    ): ApiResult<PublicationAttachmentDto> = try {
-        val resultFileName = "${UUID.randomUUID()}.${fileName.split(".").last()}"
-        val path = "$defaultFilePath/$resultFileName"
-        withContext(Dispatchers.IO) {
-            File(path).writeBytes(file)
-        }
+        progressChanged: (sentBytes: Long, totalBytes: Long) -> Unit,
+    ): ApiResult<PublicationAttachmentDto> =
+        try {
+            val resultFileName = "${UUID.randomUUID()}.${fileName.split(".").last()}"
+            val path = "$defaultFilePath/$resultFileName"
+            withContext(Dispatchers.IO) {
+                File(path).writeBytes(file)
+            }
 
-        add(
-            PublicationAttachmentDto(
-                publicationId = publicationId,
-                name = fileName,
-                content = resultFileName,
-                contentType = PublicationAttachmentType.File
+            add(
+                PublicationAttachmentDto(
+                    publicationId = publicationId,
+                    name = fileName,
+                    content = resultFileName,
+                    contentType = PublicationAttachmentType.File,
+                ),
             )
-        )
-    } catch (e: Exception) {
-        ApiResult.Error(e.localizedMessage, e)
-    }
+        } catch (e: Exception) {
+            ApiResult.Error(e.localizedMessage, e)
+        }
 
     override suspend fun getAttachments(publicationId: Int): ApiResult<ListResponse<PublicationAttachmentDto>> =
         dbCall {
@@ -57,7 +58,7 @@ class AttachmentRepositoryImpl : AttachmentRepository {
                         .selectAll()
                         .where { PublicationAttachmentTable.publication eq publicationId }
                         .map(::resultRowToPublicationAttachment)
-                }
+                },
             )
         }
 
@@ -78,8 +79,9 @@ class AttachmentRepositoryImpl : AttachmentRepository {
 
     override suspend fun deleteById(id: Int): ApiResult<PublicationAttachmentDto> {
         val attachment = getById(id)
-        if (attachment !is ApiResult.Success)
+        if (attachment !is ApiResult.Success) {
             return attachment
+        }
         val path = "$defaultFilePath/${attachment.data.content}"
 
         try {
@@ -100,29 +102,31 @@ class AttachmentRepositoryImpl : AttachmentRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun add(data: PublicationAttachmentDto): ApiResult<PublicationAttachmentDto> = apiCall {
-        val id = dbQuery {
-            PublicationAttachmentTable
-                .insertAndGetId {
-                    data.toInsertStatement(it)
-                }.value
+    override suspend fun add(data: PublicationAttachmentDto): ApiResult<PublicationAttachmentDto> =
+        apiCall {
+            val id =
+                dbQuery {
+                    PublicationAttachmentTable
+                        .insertAndGetId {
+                            data.toInsertStatement(it)
+                        }.value
+                }
+            getById(id)
         }
-        getById(id)
-    }
 
     private fun resultRowToPublicationAttachment(row: ResultRow) = row.toPublicationAttachment()
-    private fun ResultRow.toPublicationAttachment() = PublicationAttachmentDto(
-        publicationId = this[PublicationAttachmentTable.publication].value,
-        attachmentId = this[PublicationAttachmentTable.id].value,
-        name = this[PublicationAttachmentTable.name],
-        contentType = this[PublicationAttachmentTable.type],
-        content = this[PublicationAttachmentTable.content],
-        dateCreate = this[PublicationAttachmentTable.createdAt]
-    )
 
-    private fun <T : Any> PublicationAttachmentDto.toInsertStatement(
-        statement: InsertStatement<T>
-    ) {
+    private fun ResultRow.toPublicationAttachment() =
+        PublicationAttachmentDto(
+            publicationId = this[PublicationAttachmentTable.publication].value,
+            attachmentId = this[PublicationAttachmentTable.id].value,
+            name = this[PublicationAttachmentTable.name],
+            contentType = this[PublicationAttachmentTable.type],
+            content = this[PublicationAttachmentTable.content],
+            dateCreate = this[PublicationAttachmentTable.createdAt],
+        )
+
+    private fun <T : Any> PublicationAttachmentDto.toInsertStatement(statement: InsertStatement<T>) {
         statement[PublicationAttachmentTable.publication] = publicationId
         statement[PublicationAttachmentTable.id] = attachmentId
         statement[PublicationAttachmentTable.name] = name

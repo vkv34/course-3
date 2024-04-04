@@ -13,24 +13,26 @@ import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import java.time.Duration
 
-fun Application.installTelemetry(){
+fun Application.installTelemetry()  {
     val appMicrometerRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
     install(MicrometerMetrics) {
         registry = appMicrometerRegistry
-        meterBinders = listOf(
-            JvmMemoryMetrics(),
-            JvmGcMetrics(),
-            ProcessorMetrics(),
-            UptimeMetrics(),
-        )
-        distributionStatisticConfig = DistributionStatisticConfig.Builder()
-            .percentilesHistogram(true)
-            .maximumExpectedValue(Duration.ofSeconds(20).toNanos().toDouble())
-            .serviceLevelObjectives(
-                Duration.ofMillis(100).toNanos().toDouble(),
-                Duration.ofMillis(500).toNanos().toDouble()
+        meterBinders =
+            listOf(
+                JvmMemoryMetrics(),
+                JvmGcMetrics(),
+                ProcessorMetrics(),
+                UptimeMetrics(),
             )
-            .build()
+        distributionStatisticConfig =
+            DistributionStatisticConfig.Builder()
+                .percentilesHistogram(true)
+                .maximumExpectedValue(Duration.ofSeconds(20).toNanos().toDouble())
+                .serviceLevelObjectives(
+                    Duration.ofMillis(100).toNanos().toDouble(),
+                    Duration.ofMillis(500).toNanos().toDouble(),
+                )
+                .build()
     }
 
     routing {
@@ -38,5 +40,4 @@ fun Application.installTelemetry(){
             call.respond(appMicrometerRegistry.scrape())
         }
     }
-
 }

@@ -15,14 +15,14 @@ import ru.online.education.domain.services.account.currentUser.getCurrentUser
 import util.ApiResult
 
 fun Routing.coursePublicationRoute() {
-
     route("/publication/") {
         jwtAuthenticate {
             role<PublicationDto>(UserRole.all)
             get("{id}") {
-                val id = call.parameters["id"]?.toIntOrNull()
-                    ?: call.request.queryParameters["id"]?.toIntOrNull()
-                    ?: 0
+                val id =
+                    call.parameters["id"]?.toIntOrNull()
+                        ?: call.request.queryParameters["id"]?.toIntOrNull()
+                        ?: 0
 
                 val currentUser =
                     getCurrentUser()
@@ -40,9 +40,10 @@ fun Routing.coursePublicationRoute() {
         jwtAuthenticate {
             role<PublicationDto>(UserRole.all)
             get("{id}") {
-                val id = call.parameters["id"]?.toIntOrNull()
-                    ?: call.request.queryParameters["id"]?.toIntOrNull()
-                    ?: 0
+                val id =
+                    call.parameters["id"]?.toIntOrNull()
+                        ?: call.request.queryParameters["id"]?.toIntOrNull()
+                        ?: 0
 
                 val currentUser =
                     getCurrentUser()
@@ -66,12 +67,13 @@ fun Routing.coursePublicationRoute() {
                 val page = call.parameters["page"]?.toInt() ?: 0
                 val currentUser =
                     getCurrentUser()
-                if (currentUser == null)
+                if (currentUser == null) {
                     respond(ApiResult.Error<PublicationOnCourseDto>("Ошибка при авторизации"))
+                }
                 checkNotNull(currentUser)
                 getAndRespond {
                     PublicationRepositoryImpl(
-                        currentUser.role
+                        currentUser.role,
                     ).getByCourseId(courseId, page)
                 }
             }
@@ -80,41 +82,47 @@ fun Routing.coursePublicationRoute() {
                 val courseId = call.parameters["courseId"]?.toInt() ?: 0
                 val currentUser =
                     getCurrentUser()
-                if (currentUser == null)
+                if (currentUser == null) {
                     respond(ApiResult.Error<PublicationDto>("Ошибка при авторизации"))
+                }
                 checkNotNull(currentUser)
-                val receivedPublication = call.receive<PublicationDto>()
-                    .copy(
-                        courseId = courseId,
-                        authorId = currentUser.id
-                    )
+                val receivedPublication =
+                    call.receive<PublicationDto>()
+                        .copy(
+                            courseId = courseId,
+                            authorId = currentUser.id,
+                        )
                 if (receivedPublication.visible || !receivedPublication.temp) {
                     validateInput(receivedPublication)
                 }
-                val publicationRepository = PublicationRepositoryImpl(
-                    currentUser.role
-                )
+                val publicationRepository =
+                    PublicationRepositoryImpl(
+                        currentUser.role,
+                    )
                 val publicationOnCourseRepository = PublicationOnCourseRepositoryImpl()
 
                 val addedPublication = publicationRepository.add(receivedPublication)
-                if (addedPublication !is ApiResult.Success)
+                if (addedPublication !is ApiResult.Success) {
                     respond(addedPublication)
+                }
                 check(addedPublication is ApiResult.Success)
-                val addedPublicationOnCourse = publicationOnCourseRepository.add(
-                    PublicationOnCourseDto(
-                        id = receivedPublication.publicationInCourseId,
-                        publicationId = addedPublication.data.publicationId,
-                        courseId = courseId,
-                        userId = currentUser.id,
-                        visible = receivedPublication.visible,
-                        temp = receivedPublication.temp,
-                        createdAt = Clock.System.now().toLocalDateTime(TimeZone.UTC),
-                        deadLine = receivedPublication.deadLine
+                val addedPublicationOnCourse =
+                    publicationOnCourseRepository.add(
+                        PublicationOnCourseDto(
+                            id = receivedPublication.publicationInCourseId,
+                            publicationId = addedPublication.data.publicationId,
+                            courseId = courseId,
+                            userId = currentUser.id,
+                            visible = receivedPublication.visible,
+                            temp = receivedPublication.temp,
+                            createdAt = Clock.System.now().toLocalDateTime(TimeZone.UTC),
+                            deadLine = receivedPublication.deadLine,
+                        ),
                     )
-                )
 
-                if (addedPublicationOnCourse !is ApiResult.Success)
+                if (addedPublicationOnCourse !is ApiResult.Success) {
                     respond(addedPublicationOnCourse)
+                }
                 check(addedPublicationOnCourse is ApiResult.Success)
 
                 respondCreated(
@@ -122,12 +130,11 @@ fun Routing.coursePublicationRoute() {
                         addedPublication.data.copy(
                             courseId = courseId,
                             publicationInCourseId = addedPublicationOnCourse.data.id,
-                            authorId = currentUser.id
+                            authorId = currentUser.id,
                         ),
-                        message = "Публикация добавлена"
-                    )
+                        message = "Публикация добавлена",
+                    ),
                 )
-
             }
 
 //            post(
@@ -135,8 +142,6 @@ fun Routing.coursePublicationRoute() {
 //            ) {
 //
 //            }
-
-
         }
     }
 }

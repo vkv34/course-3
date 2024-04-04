@@ -22,9 +22,10 @@ import util.map
 import java.io.File
 import java.net.URLEncoder
 
-private val json = Json {
-    serializersModule = api.defaultSerializersModule
-}
+private val json =
+    Json {
+        serializersModule = api.defaultSerializersModule
+    }
 
 fun Route.publicationAttachmentRoute() {
     val attachmentRepository by inject<AttachmentRepository>()
@@ -46,59 +47,56 @@ fun Route.publicationAttachmentRoute() {
             post("/file") {
                 val multipart = call.receiveMultipart()
                 val parts = multipart.readAllParts()
-                val jsonPart = parts
-                    .filterIsInstance<PartData.FormItem>()
-                    .firstOrNull { it.name == "json" }
-                val attachmentDto = json.decodeFromString<PublicationAttachmentDto>(
-                    jsonPart?.value ?: ""
-                )
+                val jsonPart =
+                    parts
+                        .filterIsInstance<PartData.FormItem>()
+                        .firstOrNull { it.name == "json" }
+                val attachmentDto =
+                    json.decodeFromString<PublicationAttachmentDto>(
+                        jsonPart?.value ?: "",
+                    )
                 jsonPart?.dispose?.invoke()
                 if (attachmentDto.contentType == PublicationAttachmentType.File || attachmentDto.contentType == PublicationAttachmentType.Image) {
-
                     val filePart = parts.filterIsInstance<PartData.FileItem>()
                     if (filePart.isNotEmpty()) {
                         val fileBytes = filePart.first().streamProvider().readBytes()
                         val fileName = filePart.first().originalFileName
 
-                        val attachment = attachmentRepository.uploadFile(
-                            fileName = attachmentDto.name.ifEmpty { fileName ?: "Файл без имени" },
-                            file = fileBytes,
-                            publicationId = attachmentDto.publicationId,
-                            progressChanged = { _, _ -> }
-                        )
+                        val attachment =
+                            attachmentRepository.uploadFile(
+                                fileName = attachmentDto.name.ifEmpty { fileName ?: "Файл без имени" },
+                                file = fileBytes,
+                                publicationId = attachmentDto.publicationId,
+                                progressChanged = { _, _ -> },
+                            )
                         respondCreated(attachment)
                         finish()
-
                     }
                 } else {
                     respondCreated(attachmentRepository.add(attachmentDto))
                 }
-
             }
-
         }
 
         get("/{id}") {
-            val id = call.parameters["id"]?.toIntOrNull()
-                ?: call.request.queryParameters["id"]
-                    ?.toIntOrNull()
-                ?: 0
+            val id =
+                call.parameters["id"]?.toIntOrNull()
+                    ?: call.request.queryParameters["id"]
+                        ?.toIntOrNull()
+                    ?: 0
 
-            val attachmentDto = attachmentRepository.getById(id).map {
-                if (it.contentType == PublicationAttachmentType.File || it.contentType == PublicationAttachmentType.Image) {
-                    it.copy(
-                        content = "/file/${it.content}"
-                    )
-                } else {
-                    it
+            val attachmentDto =
+                attachmentRepository.getById(id).map {
+                    if (it.contentType == PublicationAttachmentType.File || it.contentType == PublicationAttachmentType.Image) {
+                        it.copy(
+                            content = "/file/${it.content}",
+                        )
+                    } else {
+                        it
+                    }
                 }
-            }
-
-
 
             respond(attachmentDto)
-
-
         }
 
 //        staticFiles(
@@ -122,7 +120,7 @@ fun Route.publicationAttachmentRoute() {
 
             call.response.headers.append(
                 HttpHeaders.ContentDisposition,
-                ContentDisposition.Attachment.withParameter(ContentDisposition.Parameters.FileName, encodedFileName).toString()
+                ContentDisposition.Attachment.withParameter(ContentDisposition.Parameters.FileName, encodedFileName).toString(),
             )
 
             call.respondFile(file)
@@ -134,4 +132,3 @@ fun Route.publicationAttachmentRoute() {
         }
     }
 }
-

@@ -15,18 +15,17 @@ application {
 ktor {
     fatJar {
         archiveFileName.set("server.jar")
-
     }
 }
 
-//sourceSets{
+// sourceSets{
 //    val a = project(":di").extensions.getByType(SourceSetContainer::class).getByName("ktorMain")
 //
 //    val main by getting{
 //        compileClasspath += a.compileClasspath
 //        runtimeClasspath += a.runtimeClasspath
 //    }
-//}
+// }
 
 dependencies {
     implementation(projects.shared)
@@ -35,7 +34,7 @@ dependencies {
     implementation(libs.koin.ktor)
     implementation(libs.koin.logger)
 
-    with(libs.exposed){
+    with(libs.exposed) {
         implementation(core)
         implementation(dao)
         implementation(jdbc)
@@ -44,11 +43,9 @@ dependencies {
     }
     implementation(libs.mysql.connector)
 
-
     implementation(libs.logback)
     implementation(libs.logback.db)
     implementation(libs.com.mchange.c3p0)
-
 
     implementation(libs.org.eclipse.angus.mail)
 
@@ -66,17 +63,13 @@ dependencies {
     implementation(libs.ktor.server.openapi)
     implementation(libs.swagger.codegen)
 
-
-
     implementation(libs.ktor.server.metric.micrometer)
     implementation(libs.micrometer.registry.prometheus)
 
     testImplementation(libs.kotlin.test.junit)
 }
 
-
-
-//tasks{
+// tasks{
 //    open class CopyToServerTask @Inject constructor(): DefaultTask() {
 //        val serverJarPath: String = project(":server").tasks.getByName<Jar>("buildFatJar").archiveFile.get().asFile.absolutePath
 //
@@ -91,4 +84,4 @@ dependencies {
 //    create<CopyToServerTask>("copyToServer"){
 //        dependsOn(":server:buildFatJar")
 //    }
-//}
+// }

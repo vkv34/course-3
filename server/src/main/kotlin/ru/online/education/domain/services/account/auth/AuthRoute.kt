@@ -20,9 +20,7 @@ import ru.online.education.domain.services.account.AccountService
 import util.ApiResult
 import java.util.logging.Logger
 
-
 fun Routing.installAccountRoute() {
-
     val accountService by application.inject<AccountService>()
 
     route("/account") {
@@ -33,14 +31,12 @@ fun Routing.installAccountRoute() {
             call.respond(HttpStatusCode.OK, accountService.loginByEmailAndPassword(user.email, user.password, host))
         }
         post("signUp") {
-
         }
 
         jwtAuthenticate {
             role<BaseModel>(UserRole.all)
 
             get("current") {
-
                 val userRepository by application.inject<UserRepository>()
                 val userSessionRepository by application.inject<UserSessionRepository>()
                 val sessionId = call.principal<JWTPrincipal>()?.get("sessionId") ?: "asd"
@@ -54,7 +50,6 @@ fun Routing.installAccountRoute() {
                 } else {
                     respond(ApiResult.Error<UserDto>("Вы не авторизованы"))
                 }
-
             }
         }
 
@@ -62,4 +57,4 @@ fun Routing.installAccountRoute() {
             val accountRepository by application.inject<AccountRepository>()
         }
     }
-} 
+}

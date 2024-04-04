@@ -15,21 +15,25 @@ import ru.online.education.di.dbQuery
 import util.ApiResult
 
 class CourseCategoryRepositoryImpl : CourseCategoryRepository {
-    override suspend fun findByName(name: String, page: Int): ApiResult<ListResponse<CourseCategoryDto>> = apiCall {
-        val result = dbQuery {
-            CourseCategoryTable
-                .selectAll()
-                .where { CourseCategoryTable.name like "%$name%" }
-                .limit(pageSize, (page * pageSize).toLong())
-                .map(::resultRowToCourse)
+    override suspend fun findByName(
+        name: String,
+        page: Int,
+    ): ApiResult<ListResponse<CourseCategoryDto>> =
+        apiCall {
+            val result =
+                dbQuery {
+                    CourseCategoryTable
+                        .selectAll()
+                        .where { CourseCategoryTable.name like "%$name%" }
+                        .limit(pageSize, (page * pageSize).toLong())
+                        .map(::resultRowToCourse)
+                }
+            if (result.isNotEmpty()) {
+                ApiResult.Success(ListResponse(result))
+            } else {
+                ApiResult.Success(ListResponse(listOf()))
+            }
         }
-        if (result.isNotEmpty()) {
-            ApiResult.Success(ListResponse(result))
-        } else {
-            ApiResult.Success(ListResponse(listOf()))
-        }
-
-    }
 
     override suspend fun getAll(page: Int): ApiResult<ListResponse<CourseCategoryDto>> =
         dbCall(
@@ -42,11 +46,10 @@ class CourseCategoryRepositoryImpl : CourseCategoryRepository {
                             .selectAll()
                             .limit(pageSize, (page * pageSize).toLong())
                             .map(::resultRowToCourse)
-                    }
+                    },
                 )
-            }
+            },
         )
-
 
     override suspend fun getById(id: Int): ApiResult<CourseCategoryDto> =
         dbCall(
@@ -59,7 +62,7 @@ class CourseCategoryRepositoryImpl : CourseCategoryRepository {
                         .singleOrNull()
                         ?.toCourseCategory()
                 } ?: throw SelectExeption("Курс с id = $id не найден")
-            }
+            },
         )
 
     override suspend fun deleteById(id: Int): ApiResult<CourseCategoryDto> = ApiResult.Error("Not Implemented")
@@ -71,30 +74,32 @@ class CourseCategoryRepositoryImpl : CourseCategoryRepository {
     override suspend fun add(data: CourseCategoryDto): ApiResult<CourseCategoryDto> =
 
         apiCall {
-            val id = dbQuery {
-                CourseCategoryTable
-                    .insertAndGetId {
-                        courseCategoryToInsertStatement(it, data)
-                    }.value
-            }
+            val id =
+                dbQuery {
+                    CourseCategoryTable
+                        .insertAndGetId {
+                            courseCategoryToInsertStatement(it, data)
+                        }.value
+                }
             getById(id)
         }
 
     private fun resultRowToCourse(row: ResultRow) = row.toCourseCategory()
-    private fun ResultRow.toCourseCategory() = CourseCategoryDto(
-        id = this[CourseCategoryTable.id].value,
-        name = this[CourseCategoryTable.name],
-        description = this[CourseCategoryTable.description]
-    )
+
+    private fun ResultRow.toCourseCategory() =
+        CourseCategoryDto(
+            id = this[CourseCategoryTable.id].value,
+            name = this[CourseCategoryTable.name],
+            description = this[CourseCategoryTable.description],
+        )
 
     private fun <T : Any> courseCategoryToInsertStatement(
         statement: InsertStatement<T>,
-        courseCategory: CourseCategoryDto
+        courseCategory: CourseCategoryDto,
     ) {
         with(courseCategory) {
             statement[CourseCategoryTable.name] = name
             statement[CourseCategoryTable.description] = description
         }
-
     }
 }

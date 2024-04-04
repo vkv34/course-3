@@ -7,10 +7,9 @@ import ru.online.education.domain.model.BaseService
 import util.ApiResult
 
 class CourseCategoryService(
-    val courseCategoryRepository: CourseCategoryRepository
+    val courseCategoryRepository: CourseCategoryRepository,
 ) : BaseService<CourseCategoryDto, Int?> {
-    override suspend fun create(data: CourseCategoryDto) =
-        courseCategoryRepository.add(data)
+    override suspend fun create(data: CourseCategoryDto) = courseCategoryRepository.add(data)
 
     override suspend fun update(data: CourseCategoryDto): ApiResult<Int?> {
         TODO("Not yet implemented")
