@@ -17,6 +17,10 @@ jobs:
           java-version: 21
       - name: chmod
         run: chmod +x gradlew && chmod +x props.sh
+      - name: set DNS
+        env:
+          DNS_SERVER: ${{secrets.DNS_SERVER}}
+        run: echo $DNS_SERVER | sudo tee -a /etc/resolv.conf
       - name: publish
         env:
           FTP_SERVER: ${{secrets.FTP_SERVER}}
