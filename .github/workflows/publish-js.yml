@@ -19,9 +19,9 @@ jobs:
         run: chmod +x gradlew && chmod +x props.sh
       - name: publish
         env:
-          FTP_SERVER: ${{secret.FTP_SERVER}}
-          FTP_LOGIN: ${{secret.FTP_LOGIN}}
-          FTP_PASSWORD: ${{secret.FTP_PASSWORD}}
+          FTP_SERVER: ${{secrets.FTP_SERVER}}
+          FTP_LOGIN: ${{secrets.FTP_LOGIN}}
+          FTP_PASSWORD: ${{secrets.FTP_PASSWORD}}
         run: | 
           bash props.sh $FTP_SERVER $FTP_LOGIN $FTP_PASSWORD
           ./gradlew App:ComposeApp:publishJsApp --no-daemon
