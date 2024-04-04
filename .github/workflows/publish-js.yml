@@ -5,15 +5,15 @@ on:
       ftp_username:
         description: 'FTP username'
         required: true
-        default: 'vkv34_ftp'
+        default: ''
       ftp_password:
         description: 'FTP password'
         required: true
-        default: 'Z4568085_d'
+        default: ''
       ftp_server:
         description: 'FTP server'
         required: true
-        default: 'vkv34.beget.tech'
+        default: ''
 
 jobs:
   build:
