@@ -4,7 +4,6 @@ name: Check Style
 #  push:
 #    branches:
 #      - master
-#
 #jobs:
 #  check_style:
 #    runs-on: ubuntu-latest
