@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>C:/Users/dima-/Diplom/Online_Education/App/ComposeApp/src/desktopMain/kotlin/main.kt</OriginalElement>
+  <nodes>
+    <node x="-454.0" y="1661.0">ru.online.education.domain.repository.CourseCategoryRepository</node>
+    <node x="745.5" y="1661.0">ru.online.education.domain.repository.UserSessionRepository</node>
+    <node x="523.0" y="1000.5">ru.online.education.domain.repository.model.PublicationOnCourseDto</node>
+    <node x="235.0" y="1852.0">ru.online.education.app.feature.course.domain.repository.CourseRepositoryImpl</node>
+    <node x="-232.0" y="1852.0">ru.online.education.app.feature.publication.data.PublicationRepositoryImpl</node>
+    <node x="-693.5" y="1469.5">ru.online.education.domain.repository.AttachmentRepository</node>
+    <node x="-512.0" y="683.5">ru.online.education.domain.repository.model.PublicationAttachmentDto</node>
+    <node x="701.5" y="636.5">ru.online.education.domain.repository.model.CourseDto</node>
+    <node x="-282.5" y="1023.5">ru.online.education.domain.repository.model.UserSession</node>
+    <node x="-421.5" y="478.0">ru.online.education.domain.repository.model.BaseModel</node>
+    <node x="-875.5" y="1875.0">ru.online.education.app.feature.publication.data.PublicationOnCourseRepositoryImpl</node>
+    <node x="-138.0" y="741.0">ru.online.education.domain.repository.model.AuthResponse</node>
+    <node x="874.5" y="1000.5">ru.online.education.domain.repository.model.UserDto</node>
+    <node x="-11.0" y="1058.0">ru.online.education.domain.repository.model.AuthRequest</node>
+    <node x="-858.0" y="448.5">ru.online.education.domain.repository.defaults.DefaultPaging</node>
+    <node x="250.5" y="1649.5">ru.online.education.domain.repository.CourseRepository</node>
+    <node x="-210.0" y="1399.5">ru.online.education.domain.repository.PublicationRepository</node>
+    <node x="101.0" y="705.5">ru.online.education.domain.repository.model.CourseCategoryDto</node>
+    <node x="241.5" y="930.5">ru.online.education.domain.repository.model.PublicationDto</node>
+    <node x="-876.5" y="953.5">ru.online.education.domain.repository.defaults.Repository</node>
+    <node x="-861.5" y="1678.0">ru.online.education.domain.repository.PublicationOnCourseRepository</node>
+    <node x="489.5" y="1481.0">ru.online.education.domain.repository.UserRepository</node>
+    <node x="389.0" y="741.0">ru.online.education.domain.repository.model.ListResponse</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="ru.online.education.domain.repository.PublicationRepository" target="ru.online.education.domain.repository.defaults.Repository" relationship="INTERFACE_GENERALIZATION">
+      <point x="0.0" y="-112.5" />
+      <point x="6.0" y="1372.0" />
+      <point x="-654.0" y="1372.0" />
+      <point x="0.0" y="158.5" />
+    </edge>
+    <edge source="ru.online.education.domain.repository.UserSessionRepository" target="ru.online.education.domain.repository.defaults.Repository" relationship="INTERFACE_GENERALIZATION">
+      <point x="0.0" y="-31.0" />
+      <point x="946.0" y="1372.0" />
+      <point x="-654.0" y="1372.0" />
+      <point x="0.0" y="158.5" />
+    </edge>
+    <edge source="ru.online.education.domain.repository.CourseRepository" target="ru.online.education.domain.repository.defaults.Repository" relationship="INTERFACE_GENERALIZATION">
+      <point x="0.0" y="-42.5" />
+      <point x="466.0" y="1372.0" />
+      <point x="-654.0" y="1372.0" />
+      <point x="0.0" y="158.5" />
+    </edge>
+    <edge source="ru.online.education.app.feature.publication.data.PublicationOnCourseRepositoryImpl" target="ru.online.education.domain.repository.PublicationOnCourseRepository" relationship="REALIZATION">
+      <point x="0.0" y="-77.0" />
+      <point x="-654.0" y="1852.0" />
+      <point x="-714.0" y="1852.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="ru.online.education.domain.repository.model.AuthRequest" target="ru.online.education.domain.repository.model.BaseModel" relationship="GENERALIZATION">
+      <point x="0.0" y="-54.0" />
+      <point x="86.0" y="612.0" />
+      <point x="226.0" y="612.0" />
+      <point x="226.0" y="532.0" />
+      <point x="-320.25" y="532.0" />
+      <point x="33.75" y="14.0" />
+    </edge>
+    <edge source="ru.online.education.domain.repository.model.CourseCategoryDto" target="ru.online.education.domain.repository.model.BaseModel" relationship="GENERALIZATION">
+      <point x="0.0" y="-66.5" />
+      <point x="226.0" y="532.0" />
+      <point x="-320.25" y="532.0" />
+      <point x="33.75" y="14.0" />
+    </edge>
+    <edge source="ru.online.education.domain.repository.model.UserDto" target="ru.online.education.domain.repository.model.BaseModel" relationship="GENERALIZATION">
+      <point x="0.0" y="-111.5" />
+      <point x="966.0" y="612.0" />
+      <point x="226.0" y="612.0" />
+      <point x="226.0" y="532.0" />
+      <point x="-320.25" y="532.0" />
+      <point x="33.75" y="14.0" />
+    </edge>
+    <edge source="ru.online.education.domain.repository.model.CourseDto" target="ru.online.education.domain.repository.model.BaseModel" relationship="GENERALIZATION">
+      <point x="0.0" y="-135.5" />
+      <point x="826.0" y="612.0" />
+      <point x="226.0" y="612.0" />
+      <point x="226.0" y="532.0" />
+      <point x="-320.25" y="532.0" />
+      <point x="33.75" y="14.0" />
+    </edge>
+    <edge source="ru.online.education.app.feature.course.domain.repository.CourseRepositoryImpl" target="ru.online.education.domain.repository.CourseRepository" relationship="REALIZATION">
+      <point x="0.0" y="-100.0" />
+      <point x="0.0" y="42.5" />
+    </edge>
+    <edge source="ru.online.education.domain.repository.CourseCategoryRepository" target="ru.online.education.domain.repository.defaults.Repository" relationship="INTERFACE_GENERALIZATION">
+      <point x="0.0" y="-31.0" />
+      <point x="-234.0" y="1372.0" />
+      <point x="-654.0" y="1372.0" />
+      <point x="0.0" y="158.5" />
+    </edge>
+    <edge source="ru.online.education.domain.repository.model.PublicationAttachmentDto" target="ru.online.education.domain.repository.model.BaseModel" relationship="GENERALIZATION">
+      <point x="0.0" y="-88.5" />
+      <point x="-354.0" y="612.0" />
+      <point x="226.0" y="612.0" />
+      <point x="226.0" y="532.0" />
+      <point x="-320.25" y="532.0" />
+      <point x="33.75" y="14.0" />
+    </edge>
+    <edge source="ru.online.education.domain.repository.PublicationOnCourseRepository" target="ru.online.education.domain.repository.defaults.Repository" relationship="INTERFACE_GENERALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="-714.0" y="1372.0" />
+      <point x="-654.0" y="1372.0" />
+      <point x="0.0" y="158.5" />
+    </edge>
+    <edge source="ru.online.education.domain.repository.defaults.Repository" target="ru.online.education.domain.repository.model.BaseModel" relationship="DEPENDENCY">
+      <point x="111.25" y="-158.5" />
+      <point x="-542.75" y="672.0" />
+      <point x="-387.75" y="672.0" />
+      <point x="-33.75" y="14.0" />
+    </edge>
+    <edge source="ru.online.education.app.feature.publication.data.PublicationRepositoryImpl" target="ru.online.education.domain.repository.PublicationRepository" relationship="REALIZATION">
+      <point x="0.0" y="-100.0" />
+      <point x="-14.0" y="1832.0" />
+      <point x="6.0" y="1832.0" />
+      <point x="0.0" y="112.5" />
+    </edge>
+    <edge source="ru.online.education.domain.repository.model.AuthResponse" target="ru.online.education.domain.repository.model.BaseModel" relationship="GENERALIZATION">
+      <point x="0.0" y="-31.0" />
+      <point x="-34.0" y="612.0" />
+      <point x="226.0" y="612.0" />
+      <point x="226.0" y="532.0" />
+      <point x="-320.25" y="532.0" />
+      <point x="33.75" y="14.0" />
+    </edge>
+    <edge source="ru.online.education.domain.repository.model.ListResponse" target="ru.online.education.domain.repository.model.BaseModel" relationship="GENERALIZATION">
+      <point x="0.0" y="-31.0" />
+      <point x="506.0" y="612.0" />
+      <point x="226.0" y="612.0" />
+      <point x="226.0" y="532.0" />
+      <point x="-320.25" y="532.0" />
+      <point x="33.75" y="14.0" />
+    </edge>
+    <edge source="ru.online.education.domain.repository.defaults.Repository" target="ru.online.education.domain.repository.defaults.DefaultPaging" relationship="INTERFACE_GENERALIZATION">
+      <point x="-111.25" y="-158.5" />
+      <point x="-765.25" y="932.0" />
+      <point x="-774.0" y="932.0" />
+      <point x="0.0" y="43.5" />
+    </edge>
+    <edge source="ru.online.education.domain.repository.AttachmentRepository" target="ru.online.education.domain.repository.defaults.Repository" relationship="INTERFACE_GENERALIZATION">
+      <point x="0.0" y="-42.5" />
+      <point x="-474.0" y="1372.0" />
+      <point x="-654.0" y="1372.0" />
+      <point x="0.0" y="158.5" />
+    </edge>
+    <edge source="ru.online.education.domain.repository.UserRepository" target="ru.online.education.domain.repository.defaults.Repository" relationship="INTERFACE_GENERALIZATION">
+      <point x="0.0" y="-31.0" />
+      <point x="706.0" y="1372.0" />
+      <point x="-654.0" y="1372.0" />
+      <point x="0.0" y="158.5" />
+    </edge>
+    <edge source="ru.online.education.domain.repository.model.PublicationOnCourseDto" target="ru.online.education.domain.repository.model.BaseModel" relationship="GENERALIZATION">
+      <point x="0.0" y="-111.5" />
+      <point x="666.0" y="612.0" />
+      <point x="226.0" y="612.0" />
+      <point x="226.0" y="532.0" />
+      <point x="-320.25" y="532.0" />
+      <point x="33.75" y="14.0" />
+    </edge>
+    <edge source="ru.online.education.domain.repository.model.UserSession" target="ru.online.education.domain.repository.model.BaseModel" relationship="GENERALIZATION">
+      <point x="0.0" y="-88.5" />
+      <point x="-174.0" y="612.0" />
+      <point x="226.0" y="612.0" />
+      <point x="226.0" y="532.0" />
+      <point x="-320.25" y="532.0" />
+      <point x="33.75" y="14.0" />
+    </edge>
+    <edge source="ru.online.education.domain.repository.model.PublicationDto" target="ru.online.education.domain.repository.model.BaseModel" relationship="GENERALIZATION">
+      <point x="0.0" y="-181.5" />
+      <point x="366.0" y="612.0" />
+      <point x="226.0" y="612.0" />
+      <point x="226.0" y="532.0" />
+      <point x="-320.25" y="532.0" />
+      <point x="33.75" y="14.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="0.4248768472906404" showDependencies="true" x="399.19130434782664" y="1375.327536231884" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

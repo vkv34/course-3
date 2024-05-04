@@ -6,7 +6,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.School
 import ru.online.education.app.feature.home.model.NavigationGroup
 import ru.online.education.app.feature.home.model.NavigationItem
-import ru.online.education.app.feature.navigation.root.RootComponent
+import root.RootComponent
 
 fun RootComponent.Config.toNavigationItem(onClick: (RootComponent.Config) -> Unit) = when (this) {
     RootComponent.Config.Account -> NavigationItem(

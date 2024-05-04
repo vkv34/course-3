@@ -5,6 +5,7 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinx.serialization)
 }
 
@@ -51,6 +52,8 @@ kotlin {
             implementation(libs.paging.compose)
             implementation(libs.richeditor)
             implementation(libs.calf.filepicker)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor)
         }
 
 

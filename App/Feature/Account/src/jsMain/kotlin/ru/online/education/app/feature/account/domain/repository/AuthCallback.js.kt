@@ -1,8 +1,8 @@
 package ru.online.education.app.feature.account.domain.repository
 
 import kotlinx.browser.document
-import model.AuthRequest
-import model.AuthResponse
+import ru.online.education.domain.repository.model.AuthRequest
+import ru.online.education.domain.repository.model.AuthResponse
 import ru.online.education.app.feature.account.domain.model.Auth
 import kotlinx.browser.document
 import org.w3c.dom.HTMLButtonElement

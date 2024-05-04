@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import repository.AccountRepository
+import ru.online.education.domain.repository.AccountRepository
 import ru.online.education.app.core.util.api.toApiState
 import ru.online.education.app.core.util.coruotines.DispatcherProvider
 import ru.online.education.app.core.util.model.ApiState

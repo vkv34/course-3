@@ -1,11 +1,16 @@
 package ru.online.education.app.core.util.compose
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
 
 @Composable
 fun ConfirmDialogCard(
@@ -18,17 +23,17 @@ fun ConfirmDialogCard(
     ElevatedCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),
         elevation = CardDefaults.elevatedCardElevation(
-            defaultElevation = 5.dp
+            defaultElevation = 8.dp
         ),
         modifier = modifier
     ) {
         Column(
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.padding(16.dp)
                 .debbugable()
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleSmall,
+                style = MaterialTheme.typography.titleMedium,
                 color = contentColorFor(MaterialTheme.colorScheme.surfaceContainerHighest)
             )
             if (subTitle != null) {
@@ -63,5 +68,73 @@ fun ConfirmDialogCard(
 
         }
     }
+}
+
+@Composable
+fun ConfirmPopup(
+    title: String,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+    subTitle: String? = null,
+) {
+    var visible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        visible = true
+    }
+
+    Popup(
+        onDismissRequest = onDismiss,
+    ) {
+        AnimatedVisibility(
+            visible = visible,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            ConfirmDialogCard(
+                title = "Удалить",
+                subTitle = subTitle,
+                onConfirm = onConfirm,
+                onDismiss = onDismiss
+            )
+        }
+    }
+}
+
+@Composable
+fun ConfirmIconButton(
+    icon: @Composable () -> Unit,
+    title: String,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit = {},
+    modifier: Modifier = Modifier,
+    subTitle: String? = null,
+) {
+    var opened by remember { mutableStateOf(false) }
+    IconButton(
+        onClick = {
+            opened = ! opened
+        },
+        modifier = modifier
+    ){
+        icon()
+
+        if (opened){
+            ConfirmPopup(
+                title = title,
+                subTitle = subTitle,
+                onConfirm = {
+                    onConfirm()
+                    opened = false
+                },
+                onDismiss = {
+                    onDismiss()
+                    opened = false
+                }
+            )
+        }
+    }
+
+
 }
 

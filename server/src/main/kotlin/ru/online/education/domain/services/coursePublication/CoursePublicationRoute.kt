@@ -6,10 +6,10 @@ import io.ktor.server.routing.*
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import model.PublicationDto
-import model.PublicationOnCourseDto
-import model.UserRole
 import ru.online.education.core.util.*
+import ru.online.education.domain.repository.model.PublicationDto
+import ru.online.education.domain.repository.model.PublicationOnCourseDto
+import ru.online.education.domain.repository.model.UserRole
 import ru.online.education.domain.services.account.auth.jwtAuthenticate
 import ru.online.education.domain.services.account.currentUser.getCurrentUser
 import util.ApiResult
@@ -54,6 +54,12 @@ fun Routing.coursePublicationRoute() {
                 checkNotNull(currentUser)
 
                 respond(PublicationRepositoryImpl(currentUser.role).getByPublicationOnCourseId(id))
+            }
+            delete("{id}") {
+                val id = call.parameters["id"]?.toIntOrNull() ?: 0
+                val publicationOnCourseRepository = PublicationOnCourseRepositoryImpl()
+
+                respond(publicationOnCourseRepository.deleteById(id))
             }
         }
     }

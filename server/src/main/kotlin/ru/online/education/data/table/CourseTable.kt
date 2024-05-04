@@ -1,7 +1,7 @@
 package ru.online.education.data.table
 
 import kotlinx.datetime.LocalDateTime
-import model.CourseState
+import ru.online.education.domain.repository.model.CourseState
 import org.jetbrains.exposed.crypt.encryptedVarchar
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ReferenceOption

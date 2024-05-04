@@ -1,8 +1,8 @@
 package ru.online.education.app.feature.course.domain.repository
 
 import app.cash.paging.*
-import model.CourseDto
-import model.ListResponse
+import ru.online.education.domain.repository.model.CourseDto
+import ru.online.education.domain.repository.model.ListResponse
 import ru.online.education.app.core.util.coruotines.suspendMap
 import ru.online.education.app.feature.course.domain.model.Course
 import ru.online.education.app.feature.course.domain.model.mapper.toCourse
@@ -19,8 +19,8 @@ class CoursePagingSource(
     }*/
 
     override suspend fun load(params: PagingSourceLoadParams<Int>): PagingSourceLoadResult<Int, Course> {
-        val nextPage = params.key ?: 0
-        val response = source(nextPage)
+        val page = params.key ?: 0
+        val response = source(page)
         return when (response) {
             is ApiResult.Empty -> PagingSourceLoadResultInvalid<Int, Course>() as PagingSourceLoadResult<Int, Course>
             is ApiResult.Error -> PagingSourceLoadResultError<Int, Course>(
@@ -36,8 +36,8 @@ class CoursePagingSource(
                         it.toCourse()
                             .copy(courseCreator = authorSource(it.creatorId ?: 0))
                     },
-                prevKey = (nextPage - 2).takeIf { it > 0 },
-                nextKey = if (response.data.values.isNotEmpty()) nextPage else null
+                prevKey = (page - 1).takeIf { it > 0 },
+                nextKey = if (response.data.values.isNotEmpty()) page.inc().takeIf { it > 0 } else null
             ) as PagingSourceLoadResult<Int, Course>
         }
     }

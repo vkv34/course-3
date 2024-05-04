@@ -1,8 +1,8 @@
 package domain.mapper
 
 import model.CourseCategory
-import model.CourseCategoryDto
-import model.CourseDto
+import ru.online.education.domain.repository.model.CourseCategoryDto
+import ru.online.education.domain.repository.model.CourseDto
 
 fun CourseCategoryDto.toCourseCategory() = CourseCategory(
     id = id,

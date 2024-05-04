@@ -2,9 +2,9 @@ package data
 
 import domain.NotificationManager
 import io.ktor.client.*
-import model.ListResponse
-import model.UserDto
-import repository.UserRepository
+import ru.online.education.domain.repository.model.ListResponse
+import ru.online.education.domain.repository.model.UserDto
+import ru.online.education.domain.repository.UserRepository
 import ru.online.education.app.core.util.ktorUtil.safeGet
 import util.ApiResult
 
@@ -16,9 +16,10 @@ class UserRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getAll(page: Int): ApiResult<ListResponse<UserDto>> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getAll(page: Int): ApiResult<ListResponse<UserDto>> = client.safeGet(
+        path = "/user/all/$page",
+        notificationManager
+    )
 
     override suspend fun getById(id: Int): ApiResult<UserDto> =
         client.safeGet<UserDto>("/user/$id", notificationManager = notificationManager)

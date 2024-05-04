@@ -1,8 +1,8 @@
 package ru.online.education.di
 
 import org.koin.dsl.module
-import repository.*
 import ru.online.education.data.model.JwtParameters
+import ru.online.education.domain.repository.*
 import ru.online.education.domain.services.account.AccountRepositoryImpl
 import ru.online.education.domain.services.account.AccountService
 import ru.online.education.domain.services.course.CourseRepositoryImpl

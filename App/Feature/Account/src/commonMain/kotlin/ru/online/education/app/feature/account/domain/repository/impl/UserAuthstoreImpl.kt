@@ -1,10 +1,12 @@
 package ru.online.education.app.feature.account.domain.repository.impl
 
 import domain.NotificationManager
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import ru.online.education.app.core.util.coruotines.DispatcherProvider
 import ru.online.education.app.core.util.store.KeyValueStorage
 import ru.online.education.app.feature.account.domain.model.UserAuthData
 import ru.online.education.app.feature.account.domain.repository.UserAuthStore
@@ -40,8 +42,11 @@ class UserAuthstoreImpl(
     }
 
 
-    override fun readAsFlow(): Flow<UserAuthData?> =
-        keyValueStorage.readAsFlow(KEY).map(::userAuthDataFromJson)
+    override fun readAsFlow(): SharedFlow<UserAuthData?> =
+        keyValueStorage
+            .readAsFlow(KEY)
+            .map(::userAuthDataFromJson)
+            .shareIn(CoroutineScope(SupervisorJob()+ DispatcherProvider.IO), started = SharingStarted.Eagerly)
 
     companion object {
         const val KEY = "AuthData"

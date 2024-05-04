@@ -2,10 +2,10 @@ package ru.online.education.domain.services.courseCategory
 
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
-import model.BaseModel
-import model.UserRole
+import ru.online.education.domain.repository.model.BaseModel
+import ru.online.education.domain.repository.model.UserRole
 import org.koin.ktor.ext.inject
-import repository.CourseCategoryRepository
+import ru.online.education.domain.repository.CourseCategoryRepository
 import ru.online.education.core.util.createAndRespond
 import ru.online.education.core.util.respond
 import ru.online.education.core.util.role

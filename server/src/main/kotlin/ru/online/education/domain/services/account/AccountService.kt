@@ -1,7 +1,7 @@
 package ru.online.education.domain.services.account
 
-import model.AuthResponse
-import repository.AccountRepository
+import ru.online.education.domain.repository.model.AuthResponse
+import ru.online.education.domain.repository.AccountRepository
 import util.ApiResult
 
 class AccountService(

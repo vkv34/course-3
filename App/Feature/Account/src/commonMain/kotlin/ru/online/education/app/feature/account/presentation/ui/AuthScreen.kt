@@ -7,6 +7,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import onlineeducation.app.feature.account.generated.resources.Res
 import onlineeducation.app.feature.account.generated.resources.login
 import onlineeducation.app.feature.account.generated.resources.register
@@ -43,7 +44,8 @@ fun AuthScreen(
             },
             label = {
                 Text("Пароль")
-            }
+            },
+            visualTransformation = PasswordVisualTransformation()
         )
         Button(onClick = authScreenState::auth) {
             Text(/*stringResource(Res.string.login)*/"Войти")

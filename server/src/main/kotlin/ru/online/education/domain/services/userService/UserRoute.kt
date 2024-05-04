@@ -3,8 +3,8 @@ package ru.online.education.domain.services.userService
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
-import repository.UserRepository
 import ru.online.education.core.util.respond
+import ru.online.education.domain.repository.UserRepository
 import ru.online.education.domain.services.account.auth.jwtAuthenticate
 
 fun Route.userRoute() {
@@ -14,6 +14,11 @@ fun Route.userRoute() {
                 val userService by application.inject<UserRepository>()
                 val id = call.parameters["id"]?.toInt() ?: 0
                 respond(userService.getById(id))
+            }
+            get("all/{page}") {
+                val userRepository by application.inject<UserRepository>()
+                val page = call.parameters["page"]?.toInt() ?: 0
+                respond(userRepository.getAll(page))
             }
         }
     }

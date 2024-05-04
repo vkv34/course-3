@@ -1,8 +1,8 @@
 package ru.online.education.domain.services.course
 
-import model.CourseDto
-import model.ListResponse
-import repository.CourseRepository
+import ru.online.education.domain.repository.model.CourseDto
+import ru.online.education.domain.repository.model.ListResponse
+import ru.online.education.domain.repository.CourseRepository
 import ru.online.education.core.util.apiCall
 import ru.online.education.domain.model.BaseService
 import util.ApiResult

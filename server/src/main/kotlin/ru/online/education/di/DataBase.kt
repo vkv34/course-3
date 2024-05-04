@@ -1,8 +1,8 @@
 package ru.online.education.di
 
 import kotlinx.coroutines.Dispatchers
-import model.UserDto
-import model.UserRole
+import ru.online.education.domain.repository.model.UserDto
+import ru.online.education.domain.repository.model.UserRole
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.statements.InsertStatement
@@ -70,6 +70,8 @@ val dataBaseModule =
                     PublicationAttachmentTable,
                     PublicationOnCourse,
                     UserSessionTable,
+                    PublicationAnswerTable,
+                    PublicationAnswerAttachmentTable
                 )
             }
 
@@ -99,12 +101,51 @@ val dataBaseModule =
                         userToInsertStatement(
                             it,
                             UserDto(
-                                email = "email",
+                                email = "admin1",
                                 password = "password",
-                                firstName = "admin",
+                                firstName = "Преподователь1",
+                                secondName = "Иван",
+                                lastName = "Иванович",
+                                role = UserRole.Admin,
+                            ),
+                        )
+                    }
+                    UsersTable.insert {
+                        userToInsertStatement(
+                            it,
+                            UserDto(
+                                email = "admin2",
+                                password = "password",
+                                firstName = "Преподаватель2",
+                                secondName = "Петр",
+                                lastName = "Петрович",
+                                role = UserRole.Admin,
+                            ),
+                        )
+                    }
+                    UsersTable.insert {
+                        userToInsertStatement(
+                            it,
+                            UserDto(
+                                email = "student1",
+                                password = "password",
+                                firstName = "Слушатель1",
                                 secondName = "admin",
                                 lastName = "admin",
-                                role = UserRole.Admin,
+                                role = UserRole.Student,
+                            ),
+                        )
+                    }
+                    UsersTable.insert {
+                        userToInsertStatement(
+                            it,
+                            UserDto(
+                                email = "student2",
+                                password = "password",
+                                firstName = "Слушатель2",
+                                secondName = "admin",
+                                lastName = "admin",
+                                role = UserRole.Student,
                             ),
                         )
                     }

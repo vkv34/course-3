@@ -1,20 +1,22 @@
 package ru.online.education.domain.services.coursePublication
 
-import model.ListResponse
-import model.PublicationDto
-import model.UserRole
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.UpdateStatement
 import org.slf4j.LoggerFactory
-import repository.PublicationRepository
 import ru.online.education.core.exception.SelectExeption
 import ru.online.education.core.util.apiCall
 import ru.online.education.core.util.dbCall
 import ru.online.education.data.table.PublicationOnCourse
 import ru.online.education.data.table.PublicationTable
 import ru.online.education.di.dbQuery
+import ru.online.education.domain.repository.PublicationRepository
+import ru.online.education.domain.repository.model.ListResponse
+import ru.online.education.domain.repository.model.PublicationDto
+import ru.online.education.domain.repository.model.UserRole
 import util.ApiResult
 
 class PublicationRepositoryImpl(
@@ -107,6 +109,11 @@ class PublicationRepositoryImpl(
                             .update(where = { PublicationTable.id eq data.publicationId }) {
                                 coursePublicationDtoToUpdateStatement(it, data)
                             }
+                        PublicationOnCourse
+                            .update(where = { PublicationOnCourse.id eq data.publicationInCourseId }) {
+                                it[deadLine] = data.deadLine
+                                    ?: Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+                            }
                         commit()
                         data.publicationId
                     }
@@ -175,4 +182,6 @@ class PublicationRepositoryImpl(
             statement[PublicationTable.type] = type
         }
     }
+
+
 }

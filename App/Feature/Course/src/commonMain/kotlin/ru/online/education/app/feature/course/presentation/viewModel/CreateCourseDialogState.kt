@@ -10,8 +10,8 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import model.CourseCategory
 import presentation.viewModel.CourseCategorySearchBarState
-import repository.CourseCategoryRepository
-import repository.CourseRepository
+import ru.online.education.domain.repository.CourseCategoryRepository
+import ru.online.education.domain.repository.CourseRepository
 import ru.online.education.app.core.util.coruotines.DispatcherProvider
 import ru.online.education.app.feature.course.domain.model.Course
 import ru.online.education.app.feature.course.domain.model.mapper.toCourse

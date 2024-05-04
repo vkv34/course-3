@@ -1,7 +1,7 @@
 package ru.online.education.domain.model
 
-import model.BaseModel
-import model.ListResponse
+import ru.online.education.domain.repository.model.BaseModel
+import ru.online.education.domain.repository.model.ListResponse
 import util.ApiResult
 
 interface BaseService<T : BaseModel, K> {

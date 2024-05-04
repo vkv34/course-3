@@ -1,15 +1,17 @@
 package ru.online.education.domain.services.userService
 
-import model.ListResponse
-import model.UserDto
-import model.UserRole
+import ru.online.education.domain.repository.model.ListResponse
+import ru.online.education.domain.repository.model.UserDto
+import ru.online.education.domain.repository.model.UserRole
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
-import repository.UserRepository
+import ru.online.education.domain.repository.UserRepository
 import ru.online.education.core.exception.SelectExeption
 import ru.online.education.core.util.dbCall
+import ru.online.education.data.table.UserOnCourse
 import ru.online.education.data.table.UserRoleTable
 import ru.online.education.data.table.UsersTable
 import ru.online.education.di.dbQuery
@@ -83,8 +85,15 @@ class UserRepositoryImpl : UserRepository {
             return getUserById(id) ?: throw InsertErrorException("addUser error")
         }*/
 
-    override suspend fun getAll(page: Int): ApiResult<ListResponse<UserDto>> {
-        TODO("Not yet implemented")
+    override suspend fun getAll(page: Int): ApiResult<ListResponse<UserDto>> = dbCall {
+        ListResponse(
+            dbQuery {
+                UsersTable
+                    .selectAll()
+                    .limit(n = pageSize, offset = pageSize * page.toLong())
+                    .map(::resultRowToUser)
+            }
+        )
     }
 
     override suspend fun getById(id: Int): ApiResult<UserDto> =

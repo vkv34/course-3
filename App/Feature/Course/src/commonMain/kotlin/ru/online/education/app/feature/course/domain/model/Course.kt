@@ -1,7 +1,7 @@
 package ru.online.education.app.feature.course.domain.model
 
 import kotlinx.datetime.LocalDateTime
-import model.Image
+import ru.online.education.domain.repository.model.Image
 
 data class Course(
     val id: Int = 0,

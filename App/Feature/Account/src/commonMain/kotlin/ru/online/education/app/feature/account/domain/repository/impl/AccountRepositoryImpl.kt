@@ -4,10 +4,10 @@ import domain.NotificationManager
 import io.github.aakira.napier.Napier
 import io.ktor.client.*
 import io.ktor.client.call.*
-import model.AuthRequest
-import model.AuthResponse
-import model.UserDto
-import repository.AccountRepository
+import ru.online.education.domain.repository.model.AuthRequest
+import ru.online.education.domain.repository.model.AuthResponse
+import ru.online.education.domain.repository.model.UserDto
+import ru.online.education.domain.repository.AccountRepository
 import ru.online.education.app.core.util.ktorUtil.postAsJson
 import ru.online.education.app.core.util.ktorUtil.safeGet
 import ru.online.education.app.core.util.ktorUtil.safePostAsJson

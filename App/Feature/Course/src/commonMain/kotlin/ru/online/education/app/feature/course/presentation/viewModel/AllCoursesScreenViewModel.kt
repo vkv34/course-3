@@ -9,10 +9,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import model.UserRole
-import repository.AccountRepository
-import repository.CourseRepository
-import repository.UserRepository
+import ru.online.education.domain.repository.model.UserRole
+import ru.online.education.domain.repository.AccountRepository
+import ru.online.education.domain.repository.CourseRepository
+import ru.online.education.domain.repository.UserRepository
 import ru.online.education.app.core.util.coruotines.DispatcherProvider
 import ru.online.education.app.feature.course.domain.repository.CoursePagingSource
 import util.ApiResult

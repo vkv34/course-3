@@ -1,20 +1,18 @@
 package ru.online.education.domain.services.course
 
-import model.CourseDto
-import model.Image
-import model.ListResponse
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.statements.InsertStatement
-import repository.CourseRepository
 import ru.online.education.core.exception.SelectExeption
 import ru.online.education.core.util.apiCall
 import ru.online.education.core.util.dbCall
-import ru.online.education.data.table.CourseCategoryTable
-import ru.online.education.data.table.CourseTable
-import ru.online.education.data.table.UserOnCourse
-import ru.online.education.data.table.UsersTable
+import ru.online.education.data.table.*
 import ru.online.education.di.dbQuery
+import ru.online.education.domain.repository.CourseRepository
+import ru.online.education.domain.repository.model.CourseDto
+import ru.online.education.domain.repository.model.Image
+import ru.online.education.domain.repository.model.ListResponse
+import ru.online.education.domain.repository.model.UserRole
 import util.ApiResult
 
 class CourseRepositoryImpl : CourseRepository {
@@ -30,7 +28,7 @@ class CourseRepositoryImpl : CourseRepository {
             call = {
                 val otherCoursesIds =
                     UserOnCourse.select(UserOnCourse.course)
-                        .where { UserOnCourse.role eq 0 }
+//                        .where { UserOnCourse.role eq 0 }
                         .andWhere { UserOnCourse.user eq userId }
 
                 ListResponse(
@@ -82,9 +80,19 @@ class CourseRepositoryImpl : CourseRepository {
         apiCall {
             val id =
                 dbQuery {
-                    CourseTable.insertAndGetId {
+
+                    val createdId = CourseTable.insertAndGetId {
                         courseToInsertStatement(it, data)
                     }.value
+
+                    commit()
+
+                    UserOnCourse.insert { statement ->
+                        statement[user] = EntityID(data.creatorId ?: 0, UsersTable)
+                        statement[role] = EntityID(UserRole.all.indexOf(UserRole.Admin) + 1, UserRoleTable)
+                        statement[this.course] = EntityID(createdId, CourseTable)
+                    }
+                    createdId
                 }
             getById(id)
         }

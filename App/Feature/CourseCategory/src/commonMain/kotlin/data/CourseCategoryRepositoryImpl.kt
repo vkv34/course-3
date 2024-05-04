@@ -2,9 +2,9 @@ package data
 
 import domain.NotificationManager
 import io.ktor.client.*
-import model.CourseCategoryDto
-import model.ListResponse
-import repository.CourseCategoryRepository
+import ru.online.education.domain.repository.model.CourseCategoryDto
+import ru.online.education.domain.repository.model.ListResponse
+import ru.online.education.domain.repository.CourseCategoryRepository
 import ru.online.education.app.core.util.ktorUtil.safeGet
 import ru.online.education.app.core.util.ktorUtil.safePostAsJson
 import util.ApiResult

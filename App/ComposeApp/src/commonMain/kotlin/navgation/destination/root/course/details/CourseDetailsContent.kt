@@ -19,8 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.sample.shared.multipane.details.CourseDetailsComponent
-import presentation.EditPublicationDialog
-import presentation.PublicationListScreen
+import ru.online.education.app.feature.publication.presentation.EditPublicationDialog
+import ru.online.education.app.feature.publication.presentation.PublicationListScreen
 import ru.online.education.app.core.util.compose.debbugable
 import ru.online.education.app.core.util.model.ApiState
 
@@ -78,6 +78,9 @@ fun CourseDetailsContent(
                 editable = editable,
                 onEditClick = {
                     context.openEditDialog(it.publicationInCourseId)
+                },
+                onDeleteClick = {
+                    context.deletePublication(it.publicationInCourseId)
                 }
             )
 

@@ -1,11 +1,8 @@
 import kotlinx.browser.window
 import org.w3c.dom.url.URL
-import ru.online.education.app.feature.navigation.root.RootComponent
-import org.w3c.fetch.Request
+import root.RootComponent
 import org.w3c.fetch.Response
 import org.w3c.workers.FetchEvent
-import org.w3c.workers.InstallEvent
-import kotlin.js.Promise
 
 val rootEndPoints = listOf(
     RootComponent.Child.AccountChild.name,

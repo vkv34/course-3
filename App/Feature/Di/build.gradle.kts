@@ -1,12 +1,15 @@
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.ir.backend.js.compile
 
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.androidLibrary)
 }
 
 kotlin {
@@ -21,7 +24,22 @@ kotlin {
 
     jvm()
 
+    androidTarget{
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "1.8"
+
+            }
+
+        }
+    }
+
     sourceSets {
+
+        androidMain.dependencies {
+            implementation(libs.koin.android)
+
+        }
 
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -68,5 +86,15 @@ kotlin {
 //        }
 
 
+    }
+}
+
+
+android {
+
+    namespace = "ru.online.education.app.feature.di"
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    defaultConfig {
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }

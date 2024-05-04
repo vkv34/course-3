@@ -24,7 +24,7 @@ data class DeviceConfiguration(
     val screenWidthPixels: Int = 0,
     val screenHeightPixels: Int = 0,
     val deviceType: DeviceType = DeviceType.Phone,
-    val isDebbugable: Boolean = true
+    val isDebbugable: Boolean = false
 ){
     val isHorizontal: Boolean
         get() = deviceType is Orienatation.Horizontal
@@ -106,7 +106,7 @@ fun AdaptiveBox(
             adaptiveContent(localDeviceConfiguration.value)
         }
 
-       
+
 
         if (localDeviceConfiguration.value.isDebbugable) {
             Box(
@@ -122,19 +122,19 @@ fun AdaptiveBox(
                 }
             }
         }
-        
-        Box(
-            modifier = Modifier.align(Alignment.TopEnd)
-                .background(Color.Gray.copy(alpha = 0.7f))
-        ) {
-            Row {
-                Text("Debug")
-                Switch(
-                    localDeviceConfiguration.value.isDebbugable,
-                    onCheckedChange = {
-                        localDeviceConfiguration.value = localDeviceConfiguration.value.copy(isDebbugable = it)
-                    })
-            }
-        }
+
+//        Box(
+//            modifier = Modifier.align(Alignment.TopEnd)
+//                .background(Color.Gray.copy(alpha = 0.7f))
+//        ) {
+//            Row {
+//                Text("Debug")
+//                Switch(
+//                    localDeviceConfiguration.value.isDebbugable,
+//                    onCheckedChange = {
+//                        localDeviceConfiguration.value = localDeviceConfiguration.value.copy(isDebbugable = it)
+//                    })
+//            }
+//        }
     }
 }

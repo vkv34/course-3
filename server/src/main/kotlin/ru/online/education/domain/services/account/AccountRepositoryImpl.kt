@@ -2,13 +2,13 @@ package ru.online.education.domain.services.account
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import model.AuthResponse
-import model.SessionState
-import model.UserDto
-import model.UserSession
-import repository.AccountRepository
-import repository.UserRepository
-import repository.UserSessionRepository
+import ru.online.education.domain.repository.model.AuthResponse
+import ru.online.education.domain.repository.model.SessionState
+import ru.online.education.domain.repository.model.UserDto
+import ru.online.education.domain.repository.model.UserSession
+import ru.online.education.domain.repository.AccountRepository
+import ru.online.education.domain.repository.UserRepository
+import ru.online.education.domain.repository.UserSessionRepository
 import util.ApiResult
 import java.util.*
 import java.util.concurrent.TimeUnit

@@ -1,4 +1,7 @@
+import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -14,19 +17,30 @@ import kotlinx.browser.window
 import kotlinx.coroutines.*
 import navgation.destination.root.RootContent
 import org.jetbrains.skiko.wasm.onWasmReady
-import org.w3c.dom.*
+import org.w3c.dom.Document
+import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.ItemArrayLike
+import org.w3c.dom.asList
 import org.w3c.files.File
+import root.RootComponent
 import ru.online.education.app.core.util.coruotines.DispatcherProvider
-import ru.online.education.app.feature.navigation.root.RootComponent
+import ru.online.education.app.feature.di.instalDi
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalDecomposeApi::class)
 fun main() {
 //    val url = window.location.toString()
 
-
+    val launchDelay = 1.seconds
     val lifecycle = LifecycleRegistry()
+
+
+
+//    addEndPointsToServiceWorker(rootEndPoints)
+
+    instalDi()
 
     val root = RootComponent(
         context = DefaultComponentContext(lifecycle),
@@ -34,17 +48,15 @@ fun main() {
         webHistoryController = DefaultWebHistoryController()
     )
 
-    addEndPointsToServiceWorker(rootEndPoints)
-
-    instalDi()
-
     val scope = CoroutineScope(SupervisorJob() + DispatcherProvider.IO)
 
     scope.launch {
         root.notificationManager.notificationFlow().collect { messages ->
-           val message = messages.first()
-            withContext(Dispatchers.Main) {
-                window.alert("${message.title} \n ${message.content}")
+            val message = messages.firstOrNull()
+            if (message != null) {
+                withContext(Dispatchers.Main) {
+                    window.alert("${message.title} \n ${message.content}")
+                }
             }
         }
     }
@@ -58,11 +70,27 @@ fun main() {
 
 
             CanvasBasedWindow(canvasElementId = element.id) {
+                val coroutineScope = rememberCoroutineScope()
+                var showLoadingScreen by remember { mutableStateOf(true) }
+                LaunchedEffect(Unit) {
+                    coroutineScope.launch {
+                        delay(launchDelay)
+                    }
+                    showLoadingScreen = false
+                }
                 ApplicationTheme {
-                    RootContent(
-                        component = root,
-                        modifier = Modifier.fillMaxSize()
-                    )
+                    Crossfade(showLoadingScreen) {
+                        if (it) {
+                            Box(Modifier.fillMaxSize()) {
+                                CircularProgressIndicator()
+                            }
+                        } else {
+                            RootContent(
+                                component = root,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                    }
                 }
 
                 WindowExceptionHandler {

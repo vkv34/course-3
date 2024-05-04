@@ -1,12 +1,12 @@
 package ru.online.education.domain.services.courseCategory
 
-import model.CourseCategoryDto
-import model.ListResponse
+import ru.online.education.domain.repository.model.CourseCategoryDto
+import ru.online.education.domain.repository.model.ListResponse
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
-import repository.CourseCategoryRepository
+import ru.online.education.domain.repository.CourseCategoryRepository
 import ru.online.education.core.exception.SelectExeption
 import ru.online.education.core.util.apiCall
 import ru.online.education.core.util.dbCall

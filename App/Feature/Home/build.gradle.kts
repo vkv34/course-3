@@ -5,7 +5,9 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.androidLibrary)
 }
 
 kotlin {
@@ -17,9 +19,19 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
     jvm()
+
+    androidTarget {
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
     sourceSets {
 
-
+        androidMain.dependencies {
+            implementation(libs.androidx.material3.android)
+        }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -47,5 +59,13 @@ kotlin {
             implementation(libs.kotlinx.html.js)
         }
 
+    }
+}
+
+android {
+    namespace = "ru.online.education.app.feature.home"
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    defaultConfig {
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }

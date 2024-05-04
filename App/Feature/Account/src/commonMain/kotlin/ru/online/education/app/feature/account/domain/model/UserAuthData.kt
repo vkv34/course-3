@@ -1,7 +1,7 @@
 package ru.online.education.app.feature.account.domain.model
 
 import kotlinx.serialization.Serializable
-import model.UserRole
+import ru.online.education.domain.repository.model.UserRole
 
 @Serializable
 data class UserAuthData (

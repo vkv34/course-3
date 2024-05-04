@@ -1,4 +1,4 @@
-package ru.online.education.app.feature.navigation.root
+package root
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
@@ -23,9 +23,7 @@ import kotlinx.serialization.Serializable
 import model.AppState
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import repository.AccountRepository
-import root.AuthDialogComponent
-import root.ComposeComponent
+import ru.online.education.domain.repository.AccountRepository
 import ru.online.education.app.core.util.coruotines.DispatcherProvider
 import ru.online.education.app.feature.account.domain.repository.UserAuthStore
 import ru.online.education.app.feature.account.presentation.model.AuthState

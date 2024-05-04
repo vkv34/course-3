@@ -1,12 +1,12 @@
 package ru.online.education.core.util
 
-import core.Validator
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.util.pipeline.*
-import model.BaseModel
+import ru.online.education.domain.core.Validator
+import ru.online.education.domain.repository.model.BaseModel
 import ru.online.education.domain.model.BaseService
 import util.ApiResult
 
@@ -80,6 +80,10 @@ suspend inline fun <reified T, reified K> PipelineContext<Unit, ApplicationCall>
 
 suspend inline fun <reified T : BaseModel> PipelineContext<Unit, ApplicationCall>.respond(apiResult: ApiResult<T>) {
     call.respond(status = apiResult.toStatusCode(), apiResult)
+    finish()
+}
+suspend inline fun <reified T : BaseModel> PipelineContext<Unit, ApplicationCall>.respond(nullableApiResult: ApiResult<T?>, text: String) {
+    call.respond(status = nullableApiResult.toStatusCode(), nullableApiResult)
     finish()
 }
 

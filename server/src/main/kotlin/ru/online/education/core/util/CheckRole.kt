@@ -7,12 +7,12 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import model.BaseModel
-import model.SessionState
-import model.UserRole
+import ru.online.education.domain.repository.model.BaseModel
+import ru.online.education.domain.repository.model.SessionState
+import ru.online.education.domain.repository.model.UserRole
 import org.koin.ktor.ext.inject
-import repository.UserRepository
-import repository.UserSessionRepository
+import ru.online.education.domain.repository.UserRepository
+import ru.online.education.domain.repository.UserSessionRepository
 import util.ApiResult
 
 inline fun <reified T : BaseModel> Route.role(roles: Iterable<UserRole>) {
@@ -45,8 +45,8 @@ inline fun <reified T : BaseModel> Route.role(roles: Iterable<UserRole>) {
         val user = userRepository.getById(userId)
 
         if (user is ApiResult.Success) {
-            if (!roles.any(user.data.role::equals)) {
-                call.respond(HttpStatusCode.Forbidden, ApiResult.Error<T>("Не достаточно прав") as ApiResult<T>)
+            if (!roles.any{it == user.data.role}) {
+                call.respond(HttpStatusCode.Forbidden, ApiResult.Error<T>("Не достаточно прав, необходимые роли: ${roles.joinToString(", ")}") as ApiResult<T>)
                 finish()
             }
         } else {

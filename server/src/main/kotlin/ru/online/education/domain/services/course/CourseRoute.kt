@@ -3,9 +3,9 @@ package ru.online.education.domain.services.course
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.routing.*
-import model.BaseModel
-import model.CourseDto
-import model.UserRole
+import ru.online.education.domain.repository.model.BaseModel
+import ru.online.education.domain.repository.model.CourseDto
+import ru.online.education.domain.repository.model.UserRole
 import org.koin.ktor.ext.inject
 import ru.online.education.core.util.respond
 import ru.online.education.core.util.respondCreated

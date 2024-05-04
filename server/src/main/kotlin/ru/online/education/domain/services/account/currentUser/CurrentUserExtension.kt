@@ -4,11 +4,11 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.util.pipeline.*
-import model.UserDto
-import model.UserSession
+import ru.online.education.domain.repository.model.UserDto
+import ru.online.education.domain.repository.model.UserSession
 import org.koin.ktor.ext.inject
-import repository.UserRepository
-import repository.UserSessionRepository
+import ru.online.education.domain.repository.UserRepository
+import ru.online.education.domain.repository.UserSessionRepository
 import ru.online.education.core.exception.AuthException
 import ru.online.education.core.util.respond
 import util.ApiResult

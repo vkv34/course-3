@@ -1,7 +1,7 @@
 package ru.online.education.app.feature.account.domain.repository
 
 import io.github.aakira.napier.Napier
-import model.AuthResponse
+import ru.online.education.domain.repository.model.AuthResponse
 import ru.online.education.app.feature.account.domain.model.UserAuthData
 
 class AuthCallbackImpl(

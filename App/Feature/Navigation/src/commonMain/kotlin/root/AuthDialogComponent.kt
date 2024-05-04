@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import repository.AccountRepository
+import ru.online.education.domain.repository.AccountRepository
 import ru.online.education.app.core.util.coruotines.DispatcherProvider
 import ru.online.education.app.feature.account.presentation.model.AuthScreenState
 

@@ -1,15 +1,15 @@
 package ru.online.education.domain.services.userSession
 
-import model.ListResponse
-import model.SessionState
-import model.UserSession
+import ru.online.education.domain.repository.model.ListResponse
+import ru.online.education.domain.repository.model.SessionState
+import ru.online.education.domain.repository.model.UserSession
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.update
-import repository.UserSessionRepository
+import ru.online.education.domain.repository.UserSessionRepository
 import ru.online.education.core.exception.SelectExeption
 import ru.online.education.core.util.apiCall
 import ru.online.education.core.util.dbCall

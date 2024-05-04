@@ -1,6 +1,6 @@
 package ru.online.education.data.table
 
-import model.SessionState
+import ru.online.education.domain.repository.model.SessionState
 import org.jetbrains.exposed.crypt.encryptedVarchar
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.kotlin.datetime.CurrentDateTime

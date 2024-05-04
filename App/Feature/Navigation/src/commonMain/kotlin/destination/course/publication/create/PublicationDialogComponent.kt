@@ -1,14 +1,14 @@
 package destination.course.publication.create
 
 import com.arkivanov.decompose.ComponentContext
-import domain.AddPublicationScreenState
-import domain.AttachmentListState
+import ru.online.education.app.feature.publication.domain.AddPublicationScreenState
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import ru.online.education.app.feature.publicationAttachment.domain.AttachmentListState
 
 class PublicationDialogComponent(
     componentContext: ComponentContext,

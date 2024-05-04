@@ -50,6 +50,23 @@ suspend inline fun <reified T, reified V> HttpClient.safePostAsJson(
     notificationManager.sendError(e.message ?: "Ошбика ${e.message}", e.stackTraceToString())
     ApiResult.Error<V>("Ошбика ${e.message}", e)
 }
+suspend inline fun <reified T, reified V> HttpClient.safePutAsJson(
+    path: String,
+    body: T,
+    notificationManager: NotificationManager,
+    builder: HttpRequestBuilder.() -> Unit = {}
+) = try {
+    val response = put(path) {
+        contentType(ContentType.Application.Json)
+        setBody(body)
+        builder()
+    }
+
+    response.body<ApiResult<V>>()
+} catch (e: Exception) {
+    notificationManager.sendError(e.message ?: "Ошбика ${e.message}", e.stackTraceToString())
+    ApiResult.Error<V>("Ошбика ${e.message}", e)
+}
 
 suspend inline fun <reified T> HttpClient.safeDelete(
     path: String

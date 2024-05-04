@@ -1,7 +1,7 @@
 package ru.online.education.app.core.util.compose
 
 import androidx.compose.ui.graphics.Color
-import model.Image
+import ru.online.education.domain.repository.model.Image
 import kotlin.math.pow
 import kotlin.math.sqrt
 

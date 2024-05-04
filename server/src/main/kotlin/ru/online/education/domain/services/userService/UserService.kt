@@ -1,6 +1,6 @@
 package ru.online.education.domain.services.userService
 
-import repository.UserRepository
+import ru.online.education.domain.repository.UserRepository
 
 class UserService(private val userRepository: UserRepository) {
     suspend fun getDefaultUser() /*userRepository.getAll(1).first()*/ {

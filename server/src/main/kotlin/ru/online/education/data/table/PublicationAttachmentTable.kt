@@ -1,6 +1,6 @@
 package ru.online.education.data.table
 
-import model.PublicationAttachmentType
+import ru.online.education.domain.repository.model.PublicationAttachmentType
 import org.jetbrains.exposed.crypt.encryptedVarchar
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.kotlin.datetime.CurrentDateTime

@@ -27,7 +27,7 @@ import ru.online.education.app.feature.account.presentation.ui.account.AccountCa
 import ru.online.education.app.feature.home.AdaptiveScaffold
 import ru.online.education.app.feature.home.NaviagtionIcon
 import ru.online.education.app.feature.home.model.NavigationItem
-import ru.online.education.app.feature.navigation.root.RootComponent
+import root.RootComponent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

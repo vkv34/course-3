@@ -3,8 +3,8 @@ package domain
 import app.cash.paging.*
 import domain.mapper.toCourseCategory
 import model.CourseCategory
-import model.CourseCategoryDto
-import model.ListResponse
+import ru.online.education.domain.repository.model.CourseCategoryDto
+import ru.online.education.domain.repository.model.ListResponse
 import util.ApiResult
 
 class CourseCategorySearchPager(

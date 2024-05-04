@@ -8,7 +8,7 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
-import repository.UserSessionRepository
+import ru.online.education.domain.repository.UserSessionRepository
 import ru.online.education.data.model.JwtParameters
 
 fun Application.installJWTAuth() {

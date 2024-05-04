@@ -3,8 +3,8 @@ package destination.courseCategory.dialog.addDialog
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.CoroutineScope
 import model.CourseCategory
-import model.CourseCategoryDto
-import model.CourseDto
+import ru.online.education.domain.repository.model.CourseCategoryDto
+import ru.online.education.domain.repository.model.CourseDto
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import presentation.viewModel.AddCourseCategoryDialogState

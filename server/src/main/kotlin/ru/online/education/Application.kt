@@ -23,8 +23,11 @@ import ru.online.education.domain.services.account.auth.installJWTAuth
 import ru.online.education.domain.services.course.courseRoute
 import ru.online.education.domain.services.courseCategory.courseCategoryRoute
 import ru.online.education.domain.services.coursePublication.coursePublicationRoute
+import ru.online.education.domain.services.publicationAnswer.atachment.answerAttachmentRoute
+import ru.online.education.domain.services.publicationAnswer.publicationAnswerRoute
 import ru.online.education.domain.services.publicationAttachment.publicationAttachmentRoute
 import ru.online.education.domain.services.telemetry.installTelemetry
+import ru.online.education.domain.services.userOnCourse.userOnCourseRoute
 import ru.online.education.domain.services.userService.UserService
 import ru.online.education.domain.services.userService.userRoute
 
@@ -87,9 +90,15 @@ fun Application.module() {
 
         publicationAttachmentRoute()
 
-       /* openAPI(path="openapi", swaggerFile = "openapi/documentation.yaml") {
-            codegen = StaticHtmlCodegen()
-        }*/
+        userOnCourseRoute()
+
+        publicationAnswerRoute()
+
+        answerAttachmentRoute()
+
+        /* openAPI(path="openapi", swaggerFile = "openapi/documentation.yaml") {
+             codegen = StaticHtmlCodegen()
+         }*/
 
         userRoute()
 

@@ -28,7 +28,8 @@ fun AccountCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .debbugable(),
+            .debbugable()
+        ,
         onClick = onClick
     ) {
         Column(

@@ -1,20 +1,17 @@
 package ru.online.education.domain.services.coursePublication
 
-import model.ListResponse
-import model.PublicationOnCourseDto
-import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.insertAndGetId
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.UpdateStatement
-import org.jetbrains.exposed.sql.update
-import repository.PublicationOnCourseRepository
 import ru.online.education.core.exception.SelectExeption
 import ru.online.education.core.util.apiCall
 import ru.online.education.core.util.dbCall
 import ru.online.education.data.table.PublicationOnCourse
 import ru.online.education.di.dbQuery
+import ru.online.education.domain.repository.PublicationOnCourseRepository
+import ru.online.education.domain.repository.model.ListResponse
+import ru.online.education.domain.repository.model.PublicationOnCourseDto
 import util.ApiResult
 
 class PublicationOnCourseRepositoryImpl : PublicationOnCourseRepository {
@@ -37,9 +34,14 @@ class PublicationOnCourseRepositoryImpl : PublicationOnCourseRepository {
             },
         )
 
-    override suspend fun deleteById(id: Int): ApiResult<PublicationOnCourseDto> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun deleteById(id: Int): ApiResult<PublicationOnCourseDto> =
+        apiCall {
+            val publicationOnCourse = getById(id)
+            dbQuery {
+                PublicationOnCourse.deleteWhere { PublicationOnCourse.id eq id }
+            }
+            publicationOnCourse
+        }
 
     override suspend fun update(data: PublicationOnCourseDto): ApiResult<PublicationOnCourseDto?> {
         TODO("Not yet implemented")

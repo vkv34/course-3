@@ -2,16 +2,16 @@ package ru.online.education.domain.services.publicationAttachment
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import model.ListResponse
-import model.PublicationAttachmentDto
-import model.PublicationAttachmentType
+import ru.online.education.domain.repository.model.ListResponse
+import ru.online.education.domain.repository.model.PublicationAttachmentDto
+import ru.online.education.domain.repository.model.PublicationAttachmentType
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
-import repository.AttachmentRepository
+import ru.online.education.domain.repository.AttachmentRepository
 import ru.online.education.core.exception.SelectExeption
 import ru.online.education.core.util.apiCall
 import ru.online.education.core.util.dbCall
@@ -30,6 +30,7 @@ class AttachmentRepositoryImpl : AttachmentRepository {
         fileName: String,
         publicationId: Int,
         progressChanged: (sentBytes: Long, totalBytes: Long) -> Unit,
+        fileType: PublicationAttachmentType
     ): ApiResult<PublicationAttachmentDto> =
         try {
             val resultFileName = "${UUID.randomUUID()}.${fileName.split(".").last()}"
@@ -43,7 +44,7 @@ class AttachmentRepositoryImpl : AttachmentRepository {
                     publicationId = publicationId,
                     name = fileName,
                     content = resultFileName,
-                    contentType = PublicationAttachmentType.File,
+                    contentType = fileType,
                 ),
             )
         } catch (e: Exception) {

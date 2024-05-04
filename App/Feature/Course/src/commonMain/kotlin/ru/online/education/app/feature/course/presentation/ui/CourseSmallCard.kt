@@ -18,8 +18,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.seiko.imageloader.rememberImagePainter
-import model.CourseDto
-import model.Image
+import ru.online.education.domain.repository.model.CourseDto
+import ru.online.education.domain.repository.model.Image
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.online.education.app.core.util.compose.*
 import ru.online.education.app.feature.course.domain.model.Course

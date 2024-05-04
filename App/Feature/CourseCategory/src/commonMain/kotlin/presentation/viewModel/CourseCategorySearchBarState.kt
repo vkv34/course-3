@@ -11,7 +11,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import model.CourseCategory
-import repository.CourseCategoryRepository
+import ru.online.education.domain.repository.CourseCategoryRepository
 import ru.online.education.app.core.util.coruotines.DispatcherProvider
 import kotlin.time.Duration.Companion.milliseconds
 

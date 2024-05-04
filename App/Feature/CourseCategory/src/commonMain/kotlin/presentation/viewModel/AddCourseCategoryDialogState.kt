@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import model.CourseCategory
-import model.CourseCategoryDto
-import repository.CourseCategoryRepository
+import ru.online.education.domain.repository.model.CourseCategoryDto
+import ru.online.education.domain.repository.CourseCategoryRepository
 import util.ApiResult
 
 class AddCourseCategoryDialogState(
