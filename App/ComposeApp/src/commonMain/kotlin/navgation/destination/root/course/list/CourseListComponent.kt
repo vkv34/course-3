@@ -2,18 +2,17 @@ package navgation.destination.root.course.list
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import destination.course.list.CourseListComponent
 import presentation.CourseCategoryAddDialog
@@ -48,8 +47,65 @@ fun CourseListComponent(
             if (canEdit) {
                 FloatingActionButton(
                     onClick = context::openCreateDialog,
+                    containerColor = MaterialTheme.colorScheme.surfaceTint
                 ) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = null)
+                }
+            } else {
+                var opened by remember { mutableStateOf(false) }
+                ExtendedFloatingActionButton(
+                    text = {
+                        Text(text = "Присоединиться к курсу")
+                    },
+                    icon = {
+                        Icon(imageVector = Icons.Default.Add, contentDescription = null)
+                    },
+                    onClick = {
+                        opened = !opened
+                    },
+                )
+
+                if (opened) {
+                    Popup(
+                        onDismissRequest = {
+                            opened = !opened
+                        }
+                    ) {
+                        Card {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                var text by remember { mutableStateOf("") }
+                                val loading by context.loading.subscribeAsState()
+                                val error by context.addError.subscribeAsState()
+                                OutlinedTextField(
+                                    value = text,
+                                    onValueChange = {
+                                        text = it
+                                    },
+                                    label = {
+                                        Text(
+                                            text = "Код курса"
+                                        )
+                                    },
+                                    isError = error.isNotBlank(),
+                                    supportingText = {
+                                        if (error.isNotBlank()) {
+                                            Text(error)
+                                        }
+                                    }
+                                )
+                                TextButton(
+                                    onClick = {
+                                        context.tryToJoinCourse(text.toIntOrNull() ?: 0)
+                                    },
+                                    enabled = loading
+                                ) {
+                                    Text("Присоединится к курсу")
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

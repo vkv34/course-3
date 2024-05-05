@@ -12,14 +12,13 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ru.online.education.app.core.util.coruotines.DispatcherProvider
 import ru.online.education.app.feature.publication.domain.mapper.toPublication
 import ru.online.education.app.feature.publicationAttachment.domain.AnswerAttachmentListState
-import ru.online.education.app.feature.publicationAttachment.repository.AnswerAttachmentRepositoryImpl
 import ru.online.education.domain.repository.*
-import ru.online.education.domain.repository.model.ListResponse
+import ru.online.education.domain.repository.model.PublicationAnswerAttachmentDto
 import ru.online.education.domain.repository.model.UserOnCourseDto
 import ru.online.education.domain.repository.model.UserRole
-import util.ApiResult
 import util.map
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -165,6 +164,20 @@ class PublicationScreenState(
             coroutineScope = scope
         )
 
+    val answers = MutableStateFlow(mapOf<Int, List<PublicationAnswerAttachmentDto>>())
 
+    fun clearAnswers(){
+        answers.update { mapOf() }
+    }
+
+    fun loadAnswerAttachments(answerId: Int) {
+        scope.launch(DispatcherProvider.IO) {
+            val result = answerAttachmentRepository.getAttachments(answerId)
+
+            if (result.successOrNull() != null) {
+                answers.update { it.plus(answerId to result.successOrNull()!!.values) }
+            }
+        }
+    }
 
 }

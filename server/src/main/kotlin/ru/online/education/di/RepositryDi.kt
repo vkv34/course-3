@@ -9,7 +9,10 @@ import ru.online.education.domain.services.course.CourseRepositoryImpl
 import ru.online.education.domain.services.course.CourseService
 import ru.online.education.domain.services.courseCategory.CourseCategoryRepositoryImpl
 import ru.online.education.domain.services.courseCategory.CourseCategoryService
+import ru.online.education.domain.services.publicationAnswer.PublicationAnswerRepositoryImpl
+import ru.online.education.domain.services.publicationAnswer.atachment.AnswerAttachmentRepositoryImpl
 import ru.online.education.domain.services.publicationAttachment.AttachmentRepositoryImpl
+import ru.online.education.domain.services.userOnCourse.UserOnCourseRepositoryImpl
 import ru.online.education.domain.services.userService.UserRepositoryImpl
 import ru.online.education.domain.services.userService.UserService
 import ru.online.education.domain.services.userSession.UserSessionRepositoryImpl
@@ -45,4 +48,11 @@ val appModule =
         single { CourseCategoryService(courseCategoryRepository = get()) }
 
         single<AttachmentRepository> { AttachmentRepositoryImpl() }
+        single<AnswerAttachmentRepository> { AnswerAttachmentRepositoryImpl() }
+        single<PublicationAnswerRepository> { PublicationAnswerRepositoryImpl(get()) }
+        single<UserOnCourseRepository> {
+            UserOnCourseRepositoryImpl(
+                userRepository = get()
+            )
+        }
     }

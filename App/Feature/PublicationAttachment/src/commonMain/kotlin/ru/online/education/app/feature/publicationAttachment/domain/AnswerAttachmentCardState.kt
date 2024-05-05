@@ -86,6 +86,7 @@ class AnswerAttachmentCardState(
     }
 
     suspend fun send(answerId: Int) {
-        repository.sendFile(attachment.value.attachment.id, answerId)
+        val result = repository.sendFile(attachment.value.attachment.id, answerId)
+        result
     }
 }

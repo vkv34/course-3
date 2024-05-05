@@ -5,17 +5,19 @@ import com.arkivanov.decompose.router.slot.SlotNavigation
 import com.arkivanov.decompose.router.slot.activate
 import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.router.slot.dismiss
+import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.essenty.lifecycle.doOnDestroy
 import destination.course.list.create.CreateCourseDialogComponent
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import org.koin.core.component.inject
 import ru.online.education.app.core.util.coruotines.DispatcherProvider
 import ru.online.education.app.feature.course.presentation.viewModel.AllCoursesScreenViewModel
+import ru.online.education.domain.repository.UserOnCourseRepository
+import ru.online.education.domain.repository.model.UserOnCourseDto
+import util.ApiResult
 
 class CourseListComponent(
     componentContext: ComponentContext,
@@ -62,6 +64,35 @@ class CourseListComponent(
 
     fun openCreateDialog() {
         dialogNavigation.activate(Unit)
+    }
+
+    val userOnCourseRepository by inject<UserOnCourseRepository>()
+
+    val addError = MutableValue("")
+    val loading = MutableValue(false)
+
+    fun tryToJoinCourse(code: Int) {
+        scope.launch(DispatcherProvider.IO) {
+            withContext(DispatcherProvider.Main){
+                loading.value = true
+            }
+            val result = userOnCourseRepository.add(
+                UserOnCourseDto(
+                    courseId = code
+                )
+            )
+            if (result is ApiResult.Success){
+                allCoursesViewModel.refresh()
+            }else{
+                withContext(DispatcherProvider.Main){
+                    addError.value = result.message
+                }
+            }
+
+            withContext(DispatcherProvider.Main){
+                loading.value = false
+            }
+        }
     }
 //    private val _models =
 //        MutableValue(

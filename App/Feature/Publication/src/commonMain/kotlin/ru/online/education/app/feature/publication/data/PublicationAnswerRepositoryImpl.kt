@@ -35,6 +35,25 @@ class PublicationAnswerRepositoryImpl(
         notificationManager = notificationManager
     )
 
+    override suspend fun sendMarkAndComment(
+        mark: Byte?,
+        comment: String?,
+        answerId: Int
+    ): ApiResult<PublicationAnswerDto> = httpClient.safePutAsJson(
+        path = buildString {
+            append("publicationAnswer/mark?")
+            if (!comment.isNullOrBlank()) {
+                append("comment=${comment}&")
+            }
+            if (mark != null) {
+                append("mark=${mark}&")
+            }
+            append("answerId=${answerId}")
+        },
+        body = PublicationAnswerDto(),
+        notificationManager = notificationManager
+    )
+
     override suspend fun getAll(page: Int): ApiResult<ListResponse<PublicationAnswerDto>> {
         TODO("Not yet implemented")
     }

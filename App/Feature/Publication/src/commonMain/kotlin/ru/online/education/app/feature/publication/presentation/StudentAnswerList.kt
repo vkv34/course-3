@@ -29,70 +29,71 @@ fun StudentAnswerList(
     val answers = answerListState.answers.collectAsLazyPagingItems()
     val isLoading =
         answers.loadState.append is LoadStateLoading || answers.loadState.refresh is LoadStateLoading
-
-    LazyColumn(
-        modifier = modifier
-    ) {
-        repeat(answers.itemCount) { index ->
-            val answer = answers[index]
-            if (answer != null) {
-                item {
-                    StudentAnswerCard(
-                        answerDto = answer,
-                        attachments = listOf(),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-            }
-        }
-        item {
-            if (isLoading) {
-                Box(modifier = Modifier.fillParentMaxWidth().debbugable()) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
-                            .padding(18.dp)
-                            .debbugable()
-                    )
-                }
-            }
-        }
-
-        item {
-            var answer by remember {
-                mutableStateOf("")
-            }
-
-
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                val answerAttachmentState = screenState.createAnswerAttachmentListState()
-                AnswerAttachmentList(
-                    attachmentListState = answerAttachmentState,
-                    modifier = Modifier.fillMaxWidth()
-                        .heightIn(max = 500.dp)
-                )
-
-                Row {
-                    TextField(answer, onValueChange = { answer = it })
-                    Button(
-                        onClick = {
-                            answerListState.addAnswer(
-                                answer,
-                                onAdd = { answerId ->
-                                    answerAttachmentState.sendAll(answerId)
-                                }
-                            )
+    val attachments by screenState.answers.collectAsState()
+    Column {
+        LazyColumn(
+            modifier = modifier
+        ) {
+            repeat(answers.itemCount) { index ->
+                val answer = answers[index]
+                if (answer != null) {
+                    item(
+                        key = answer.id
+                    ) {
+                        LaunchedEffect(Unit) {
+                            screenState.loadAnswerAttachments(answerId = answer.id)
                         }
-                    ){
-                        Text("Добавить ответ")
+                        StudentAnswerCard(
+                            answerDto = answer,
+                            attachments = attachments[answer.id] ?: listOf(),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+            }
+            item {
+                if (isLoading) {
+                    Box(modifier = Modifier.fillParentMaxWidth().debbugable()) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center)
+                                .padding(18.dp)
+                                .debbugable()
+                        )
                     }
                 }
             }
         }
+        var answer by remember {
+            mutableStateOf("")
+        }
+        val answerAttachmentState = remember { screenState.createAnswerAttachmentListState() }
 
 
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            AnswerAttachmentList(
+                attachmentListState = answerAttachmentState,
+                modifier = Modifier.fillMaxWidth()
+                    .heightIn(max = 500.dp)
+            )
 
+            Row {
+                TextField(answer, onValueChange = { answer = it })
+                Button(
+                    onClick = {
+                        answerListState.addAnswer(
+                            answer,
+                            onAdd = { answerId ->
+                                answerAttachmentState.sendAll(answerId)
+                            }
+                        )
+                    }
+                ) {
+                    Text("Добавить ответ")
+                }
+            }
+        }
     }
 
 }

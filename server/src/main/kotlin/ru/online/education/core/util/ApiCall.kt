@@ -18,7 +18,7 @@ inline fun <reified T : BaseModel> dbCall(
     try {
         ApiResult.Success(call(), successMessage)
     } catch (e: Exception) {
-        ApiResult.Error(errorMessage.ifEmpty { e.localizedMessage }, e)
+        ApiResult.Error(errorMessage.ifEmpty { e.stackTraceToString() }, e)
     }
 
 inline fun <reified T : BaseModel> apiCall(apiResultCall: () -> ApiResult<T>): ApiResult<T> =

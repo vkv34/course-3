@@ -6,8 +6,10 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.koin.ktor.ext.get
 import ru.online.education.core.util.respond
 import ru.online.education.core.util.respondCreated
+import ru.online.education.domain.repository.AnswerAttachmentRepository
 import ru.online.education.domain.repository.model.PublicationAnswerAttachmentDto
 import ru.online.education.domain.repository.model.PublicationAttachmentType
 import ru.online.education.domain.services.publicationAttachment.json
@@ -16,7 +18,7 @@ import java.io.File
 import java.net.URLEncoder
 
 fun Route.answerAttachmentRoute() {
-    val repository = AnswerAttachmentRepositoryImpl()
+    val repository = application.get<AnswerAttachmentRepository>()
 
     get("publicationAnswer/attachment/{id}") {
         val id =
@@ -38,7 +40,23 @@ fun Route.answerAttachmentRoute() {
 
         respond(attachmentDto)
     }
+
+    post("publicationAnswer/attachment") {
+        val publicationAnswerAttachmentDto = call.receive<PublicationAnswerAttachmentDto>()
+        respond(repository.add(publicationAnswerAttachmentDto))
+    }
     route("publicationAnswer/file") {
+
+        post("send") {
+            val publicationAttachmentId = call.request.queryParameters["publicationAttachmentId"]?.toIntOrNull() ?: 0
+            val answerId = call.request.queryParameters["answerId"]?.toIntOrNull() ?: 0
+
+            respond(
+                repository.sendFile(
+                    publicationAttachmentId, answerId
+                )
+            )
+        }
 
         delete("{id}") {
             val id = call.parameters["id"]?.toIntOrNull() ?: 0

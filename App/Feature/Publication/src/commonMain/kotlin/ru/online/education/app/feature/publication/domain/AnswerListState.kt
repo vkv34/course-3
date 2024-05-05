@@ -47,7 +47,7 @@ class AnswerListState(
         source = { page ->
             val currentUser = accountRepository.currentUser().successOrNull()
             if (currentUser != null) {
-                if (currentUser.role != UserRole.Student) {
+                if (currentUser.role == UserRole.Student) {
                     publicationAnswerRepository.getAllByPublicationOnCourseId(
                         publicationOnCourseId = publicationOnCourseId,
                         page = page,
@@ -72,24 +72,40 @@ class AnswerListState(
 
     fun addAnswer(
         answer: String,
-        onAdd: (Int)->Unit
+        onAdd: (Int) -> Unit
     ) = coroutineScope.launch {
 //        val currentUser =
 //            withContext(DispatcherProvider.IO) { accountRepository.currentUser().successOrNull() } ?: return@launch
 
 
-        withContext(DispatcherProvider.IO){
-            publicationAnswerRepository.add(
+        withContext(DispatcherProvider.IO) {
+            val result = publicationAnswerRepository.add(
                 PublicationAnswerDto(
                     answer = answer,
                     publicationOnCourseId = publicationOnCourseId
                 )
-            ).successOrNull()?.let {
-                onAdd(it.id)
+            )
+
+
+
+            if (result is ApiResult.Success) {
+                onAdd(result.data.id)
             }
         }
 
         refreshAnswers()
+    }
+
+    fun sendMarkAndComment(
+        mark: Byte? = null,
+        comment: String? = null,
+        answerId: Int
+    ) {
+        coroutineScope.launch(DispatcherProvider.IO) {
+            publicationAnswerRepository.sendMarkAndComment(mark = mark, comment = comment, answerId = answerId)
+
+            refreshAnswers()
+        }
     }
 
 }

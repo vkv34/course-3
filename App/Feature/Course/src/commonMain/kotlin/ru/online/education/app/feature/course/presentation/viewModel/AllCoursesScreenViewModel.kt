@@ -23,6 +23,7 @@ class AllCoursesScreenViewModel(
     private val courseRepository: CourseRepository,
     private val userRepository: UserRepository,
     private val accountRepository: AccountRepository,
+    private val authStore: UserAuthStore,
     val coroutineScope: CoroutineScope
 ) {
     data class ScreenState(
@@ -71,7 +72,7 @@ class AllCoursesScreenViewModel(
 //        }
 //    }
 
-    fun checkCanEdit() = coroutineScope.launch {
+    fun checkCanEdit() = coroutineScope.launch(DispatcherProvider.IO) {
         val result = accountRepository.currentUser()
         val canEdit = result is ApiResult.Success && result.data.role == UserRole.Admin
         _screenState.update { it.copy(canEdit = canEdit) }

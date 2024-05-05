@@ -60,17 +60,58 @@ class PublicationAnswerRepositoryImpl(
         }
     }
 
+
+
+    override suspend fun sendMarkAndComment(
+        mark: Byte?,
+        comment: String?,
+        answerId: Int
+    ): ApiResult<PublicationAnswerDto> =
+        apiCall {
+            dbQuery {
+                PublicationAnswerTable
+                    .update(
+                        where = { PublicationAnswerTable.id eq answerId }
+                    ) { statement ->
+                        statement[this.mark] = mark
+                        statement[this.comment] = comment
+                    }
+            }
+            getById(answerId)
+        }
+    suspend fun sendMarkAndComment(
+        mark: Byte?,
+        comment: String?,
+        answerId: Int,
+        reviewerId: Int
+    ): ApiResult<PublicationAnswerDto> =
+        apiCall {
+            dbQuery {
+                PublicationAnswerTable
+                    .update(
+                        where = { PublicationAnswerTable.id eq answerId }
+                    ) { statement ->
+                        statement[this.mark] = mark
+                        statement[this.comment] = comment
+                        statement[reviewer] = EntityID(reviewerId, UsersTable)
+                    }
+            }
+            getById(answerId)
+        }
+
     override suspend fun getAll(page: Int): ApiResult<ListResponse<PublicationAnswerDto>> {
         TODO("Not yet implemented")
     }
 
     override suspend fun getById(id: Int): ApiResult<PublicationAnswerDto> = dbCall {
-        PublicationAnswerTable
-            .selectAll()
-            .where { PublicationAnswerTable.id eq id }
-            .singleOrNull()
-            ?.toPublicationAnswerAttachment()
-            ?: throw SelectExeption("Ответ с id=$id не найден")
+        dbQuery {
+            PublicationAnswerTable
+                .selectAll()
+                .where { PublicationAnswerTable.id eq id }
+                .singleOrNull()
+                ?.toPublicationAnswerAttachment()
+                ?: throw SelectExeption("Ответ с id=$id не найден")
+        }
     }
 
     override suspend fun deleteById(id: Int): ApiResult<PublicationAnswerDto> = apiCall {

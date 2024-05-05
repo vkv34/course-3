@@ -6,13 +6,13 @@ import io.ktor.server.routing.*
 import org.koin.ktor.ext.get
 import ru.online.education.core.util.respond
 import ru.online.education.core.util.respondCreated
+import ru.online.education.domain.repository.UserOnCourseRepository
 import ru.online.education.domain.repository.model.UserOnCourseDto
 import ru.online.education.domain.services.account.auth.jwtAuthenticate
+import ru.online.education.domain.services.account.currentUser.getCurrentUser
 
 fun Route.userOnCourseRoute() {
-    val userOnCourseRepository = UserOnCourseRepositoryImpl(
-        userRepository = application.get()
-    )
+    val userOnCourseRepository = application.get<UserOnCourseRepository>()
     route("userOnCourse") {
         jwtAuthenticate {
             get("{id}") {
@@ -23,7 +23,11 @@ fun Route.userOnCourseRoute() {
             }
 
             post {
-                val userOnCourseDto = call.receive<UserOnCourseDto>()
+                val userOnCourseDto = call
+                    .receive<UserOnCourseDto>()
+                    .copy(
+                        userDto = getCurrentUser()!!
+                    )
 
                 respondCreated(userOnCourseRepository.add(userOnCourseDto))
             }
@@ -33,7 +37,7 @@ fun Route.userOnCourseRoute() {
                 respond(userOnCourseRepository.update(userOnCourseDto), text = "")
             }
 
-            delete("{id}"){
+            delete("{id}") {
                 val id = call.parameters["id"]?.toIntOrNull() ?: 0
 
                 respond(userOnCourseRepository.deleteById(id))

@@ -3,12 +3,10 @@ package ru.online.education.domain.services.publicationAnswer.atachment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
-import org.jetbrains.exposed.sql.update
+import ru.online.education.core.exception.SelectExeption
 import ru.online.education.core.util.apiCall
 import ru.online.education.core.util.dbCall
 import ru.online.education.data.table.PublicationAnswerAttachmentTable
@@ -37,8 +35,11 @@ class AnswerAttachmentRepositoryImpl : AnswerAttachmentRepository {
     ): ApiResult<PublicationAnswerAttachmentDto> = try {
         val resultFileName = "${UUID.randomUUID()}.${fileName.split(".").last()}"
         val path = "$defaultFilePath/$resultFileName"
+        val output = File(path)
         withContext(Dispatchers.IO) {
-            File(path).writeBytes(file)
+            output.outputStream().use {
+                it.write(file)
+            }
         }
 
         add(
@@ -82,12 +83,20 @@ class AnswerAttachmentRepositoryImpl : AnswerAttachmentRepository {
         getById(publicationAttachmentId)
     }.map { it }
 
+
     override suspend fun getAll(page: Int): ApiResult<ListResponse<PublicationAnswerAttachmentDto>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getById(id: Int): ApiResult<PublicationAnswerAttachmentDto> {
-        TODO("Not yet implemented")
+    override suspend fun getById(id: Int): ApiResult<PublicationAnswerAttachmentDto> = dbCall {
+        dbQuery {
+            PublicationAnswerAttachmentTable
+                .selectAll()
+                .where{ PublicationAnswerAttachmentTable.id eq id}
+                .singleOrNull()
+                ?.toAnswerAttachment()
+                ?:throw SelectExeption("вложения с id=$id не найдено")
+        }
     }
 
     override suspend fun deleteById(id: Int): ApiResult<PublicationAnswerAttachmentDto> {
@@ -115,8 +124,14 @@ class AnswerAttachmentRepositoryImpl : AnswerAttachmentRepository {
         data: PublicationAnswerAttachmentDto
     ): ApiResult<PublicationAnswerAttachmentDto?> = TODO()
 
-    override suspend fun add(data: PublicationAnswerAttachmentDto): ApiResult<PublicationAnswerAttachmentDto> {
-        TODO("Not yet implemented")
+    override suspend fun add(
+        data: PublicationAnswerAttachmentDto
+    ): ApiResult<PublicationAnswerAttachmentDto> = apiCall {
+        val id = dbQuery {
+            PublicationAnswerAttachmentTable
+                .insertAndGetId { data.toInsertStatement(it) }
+        }.value
+        getById(id)
     }
 
     private fun resultRowToAnswerAttachment(row: ResultRow) = row.toAnswerAttachment()

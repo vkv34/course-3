@@ -11,6 +11,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.cash.paging.LoadStateLoading
@@ -26,7 +28,7 @@ internal val availableRoles = arrayOf(
     UserRole.Admin
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun UserOnCourseCard(
     userOnCourseDto: UserOnCourseDto,
@@ -43,19 +45,21 @@ fun UserOnCourseCard(
                 containerColor = Color.Transparent
             ),
             headlineContent = {
-                Row(
+                FlowRow(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
                         userOnCourseDto.userDto.fio,
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight(500)
+                        fontWeight = FontWeight(500),
+                        modifier = Modifier.weight(1f)
+
                     )
                     if (editable) {
                         Spacer(Modifier.width(16.dp))
                         SingleChoiceSegmentedButtonRow(
+                            modifier = Modifier.weight(1f)
                         ) {
                             availableRoles.forEach { role ->
                                 SegmentedButton(
@@ -95,6 +99,8 @@ fun UserOnCourseCard(
         )
     }
 }
+
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -192,5 +198,4 @@ fun UsersList(
         }
     }
 }
-
 

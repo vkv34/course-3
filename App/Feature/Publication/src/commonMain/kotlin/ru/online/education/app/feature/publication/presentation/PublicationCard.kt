@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichText
@@ -26,6 +27,7 @@ import ru.online.education.app.feature.publication.model.Publication
 import ru.online.education.app.core.util.compose.debbugable
 import ru.online.education.app.core.util.time.customFormat
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PublicationCard(
     publication: Publication,
@@ -56,9 +58,9 @@ fun PublicationCard(
                     .debbugable()
                     .animateContentSize()
             ) {
-                Row(
+                FlowRow(
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
+//                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                         .clickable(
                             role = Role.DropdownList,
@@ -72,6 +74,7 @@ fun PublicationCard(
                     Column(
                         modifier = Modifier
                             .debbugable()
+                            .alignByBaseline()
                     ) {
                         Text(
                             publication.title,
@@ -88,9 +91,27 @@ fun PublicationCard(
                             modifier = Modifier.debbugable()
                         )
                     }
+                    if (publication.deadLine != null){
+                        Column {
+                            Text(
+                                text = "Сдать до:",
+                                modifier = Modifier.debbugable(),
+                                style = MaterialTheme.typography.titleSmall
+                            )
+                            Text(
+                                text = publication.deadLine?.customFormat() ?: "",
+                                modifier = Modifier.debbugable(),
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
+                        modifier = Modifier
+                            .alignByBaseline()
+
                     ) {
 
                         Column {
@@ -166,6 +187,8 @@ fun PublicationCard(
 
                        }
                     }
+
+
                 }
 
                 HorizontalDivider(

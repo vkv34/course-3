@@ -63,9 +63,14 @@ class AnswerAttachmentRepositoryImpl(
     override suspend fun sendFile(
         publicationAttachmentId: Int,
         answerId: Int
-    ): ApiResult<PublicationAnswerAttachmentDto> {
-        TODO("Not yet implemented")
-    }
+    ): ApiResult<PublicationAnswerAttachmentDto> =
+        httpClient.safePostAsJson(
+            path = "publicationAnswer/file/send" +
+                    "?publicationAttachmentId=$publicationAttachmentId" +
+                    "&answerId=$answerId",
+            body = PublicationAnswerAttachmentDto(contentType = PublicationAttachmentType.File),
+            notificationManager = notificationManager
+        )
 
     override suspend fun getAll(page: Int): ApiResult<ListResponse<PublicationAnswerAttachmentDto>> {
         TODO("Not yet implemented")
@@ -89,7 +94,7 @@ class AnswerAttachmentRepositoryImpl(
 
     override suspend fun add(data: PublicationAnswerAttachmentDto): ApiResult<PublicationAnswerAttachmentDto> =
         httpClient.safePostAsJson(
-            path = "/publicationAnswer/file",
+            path = "/publicationAnswer/attachment",
             body = data,
             notificationManager = notificationManager
         )

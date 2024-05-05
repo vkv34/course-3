@@ -7,6 +7,7 @@ import org.koin.ktor.ext.get
 import ru.online.education.core.util.respond
 import ru.online.education.core.util.respondCreated
 import ru.online.education.core.util.role
+import ru.online.education.domain.repository.PublicationAnswerRepository
 import ru.online.education.domain.repository.model.BaseModel
 import ru.online.education.domain.repository.model.PublicationAnswerDto
 import ru.online.education.domain.repository.model.UserRole
@@ -14,7 +15,7 @@ import ru.online.education.domain.services.account.auth.jwtAuthenticate
 import ru.online.education.domain.services.account.currentUser.getCurrentUser
 
 fun Route.publicationAnswerRoute() {
-    val repository = PublicationAnswerRepositoryImpl(application.get())
+    val repository = application.get<PublicationAnswerRepository>()
     route("publicationAnswer") {
         jwtAuthenticate {
             role<BaseModel>(UserRole.entries)
@@ -68,11 +69,29 @@ fun Route.publicationAnswerRoute() {
                 respond(repository.update(publicationAnswerDto), text = "")
             }
 
+            put("mark") {
+                val answerId = call.request.queryParameters["answerId"]?.toIntOrNull() ?: 0
+                val mark = call.request.queryParameters["mark"]?.toByteOrNull()
+                val comment = call.request.queryParameters["comment"]?.ifBlank { null }
+                val user = getCurrentUser()!!
+                respond(
+                    (repository as PublicationAnswerRepositoryImpl).sendMarkAndComment(
+                        mark = mark,
+                        comment = comment,
+                        answerId = answerId,
+                        reviewerId = user.id
+                    )
+                )
+            }
+
+
             delete("{id}") {
                 val id = call.request.queryParameters["id"]?.toIntOrNull() ?: 0
 
                 respond(repository.deleteById(id))
             }
+
+
         }
     }
 }

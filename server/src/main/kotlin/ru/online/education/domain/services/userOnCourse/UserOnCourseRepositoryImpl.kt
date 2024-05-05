@@ -4,13 +4,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.UpdateStatement
-import org.jetbrains.exposed.sql.update
 import ru.online.education.core.exception.SelectExeption
 import ru.online.education.core.util.apiCall
 import ru.online.education.core.util.dbCall
@@ -98,9 +95,16 @@ class UserOnCourseRepositoryImpl(
         getById(data.id)
     }.map { it }
 
-    override suspend fun add(data: UserOnCourseDto): ApiResult<UserOnCourseDto> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun add(data: UserOnCourseDto): ApiResult<UserOnCourseDto> =
+        apiCall {
+            val id = dbQuery {
+                UserOnCourse.insertAndGetId { statement ->
+                    data.toInsertStatement(statement)
+                }
+            }.value
+
+            getById(id)
+        }
 
     private suspend fun resultRowToUserOnCourse(row: ResultRow) =
         row.toUserOnCourse()

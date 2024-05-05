@@ -31,7 +31,8 @@ fun AdaptiveDialog(
         }
     }else{
         ModalBottomSheet(
-            onDismissRequest = onDismiss
+            onDismissRequest = onDismiss,
+            modifier = modifier
         ){
             adaptiveContent()
         }
