@@ -27,7 +27,7 @@ fun CourseCategoryAddDialog(
     AdaptiveDialog(
         onDismiss = onDismissRequest,
         modifier = modifier
-            .height(400.dp)
+            .wrapContentHeight()
 //            .width(300.dp)
             .debbugable()
     ) {

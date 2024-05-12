@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
@@ -16,21 +17,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichText
+import ru.online.education.app.core.util.api.baseUrl
 import ru.online.education.app.core.util.compose.ConfirmDialogCard
 import ru.online.education.app.core.util.compose.ConfirmPopup
 import ru.online.education.app.feature.publication.model.Publication
 import ru.online.education.app.core.util.compose.debbugable
 import ru.online.education.app.core.util.time.customFormat
+import ru.online.education.app.feature.publicationAttachment.domain.AttachmentState
+import ru.online.education.app.feature.publicationAttachment.domain.model.Attachment
+import ru.online.education.app.feature.publicationAttachment.presentation.AttachmentCard
+import ru.online.education.domain.repository.model.PublicationAnswerAttachmentDto
+import ru.online.education.domain.repository.model.PublicationAttachmentDto
+import ru.online.education.domain.repository.model.PublicationAttachmentType
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PublicationCard(
     publication: Publication,
+    attachments: List<PublicationAttachmentDto>,
     collapsableContent: @Composable (expanded: Boolean) -> Unit,
     modifier: Modifier = Modifier,
     editable: Boolean = false,
@@ -228,12 +238,60 @@ fun PublicationCard(
 
                     }
                 }
+
+                val localUriHandler = LocalUriHandler.current
+
+                if (expanded && attachments.isNotEmpty()){
+                    Column {
+                        attachments.forEach { attachment ->
+                            FlowRow(
+                                modifier = Modifier
+                                    .clickable {
+                                        if (attachment.contentType == PublicationAttachmentType.Link) {
+                                            localUriHandler.openUri(attachment.content)
+                                            return@clickable
+                                        }
+                                        localUriHandler.openUri("$baseUrl/publicationAnswer/file/${attachment.attachmentId}")
+
+                                    }
+                                    .padding(4.dp)
+
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.AttachFile,
+                                    null,
+                                    modifier = Modifier.size(16.dp)
+                                        .alignByBaseline()
+
+                                )
+                                Text(
+                                    attachment.name,
+                                    modifier = Modifier
+                                        .alignByBaseline()
+                                )
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    "Прикреплено: ${attachment.dateCreate.customFormat()}",
+                                    maxLines = 2,
+                                    softWrap = true,
+                                    fontWeight = FontWeight.Bold,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    modifier = Modifier
+                                        .alignByBaseline()
+                                )
+                            }
+
+                        }
+                    }
+                }
                 HorizontalDivider(
                     modifier = Modifier.fillMaxWidth()
 //                        .shadow(elevation = 5.dp)
                         .height(3.dp)
                         .debbugable()
                 )
+
+
 
                 collapsableContent(expanded)
 

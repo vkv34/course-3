@@ -1,6 +1,4 @@
 FROM openjdk:22
-#EXPOSE 8080:8080
-#COPY --from=build /home/gradle/src/build/libs/*.jar /app/ktor-docker-sample.jar
 COPY ./build/libs/server.jar /server/server.jar
 ENTRYPOINT ["java","-jar","/server/server.jar"]
 #

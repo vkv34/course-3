@@ -92,7 +92,7 @@ fun ConfirmPopup(
             exit = fadeOut()
         ) {
             ConfirmDialogCard(
-                title = "Удалить",
+                title = title,
                 subTitle = subTitle,
                 onConfirm = onConfirm,
                 onDismiss = onDismiss

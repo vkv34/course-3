@@ -11,8 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.cash.paging.LoadStateLoading
@@ -101,7 +99,6 @@ fun UserOnCourseCard(
 }
 
 
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UsersList(
@@ -114,8 +111,8 @@ fun UsersList(
     var firstUserIndex by remember { mutableStateOf<Int?>(null) }
 
 
-    LaunchedEffect(isLoading){
-        if (isLoading){
+    LaunchedEffect(isLoading) {
+        if (isLoading) {
             firstUserIndex = null
         }
     }
@@ -154,7 +151,7 @@ fun UsersList(
                         firstUserIndex = index
                     }
                     item(
-                        key = userOnCourse.id
+                        key = userOnCourse.id.toString() + "userList"
                     ) {
                         UserOnCourseCard(
                             userOnCourse,

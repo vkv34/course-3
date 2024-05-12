@@ -54,13 +54,14 @@ fun EditPublicationDialog(
     AdaptiveDialog(
         onDismiss = onDismiss,
         modifier = Modifier.fillMaxWidth()
-            .verticalScroll(rememberScrollState())
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
                 .debbugable()
+                .verticalScroll(rememberScrollState())
+
         ) {
             Row(
                 modifier = Modifier

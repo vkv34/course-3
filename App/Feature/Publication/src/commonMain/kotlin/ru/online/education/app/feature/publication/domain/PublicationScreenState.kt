@@ -1,7 +1,6 @@
 package ru.online.education.app.feature.publication.domain
 
 import androidx.compose.runtime.Immutable
-import app.cash.paging.cachedIn
 import app.cash.paging.createPager
 import app.cash.paging.createPagingConfig
 import kotlinx.coroutines.CoroutineScope
@@ -17,6 +16,7 @@ import ru.online.education.app.feature.publication.domain.mapper.toPublication
 import ru.online.education.app.feature.publicationAttachment.domain.AnswerAttachmentListState
 import ru.online.education.domain.repository.*
 import ru.online.education.domain.repository.model.PublicationAnswerAttachmentDto
+import ru.online.education.domain.repository.model.PublicationAttachmentDto
 import ru.online.education.domain.repository.model.UserOnCourseDto
 import ru.online.education.domain.repository.model.UserRole
 import util.map
@@ -31,6 +31,7 @@ class PublicationScreenState(
     private val accountRepository: AccountRepository,
     private val userRepository: UserRepository,
     private val answerAttachmentRepository: AnswerAttachmentRepository,
+    private val publicationAttachmentRepository: AttachmentRepository,
     private val courseId: Int,
     private val scope: CoroutineScope
 ) {
@@ -48,6 +49,18 @@ class PublicationScreenState(
         }
     }
 
+    val attachments = MutableStateFlow(mapOf<Int, List<PublicationAttachmentDto>>())
+
+    fun fetchAttachments(publicationId: Int) {
+        scope.launch(DispatcherProvider.IO) {
+            val result = publicationAttachmentRepository.getAttachments(publicationId = publicationId)
+
+            attachments.update { it + (publicationId to (result.successOrNull()?.values ?: listOf())) }
+        }
+    }
+
+
+
     val screenState = MutableStateFlow(ScreenState())
 
     fun selectTab(tab: ScreenState.Tab) {
@@ -57,6 +70,7 @@ class PublicationScreenState(
     private val pager = MutableStateFlow(PublicationPager(
         source = { page -> publicationRepository.getByCourseId(courseId, page) },
         mapper = { dto ->
+            fetchAttachments(dto.publicationId)
             val user = userRepository.getById(dto.authorId)
             user.map {
                 dto.toPublication(it.fio)
@@ -75,7 +89,7 @@ class PublicationScreenState(
                 it
             }
                 .flow
-                .cachedIn(scope)
+//                .cachedIn(scope)
         }
 
 
@@ -114,7 +128,7 @@ class PublicationScreenState(
                 it
             }
                 .flow
-                .cachedIn(scope)
+//                .cachedIn(scope)
         }
 
     fun reloadUsersOnCourse() {
@@ -166,7 +180,7 @@ class PublicationScreenState(
 
     val answers = MutableStateFlow(mapOf<Int, List<PublicationAnswerAttachmentDto>>())
 
-    fun clearAnswers(){
+    fun clearAnswers() {
         answers.update { mapOf() }
     }
 

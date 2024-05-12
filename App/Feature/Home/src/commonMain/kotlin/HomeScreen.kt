@@ -4,6 +4,7 @@ package ru.online.education.app.feature.home
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -60,6 +61,7 @@ fun AdaptiveScaffold(
 //                }
                 Box(
                     modifier = Modifier.fillMaxSize()
+                        .background(color = MaterialTheme.colorScheme.background)
                 ) {
 
                     Box(
@@ -75,6 +77,7 @@ fun AdaptiveScaffold(
                         quickSettings = quickSettings,
                         modifier = Modifier.align(Alignment.TopStart)
                             .wrapContentWidth()
+//                            .widthIn(max = 200.dp)
 
                     )
                 }
@@ -85,7 +88,13 @@ fun AdaptiveScaffold(
                             navigationItems = navigationItems,
                             selected = selected,
                             quickSettings = { quickSettings(true) })
-                    }
+                    },
+                    contentWindowInsets = WindowInsets.navigationBars
+                        .add(WindowInsets.ime)
+                        .add(WindowInsets.waterfall)
+                        .add(WindowInsets.navigationBars),
+                    modifier = Modifier
+                        .imePadding()
                 ) { pv ->
                     Box(
                         modifier = Modifier.fillMaxSize()

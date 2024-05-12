@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.androidLibrary)
+
 }
 
 kotlin {
@@ -22,7 +24,20 @@ kotlin {
     jvm()
 
 
+    androidTarget {
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+
+        }
+    }
+
     sourceSets {
+
+        androidMain.dependencies {
+            implementation(libs.androidx.material3.android)
+        }
 
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -52,5 +67,13 @@ kotlin {
         }
 
 
+    }
+}
+
+android {
+    namespace = "ru.online.education.app.feature.publication"
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    defaultConfig {
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }

@@ -1,19 +1,16 @@
 package ru.online.education.app.feature.account.presentation.model
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ru.online.education.domain.repository.AccountRepository
 import ru.online.education.app.core.util.api.toApiState
 import ru.online.education.app.core.util.coruotines.DispatcherProvider
 import ru.online.education.app.core.util.model.ApiState
 import ru.online.education.app.feature.account.domain.model.Auth
-import ru.online.education.app.feature.account.domain.repository.impl.AccountRepositoryImpl
-import ru.online.education.app.feature.account.presentation.model.AuthResult
+import ru.online.education.domain.repository.AccountRepository
 import util.ApiResult
 
 class AuthScreenState(
@@ -23,6 +20,10 @@ class AuthScreenState(
 ) {
     private val _authState = MutableStateFlow(Auth())
     val authState = _authState.asStateFlow()
+
+    val currentScreen = MutableStateFlow(0)
+
+    val signInViewModel = SignInViewModel(repository = accountRepository, coroutineScope = scope)
 
     private val _authResult = MutableStateFlow<ApiState<AuthResult>>(ApiState.Default())
     val authResult = _authResult.asStateFlow()

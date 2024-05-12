@@ -70,6 +70,9 @@ kotlin {
             implementation(libs.sqlDelight.driver.android)
             implementation(libs.koin.android)
 
+            implementation(projects.app.feature.navigation)
+
+
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -96,6 +99,7 @@ kotlin {
             implementation(libs.koin.compose)
 
             implementation(projects.app.feature.account)
+            implementation(projects.app.feature.users)
             implementation(projects.app.feature.course)
             implementation(projects.app.feature.home)
             implementation(projects.app.feature.navigation)

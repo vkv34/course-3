@@ -55,7 +55,8 @@ class CourseListComponent(
         courseRepository = get(),
         coroutineScope = scope,
         accountRepository = get(),
-        userRepository = get()
+        userRepository = get(),
+        authStore = get()
     )
 
     fun onCourseClicked(id: Long) {

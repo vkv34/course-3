@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.stack.Children
@@ -21,6 +22,8 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.sample.shared.multipane.CoursesContent
+import io.ktor.util.*
+import navgation.destination.root.account.AccountContent
 import navgation.destination.root.home.HomeContent
 import ru.online.education.app.feature.account.presentation.ui.AuthScreen
 import ru.online.education.app.feature.account.presentation.ui.account.AccountCard
@@ -28,6 +31,10 @@ import ru.online.education.app.feature.home.AdaptiveScaffold
 import ru.online.education.app.feature.home.NaviagtionIcon
 import ru.online.education.app.feature.home.model.NavigationItem
 import root.RootComponent
+import ru.online.education.app.core.util.compose.AdaptiveDialog
+import ru.online.education.app.core.util.compose.DeviceType
+import ru.online.education.app.core.util.compose.LocalDeviceConfiguration
+import ru.online.education.currentPlatform
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,7 +42,11 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
 
     val appState by component.appState.subscribeAsState()
 
-    val navigationItems: List<NavigationItem> = RootComponent.Config.all.map {
+    val localDeviceType = remember { currentPlatform() }
+
+    val navigationItems: List<NavigationItem> = RootComponent.Config.all
+        .filter {  if (localDeviceType == ru.online.education.Platform.Browser) true else it != RootComponent.Config.Home }
+        .map {
         it.toNavigationItem(onClick = component::navigateUp)
     }
     val childStack by component.childStack.subscribeAsState()
@@ -88,20 +99,28 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
             val authScreenState = authDialogComponent.authScreenState
             val authState = authScreenState.authResult.collectAsState()
 
-            BasicAlertDialog(
-                onDismissRequest = {
+//            BasicAlertDialog(
+//                onDismissRequest = {
+//
+//                },
+//
+//                ) {
+//                Card {
+//
+//                }
+//
+//            }
 
-                },
+            AdaptiveDialog(
+                onDismiss = {
 
-                ) {
-                Card {
-                    Box(Modifier.padding(8.dp)) {
-                        AuthScreen(
-                            authScreenState = authScreenState
-                        )
-                    }
                 }
-
+            ){
+                Box(Modifier.padding(16.dp)) {
+                    AuthScreen(
+                        authScreenState = authScreenState
+                    )
+                }
             }
 
         }
@@ -116,7 +135,9 @@ fun Child(component: RootComponent, modifier: Modifier) {
         animation = stackAnimation(animator = fade().plus(scale()))
     ) {
         when (val child = it.instance) {
-            RootComponent.Child.AccountChild -> Text("This is Account!!!")
+            is RootComponent.Child.AccountChild -> AccountContent(
+                child.component
+            )
             RootComponent.Child.HomeChild -> HomeContent()
             RootComponent.Child.NotFound -> Text("Вы попали не туда")
             is RootComponent.Child.Courses -> CoursesContent(

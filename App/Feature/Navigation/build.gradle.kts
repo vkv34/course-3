@@ -39,6 +39,7 @@ kotlin {
 
             implementation(projects.domain)
             implementation(projects.app.feature.core)
+            implementation(projects.app.feature.users)
             implementation(projects.app.feature.home)
             implementation(projects.app.feature.account)
             implementation(projects.app.feature.course)

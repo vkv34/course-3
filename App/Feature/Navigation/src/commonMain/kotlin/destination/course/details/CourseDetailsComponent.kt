@@ -43,6 +43,7 @@ class CourseDetailsComponent(
     val canEdit = _canEdit.asStateFlow()
 
     private val accountRepository by inject<AccountRepository>()
+    private val courseCategoryRepository by inject<CourseCategoryRepository>()
     private val authStore by inject<UserAuthStore>()
     val userOnCourseRepository by inject<UserOnCourseRepository>()
 
@@ -50,8 +51,14 @@ class CourseDetailsComponent(
 
         coroutineScope.launch {
             val course = courseRepository.getById(courseId.toInt())
+            val cousreCategory =
+                courseCategoryRepository.getById(course.successOrNull()!!.courseCategoryId).successOrNull()
             withContext(DispatcherProvider.Main) {
-                currentCourse.update { course.toApiState { it.toCourse() } }
+                currentCourse.update {
+                    course.toApiState {
+                        it.toCourse().copy(courseCategory = cousreCategory?.name ?: "")
+                    }
+                }
             }
             val user = withContext(DispatcherProvider.IO) {
                 accountRepository.currentUser()
@@ -91,6 +98,7 @@ class CourseDetailsComponent(
         publicationAnswerRepository = get(),
         accountRepository = get(),
         answerAttachmentRepository = get(),
+        publicationAttachmentRepository = get(),
         userRepository = userRepository,
         courseId = courseId.toInt(),
         scope = coroutineScope
@@ -140,6 +148,16 @@ class CourseDetailsComponent(
         coroutineScope.launch(DispatcherProvider.IO) {
             publicationOnCourseRepository.deleteById(publicationInCourseId)
             screenState.reload()
+        }
+    }
+
+    fun updateCourse(name: String) {
+        coroutineScope.launch(DispatcherProvider.IO) {
+            val course = courseRepository.getById(courseId.toInt())
+            courseRepository.update(course.successOrNull()!!.copy(name = name))
+            withContext(DispatcherProvider.Main) {
+                currentCourse.update { course.toApiState { it.toCourse() } }
+            }
         }
     }
 

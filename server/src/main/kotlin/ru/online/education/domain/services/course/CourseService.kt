@@ -48,5 +48,9 @@ class CourseService(
     suspend fun getAllByUserId(
         userId: Int,
         page: Int,
-    ) = courseRepository.filterByUser(page = page, userId = userId)
+        archived: Boolean
+    ) = courseRepository.filterByUser(page = page, userId = userId, archived = archived)
+
+    suspend fun archive(courseId: Int, archived: Boolean) =
+        courseRepository.archiveCourse(courseId = courseId, archived = archived)
 }

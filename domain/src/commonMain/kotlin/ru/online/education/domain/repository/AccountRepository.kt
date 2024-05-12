@@ -10,6 +10,10 @@ interface AccountRepository {
      */
     suspend fun loginByEmailAndPassword(login: CharSequence, password: CharSequence, hostName: String): ApiResult<AuthResponse>
 
+    suspend fun createAccount(
+        userDto: UserDto
+    ): ApiResult<UserDto>
+
     suspend fun logOut()
 
     suspend fun getTestAdminAccount(): ApiResult<AuthResponse>

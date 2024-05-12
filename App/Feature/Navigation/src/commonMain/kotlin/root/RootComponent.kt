@@ -14,6 +14,7 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.update
 import com.arkivanov.sample.shared.multipane.MultiPaneComponent
 import deepLinking.DeepLink
+import destination.AccountScreenComponent
 import destination.course.DefaultMultiPaneComponent
 import domain.NotificationManager
 import kotlinx.coroutines.CoroutineScope
@@ -23,10 +24,10 @@ import kotlinx.serialization.Serializable
 import model.AppState
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import ru.online.education.domain.repository.AccountRepository
 import ru.online.education.app.core.util.coruotines.DispatcherProvider
 import ru.online.education.app.feature.account.domain.repository.UserAuthStore
 import ru.online.education.app.feature.account.presentation.model.AuthState
+import ru.online.education.domain.repository.AccountRepository
 import util.ApiResult
 
 @OptIn(ExperimentalDecomposeApi::class)
@@ -34,7 +35,8 @@ class RootComponent(
     context: ComponentContext,
     deepLink: DeepLink = DeepLink.None,
     webHistoryController: WebHistoryController? = null,
-    private val scope: CoroutineScope = CoroutineScope(DispatcherProvider.Main + SupervisorJob())
+    private val scope: CoroutineScope = CoroutineScope(DispatcherProvider.Main + SupervisorJob()),
+    private val startDestination: Config = Config.Home
 ) : ComposeComponent,
     KoinComponent,
     ComponentContext by context {
@@ -106,7 +108,10 @@ class RootComponent(
 
     private fun child(config: Config, componentContext: ComponentContext): Child =
         when (config) {
-            Config.Account -> Child.AccountChild
+            Config.Account -> Child.AccountChild(
+                component = AccountScreenComponent(componentContext)
+            )
+
             Config.Home -> Child.HomeChild
             Config.NotFound -> Child.NotFound
             Config.Courses -> Child.Courses(
@@ -141,7 +146,7 @@ class RootComponent(
 
     private fun getInitialStack(deepLink: DeepLink): List<Config> =
         when (deepLink) {
-            is DeepLink.None -> listOf(Config.Home)
+            is DeepLink.None -> listOf(startDestination)
             is DeepLink.Web -> listOf(getConfigForPath(deepLink.path))
         }
 
@@ -158,8 +163,8 @@ class RootComponent(
             Child.AccountChild.name.lowercase() -> Config.Account
             Child.HomeChild.name.lowercase() -> Config.Home
             Child.Courses.name.lowercase() -> Config.Courses
-            "" -> Config.Home
-            else -> Config.Home
+            "" -> startDestination
+            else -> startDestination
         }
 
 
@@ -172,9 +177,15 @@ class RootComponent(
             val name = "Home"
         }
 
-        data object AccountChild : Child() {
+        data class AccountChild(
+            val component: AccountScreenComponent
+        ) : Child() {
             override fun toConfig(): Config = Config.Account
-            val name: String = "Account"
+
+            companion object {
+                val name: String = "Account"
+
+            }
 
         }
 

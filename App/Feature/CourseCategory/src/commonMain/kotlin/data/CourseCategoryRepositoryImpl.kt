@@ -21,9 +21,8 @@ class CourseCategoryRepositoryImpl(
         notificationManager
     )
 
-    override suspend fun getById(id: Int): ApiResult<CourseCategoryDto> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getById(id: Int): ApiResult<CourseCategoryDto> =
+        client.safeGet("courseCategory/$id", notificationManager)
 
     override suspend fun deleteById(id: Int): ApiResult<CourseCategoryDto> {
         TODO("Not yet implemented")

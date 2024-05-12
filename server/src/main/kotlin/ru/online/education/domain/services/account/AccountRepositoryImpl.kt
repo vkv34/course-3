@@ -2,6 +2,8 @@ package ru.online.education.domain.services.account
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import ru.online.education.core.util.apiCall
+import ru.online.education.core.util.dbCall
 import ru.online.education.domain.repository.model.AuthResponse
 import ru.online.education.domain.repository.model.SessionState
 import ru.online.education.domain.repository.model.UserDto
@@ -32,6 +34,11 @@ class AccountRepositoryImpl(
             ApiResult.Error("Пользователь с такими данными не найден")
         }
     }
+
+    override suspend fun createAccount(userDto: UserDto): ApiResult<UserDto> =
+        apiCall {
+            userRepository.add(userDto)
+        }
 
     override suspend fun logOut() {
         TODO("Not yet implemented")

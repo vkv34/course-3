@@ -1,21 +1,23 @@
 package ru.online.education.domain.services.userService
 
-import ru.online.education.domain.repository.model.ListResponse
-import ru.online.education.domain.repository.model.UserDto
-import ru.online.education.domain.repository.model.UserRole
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
-import ru.online.education.domain.repository.UserRepository
+import org.jetbrains.exposed.sql.update
 import ru.online.education.core.exception.SelectExeption
+import ru.online.education.core.util.apiCall
 import ru.online.education.core.util.dbCall
-import ru.online.education.data.table.UserOnCourse
 import ru.online.education.data.table.UserRoleTable
 import ru.online.education.data.table.UsersTable
 import ru.online.education.di.dbQuery
+import ru.online.education.domain.repository.UserRepository
+import ru.online.education.domain.repository.model.ListResponse
+import ru.online.education.domain.repository.model.UserDto
+import ru.online.education.domain.repository.model.UserRole
 import util.ApiResult
+import util.map
 
 class UserRepositoryImpl : UserRepository {
     private fun resultRowToUser(row: ResultRow) =
@@ -113,11 +115,32 @@ class UserRepositoryImpl : UserRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun update(data: UserDto): ApiResult<UserDto?> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun update(data: UserDto): ApiResult<UserDto?> = apiCall {
+        dbQuery {
+            UsersTable.update({ UsersTable.id eq data.id }) {
+                it[email] = data.email
+                it[firstName] = data.firstName
+                it[secondName] = data.secondName
+                it[lastName] = data.lastName
+                it[password] = data.password
+            }
+        }
 
-    override suspend fun add(data: UserDto): ApiResult<UserDto> {
-        TODO("Not yet implemented")
+        getById(data.id)
+    }.map { it }
+
+    override suspend fun add(data: UserDto): ApiResult<UserDto> = apiCall {
+        val id = dbQuery {
+            UsersTable
+                .insertAndGetId {
+                    it[email] = data.email
+                    it[firstName] = data.firstName
+                    it[secondName] = data.secondName
+                    it[lastName] = data.lastName
+                    it[password] = data.password
+                    it[userRole] = EntityID(UserRole.entries.indexOf(data.role) + 1, UserRoleTable)
+                }.value
+        }
+        getById(id)
     }
 }

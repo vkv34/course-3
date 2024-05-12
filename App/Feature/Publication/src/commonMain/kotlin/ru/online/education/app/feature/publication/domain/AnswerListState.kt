@@ -40,7 +40,7 @@ class AnswerListState(
                 it
             }
                 .flow
-                .cachedIn(coroutineScope)
+//                .cachedIn(coroutineScope)
         }
 
     fun createAnswerPager() = PublicationAnswerPager(

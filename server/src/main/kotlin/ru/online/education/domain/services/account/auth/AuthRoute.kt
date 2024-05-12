@@ -15,6 +15,7 @@ import ru.online.education.domain.repository.AccountRepository
 import ru.online.education.domain.repository.UserRepository
 import ru.online.education.domain.repository.UserSessionRepository
 import ru.online.education.core.util.respond
+import ru.online.education.core.util.respondCreated
 import ru.online.education.core.util.role
 import ru.online.education.domain.services.account.AccountService
 import util.ApiResult
@@ -31,6 +32,11 @@ fun Routing.installAccountRoute() {
             call.respond(HttpStatusCode.OK, accountService.loginByEmailAndPassword(user.email, user.password, host))
         }
         post("signUp") {
+            val userDto = call.receive<UserDto>()
+
+            val result = accountService.accountRepository.createAccount(userDto)
+
+            respondCreated(result)
         }
 
         jwtAuthenticate {

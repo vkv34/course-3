@@ -8,5 +8,7 @@ import util.ApiResult
 interface CourseRepository: Repository<CourseDto, Int> {
     suspend fun findByName(name : String): CourseDto
 
-    suspend fun filterByUser(page: Int, userId: Int = 0): ApiResult<ListResponse<CourseDto>>
+    suspend fun filterByUser(page: Int, userId: Int = 0, archived: Boolean = false): ApiResult<ListResponse<CourseDto>>
+
+    suspend fun archiveCourse(courseId: Int, archived: Boolean): ApiResult<CourseDto>
 }

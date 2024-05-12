@@ -16,7 +16,7 @@ fun Routing.courseCategoryRoute() {
     val courseCategoryRepository by application.inject<CourseCategoryRepository>()
     route("/courseCategory") {
         jwtAuthenticate {
-            role<BaseModel>(listOf(UserRole.Admin, UserRole.Teacher, UserRole.Moderator))
+//            role<BaseModel>(listOf(UserRole.Admin, UserRole.Teacher, UserRole.Moderator))
             post("new") {
                 createAndRespond(courseCategoryService)
             }
@@ -25,6 +25,11 @@ fun Routing.courseCategoryRoute() {
                 val page = call.parameters["page"]?.toInt() ?: 0
 
                 respond(courseCategoryService.getAll(page))
+            }
+
+            get("{id}") {
+                val id = call.parameters["id"]?.toInt() ?: 0
+                respond(courseCategoryRepository.getById(id))
             }
 
             get("") {

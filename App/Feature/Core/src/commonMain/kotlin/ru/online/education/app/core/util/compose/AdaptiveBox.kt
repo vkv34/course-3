@@ -3,6 +3,7 @@ package ru.online.education.app.core.util.compose
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.ui.Modifier
 import androidx.compose.material3.Text
@@ -85,6 +86,7 @@ fun AdaptiveBox(
     val localDeviceConfiguration = remember { mutableStateOf(DeviceConfiguration()) }
     BoxWithConstraints(
         modifier = modifier
+            .background(MaterialTheme.colorScheme.background),
     ) {
         val widthDp = with(density) { constraints.maxWidth.toDp() }
         val heightDp = with(density) { constraints.maxHeight.toDp() }

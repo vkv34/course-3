@@ -2,6 +2,7 @@ package ru.online.education.domain.services.course
 
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import ru.online.education.core.exception.SelectExeption
 import ru.online.education.core.util.apiCall
@@ -9,11 +10,9 @@ import ru.online.education.core.util.dbCall
 import ru.online.education.data.table.*
 import ru.online.education.di.dbQuery
 import ru.online.education.domain.repository.CourseRepository
-import ru.online.education.domain.repository.model.CourseDto
-import ru.online.education.domain.repository.model.Image
-import ru.online.education.domain.repository.model.ListResponse
-import ru.online.education.domain.repository.model.UserRole
+import ru.online.education.domain.repository.model.*
 import util.ApiResult
+import util.map
 
 class CourseRepositoryImpl : CourseRepository {
     override suspend fun findByName(name: String): CourseDto {
@@ -23,6 +22,7 @@ class CourseRepositoryImpl : CourseRepository {
     override suspend fun filterByUser(
         page: Int,
         userId: Int,
+        archived: Boolean
     ): ApiResult<ListResponse<CourseDto>> =
         dbCall(
             call = {
@@ -30,18 +30,37 @@ class CourseRepositoryImpl : CourseRepository {
                     UserOnCourse.select(UserOnCourse.course)
 //                        .where { UserOnCourse.role eq 0 }
                         .andWhere { UserOnCourse.user eq userId }
+                        .orderBy(UserOnCourse.role)
 
                 ListResponse(
                     dbQuery {
                         CourseTable.selectAll()
                             .where { CourseTable.createdBy eq userId }
                             .orWhere { CourseTable.id inSubQuery otherCoursesIds }
+                            .also {
+                                if (archived) {
+                                    it.andWhere { CourseTable.courseState eq CourseState.Archived }
+                                }else{
+                                    it.andWhere { CourseTable.courseState neq CourseState.Archived }
+                                }
+                            }
                             .limit(pageSize, (page * pageSize).toLong())
                             .map(::resultRowToCourse)
                     },
                 )
             },
         )
+
+    override suspend fun archiveCourse(courseId: Int, archived: Boolean): ApiResult<CourseDto> = apiCall {
+        dbQuery {
+            CourseTable
+                .update(where = { CourseTable.id eq courseId }) {
+                    it[courseState] = if (archived) CourseState.Archived else CourseState.InUse
+                }
+        }
+
+        getById(courseId)
+    }
 
     override suspend fun getAll(page: Int): ApiResult<ListResponse<CourseDto>> =
         dbCall(
@@ -74,7 +93,15 @@ class CourseRepositoryImpl : CourseRepository {
 
     override suspend fun deleteById(id: Int): ApiResult<CourseDto> = ApiResult.Error.notImplemented()
 
-    override suspend fun update(data: CourseDto): ApiResult<CourseDto?> = ApiResult.Error.notImplemented()
+    override suspend fun update(data: CourseDto): ApiResult<CourseDto?> = apiCall {
+        dbQuery {
+            CourseTable
+                .update(where = { CourseTable.id eq data.id }){
+                    it[name] = data.name
+                }
+        }
+        getById(data.id)
+    }.map { it }
 
     override suspend fun add(data: CourseDto): ApiResult<CourseDto> =
         apiCall {

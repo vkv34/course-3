@@ -15,6 +15,7 @@ data class CourseDto(
     val avatar: Image = Image.default,
     val background: Image = Image.default,
     val courseCategoryId: Int = 0,
+//    val courseState: CourseState
 ) : BaseModel(), Validator {
     override fun validate(): Map<String, String> {
         val errors = mutableMapOf<String, String>()

@@ -12,7 +12,6 @@ import ru.online.education.core.exception.SelectExeption
 import ru.online.education.core.util.apiCall
 import ru.online.education.core.util.dbCall
 import ru.online.education.data.table.CourseTable
-import ru.online.education.data.table.PublicationAttachmentTable
 import ru.online.education.data.table.UserOnCourse
 import ru.online.education.data.table.UsersTable
 import ru.online.education.di.dbQuery
@@ -97,6 +96,28 @@ class UserOnCourseRepositoryImpl(
 
     override suspend fun add(data: UserOnCourseDto): ApiResult<UserOnCourseDto> =
         apiCall {
+            val courseExists = dbQuery {
+                CourseTable
+                    .selectAll()
+                    .limit(1)
+                    .where { CourseTable.id eq data.courseId }
+                    .any()
+            }
+
+            if (!courseExists) {
+                throw SelectExeption("курс с id=${data.courseId} не найден")
+            }
+
+            val userExists = dbQuery {
+                UserOnCourse.selectAll()
+                    .where { UserOnCourse.course eq data.courseId }
+                    .andWhere { UserOnCourse.user eq data.userDto.id }
+                    .any()
+            }
+
+            if (userExists) {
+                error("пользователь ${data.userDto.fio} уже на курсе с кодо=${data.courseId}")
+            }
             val id = dbQuery {
                 UserOnCourse.insertAndGetId { statement ->
                     data.toInsertStatement(statement)

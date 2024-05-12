@@ -69,7 +69,7 @@ fun TeacherAnswerList(
             }
             userToAnswer.forEach { entry ->
                 stickyHeader(
-                    key = entry.key
+                    key = entry.key.id.toString()+"student"
                 ) {
                     Card(
                         modifier = Modifier.fillMaxWidth()

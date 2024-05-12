@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import deepLinking.DeepLink
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -32,7 +31,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val root = RootComponent(
-            context = DefaultComponentContext(lifecycle)
+            context = DefaultComponentContext(lifecycle),
+            startDestination = RootComponent.Config.Courses
         )
 
         lifecycleScope.launch {
@@ -52,7 +52,8 @@ class MainActivity : ComponentActivity() {
             ApplicationTheme {
                 RootContent(
                     component = root,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+
                 )
             }
 

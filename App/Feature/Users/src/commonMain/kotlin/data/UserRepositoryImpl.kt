@@ -6,6 +6,7 @@ import ru.online.education.domain.repository.model.ListResponse
 import ru.online.education.domain.repository.model.UserDto
 import ru.online.education.domain.repository.UserRepository
 import ru.online.education.app.core.util.ktorUtil.safeGet
+import ru.online.education.app.core.util.ktorUtil.safePutAsJson
 import util.ApiResult
 
 class UserRepositoryImpl(
@@ -28,9 +29,12 @@ class UserRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun update(data: UserDto): ApiResult<UserDto?> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun update(data: UserDto): ApiResult<UserDto?> =
+        client.safePutAsJson(
+            path = "/user",
+            body = data,
+            notificationManager = notificationManager
+        )
 
     override suspend fun add(data: UserDto): ApiResult<UserDto> {
         TODO("Not yet implemented")

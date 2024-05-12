@@ -6,6 +6,7 @@ import io.ktor.server.routing.*
 import org.koin.ktor.ext.get
 import ru.online.education.core.util.respond
 import ru.online.education.core.util.respondCreated
+import ru.online.education.domain.repository.CourseRepository
 import ru.online.education.domain.repository.UserOnCourseRepository
 import ru.online.education.domain.repository.model.UserOnCourseDto
 import ru.online.education.domain.services.account.auth.jwtAuthenticate
@@ -13,6 +14,7 @@ import ru.online.education.domain.services.account.currentUser.getCurrentUser
 
 fun Route.userOnCourseRoute() {
     val userOnCourseRepository = application.get<UserOnCourseRepository>()
+//    val courseRepository = application.get<CourseRepository>()
     route("userOnCourse") {
         jwtAuthenticate {
             get("{id}") {

@@ -7,11 +7,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachFile
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +26,7 @@ import ru.online.education.app.feature.publication.domain.PublicationScreenState
 import ru.online.education.app.feature.publication.model.Publication
 import ru.online.education.domain.repository.model.PublicationAnswerAttachmentDto
 import ru.online.education.domain.repository.model.PublicationAnswerDto
+import ru.online.education.domain.repository.model.PublicationAttachmentType
 import ru.online.education.domain.repository.model.PublicationCategory
 
 @OptIn(FlowPreview::class, ExperimentalFoundationApi::class)
@@ -36,7 +35,9 @@ fun PublicationListScreen(
     state: PublicationScreenState,
     editable: Boolean = false,
     onEditClick: (Publication) -> Unit = {},
-    onDeleteClick: (Publication) -> Unit = {}
+    onDeleteClick: (Publication) -> Unit = {},
+    courseName: String,
+    onCourseNameChange: (String) -> Unit
 ) {
     val publications = state.publications
         .collectAsLazyPagingItems()
@@ -44,6 +45,7 @@ fun PublicationListScreen(
         publications.loadState.append is LoadStateLoading || publications.loadState.refresh is LoadStateLoading
 
     val screenState by state.screenState.collectAsState()
+    val attachments by state.attachments.collectAsState()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -65,6 +67,34 @@ fun PublicationListScreen(
             }
         }
 
+        var editableCourseName by remember(courseName) { mutableStateOf(courseName) }
+
+        if (editable) {
+            OutlinedTextField(
+                value = editableCourseName,
+                onValueChange = {
+                    editableCourseName = it
+                },
+                label = { Text("Изменить название курса") },
+                isError = editableCourseName.isEmpty(),
+                supportingText = {
+                    if (editableCourseName.isEmpty()) {
+                        Text("Поле обязательно к заполнению")
+                    }
+                },
+                trailingIcon = {
+                    IconButton(
+                        onClick = {
+                            onCourseNameChange(editableCourseName)
+                        }
+                    ) {
+                        Icon(imageVector = Icons.Default.Check, null)
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
         AnimatedContent(screenState.tab) { seelctedTab ->
             when (seelctedTab) {
                 PublicationScreenState.ScreenState.Tab.Publications -> LazyColumn(
@@ -78,6 +108,7 @@ fun PublicationListScreen(
                             key(publication.id) {
                                 PublicationCard(
                                     publication = publication,
+                                    attachments = attachments[publication.id] ?: listOf(),
                                     collapsableContent = { expanded ->
                                         if (!editable && expanded && publication.type == PublicationCategory.WithAnswer) {
                                             StudentAnswerList(
@@ -86,7 +117,7 @@ fun PublicationListScreen(
                                                 modifier = Modifier.fillMaxWidth()
                                                     .heightIn(max = 500.dp)
                                             )
-                                        }else if (editable && expanded && publication.type == PublicationCategory.WithAnswer){
+                                        } else if (editable && expanded && publication.type == PublicationCategory.WithAnswer) {
                                             TeacherAnswerList(
                                                 publicationOnCourseId = publication.publicationInCourseId,
                                                 screenState = state,
@@ -172,7 +203,11 @@ fun StudentAnswerCard(
                 attachments.forEach { attachment ->
                     FlowRow(
                         modifier = Modifier
-                            .clickable{
+                            .clickable {
+                                if (attachment.contentType == PublicationAttachmentType.Link) {
+                                    localUriHandler.openUri(attachment.content)
+                                    return@clickable
+                                }
                                 localUriHandler.openUri("$baseUrl/publicationAnswer/file/${attachment.id}")
 
                             }

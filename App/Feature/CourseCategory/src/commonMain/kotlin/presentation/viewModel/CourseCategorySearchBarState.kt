@@ -40,7 +40,7 @@ class CourseCategorySearchBarState(
                     source = { searchString, page -> courseCategoryRepository.findByName(searchString, page) }
                 )
             }.flow
-                .cachedIn(coroutineScope)
+//                .cachedIn(coroutineScope)
                 .flowOn(DispatcherProvider.IO)
         } as Flow<PagingData<CourseCategory>>
 

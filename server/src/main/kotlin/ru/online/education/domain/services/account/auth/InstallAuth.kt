@@ -8,8 +8,10 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
-import ru.online.education.domain.repository.UserSessionRepository
 import ru.online.education.data.model.JwtParameters
+import ru.online.education.domain.repository.UserSessionRepository
+import ru.online.education.domain.repository.model.BaseModel
+import util.ApiResult
 
 fun Application.installJWTAuth() {
     val jwtParameters by inject<JwtParameters>()
@@ -32,7 +34,10 @@ fun Application.installJWTAuth() {
             }
 
             challenge { defaultScheme, realm ->
-                call.respond(HttpStatusCode.Unauthorized, "Token is not valid or has expired")
+                call.respond(
+                    HttpStatusCode.Unauthorized,
+                    ApiResult.Error<BaseModel>("Токен не валидный") as ApiResult<BaseModel>
+                )
             }
         }
     }
